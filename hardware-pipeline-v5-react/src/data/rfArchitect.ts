@@ -380,7 +380,6 @@ export const PSU_SPECS: SpecDef[] = [
 export const SWM_SPECS: SpecDef[] = [
   /* Topology size */
   { id: 'matrix_size',    q: 'Matrix size (M inputs × N outputs)?',                 drives: 'Switch count + topology selection',          chips: ['1×2','1×4','1×8','2×4','4×8','8×8','16×16','32×32','Other'], scopes: ['full','front-end'] },
-  { id: 'blocking',       q: 'Blocking or non-blocking?',                           drives: 'Topology — crossbar vs tree',                 chips: ['Blocking (cheaper)','Non-blocking (any-any)','Re-arrangeable','Other'], scopes: ['full','front-end'] },
   /* RF performance */
   { id: 'freq_range',     q: 'Operating frequency range?',                          drives: 'Switch device tech (FET / PIN / MEMS)',      chips: ['DC - 6 GHz','DC - 18 GHz','DC - 26.5 GHz','DC - 40 GHz','DC - 67 GHz','Other'], scopes: ['full','front-end'] },
   { id: 'insertion_loss', q: 'Max insertion loss per path (dB)?',                   drives: 'Switch tech + cascade depth',                 chips: ['< 0.5 dB (MEMS)','< 1 dB','< 2 dB (GaAs FET)','< 3 dB','< 5 dB (PIN)','Other'], scopes: ['full','front-end'] },
@@ -695,8 +694,8 @@ export const SWM_DEEP_DIVES: Record<DesignScope, DeepDiveDef> = {
       { id: 'driver_ic',        q: 'Switch driver / level-shift IC?',                chips: ['HMC347 family','SKY13xxx','ADRF series','Discrete level-shifter','MCU GPIO','Auto'] },
       { id: 'simultaneity',     q: 'Simultaneous-route requirement?',                chips: ['Single path at a time (blocking)','Up to 2 paths','Up to 4 paths','Full M×N (non-blocking)','Auto'] },
       { id: 'cal_path',         q: 'Built-in cal / through path?',                   chips: ['Yes (cal port)','Yes (through-thru-line)','No','Auto'] },
-      { id: 'control_iface',    q: 'Control plane?',                                chips: ['Direct GPIO','SPI','I2C','USB-bridge','SCPI / VXI','Auto'] },
       { id: 'rf_layout',        q: 'RF layout substrate?',                           chips: ['FR-4 (< 6 GHz)','RO4350B','RO3003','PTFE','LTCC','Auto'] },
+      { id: 'fpga_family',      q: 'Which FPGA / SoC for switch control?',           chips: ['Artix-7','Kintex-7','Zynq-7000','Zynq UltraScale+','Versal','Intel Agilex','Other'] },
     ],
   },
   'full': {
@@ -705,10 +704,9 @@ export const SWM_DEEP_DIVES: Record<DesignScope, DeepDiveDef> = {
     qs: [
       { id: 'switch_device',    q: 'Per-cell switch device?',                       chips: ['GaAs SPDT','SOI CMOS SPDT','PIN diode','RF MEMS','Mechanical relay','Auto'] },
       { id: 'simultaneity',     q: 'Simultaneous-route requirement?',                chips: ['Single path (blocking)','Up to 2','Up to 4','Full M×N (non-blocking)','Auto'] },
-      { id: 'control_iface',    q: 'Control plane?',                                chips: ['Direct GPIO','SPI','I2C','USB-bridge','SCPI / VXI','Auto'] },
       { id: 'connectorisation', q: 'Front-panel connectors?',                       chips: ['SMA (× ports)','N-type','TNC','MMCX','Edge launch','Auto'] },
       { id: 'enclosure',        q: 'Enclosure / EMI shielding?',                    chips: ['Open PCB (lab)','Cast aluminium','Sheet-metal shielded','Modular (3U/6U)','19" rackmount','Auto'] },
-      { id: 'cal_strategy',     q: 'Calibration strategy?',                         chips: ['Through-line cal','S-parameter file per route','Software de-embed','None','Auto'] },
+      { id: 'fpga_family',      q: 'Which FPGA / SoC for switch control?',           chips: ['Artix-7','Kintex-7','Zynq-7000','Zynq UltraScale+','Versal','Intel Agilex','Other'] },
     ],
   },
 };

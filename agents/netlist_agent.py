@@ -2501,6 +2501,35 @@ Do NOT generate a minimal 2-component skeleton. The netlist must be COMPLETE.
                              enumerate(p2 for p2 in _ic_pins if p2.get("side") == "left")}
                 _right_idx = {pp["name"]: i for i, pp in
                               enumerate(p2 for p2 in _ic_pins if p2.get("side") == "right")}
+                # P26.8 (2026-05-05): align closure-component y with the
+                # actual IC pin y. Pre-fix used `_pin_offset * 2`, which on
+                # a 12-pin ADC stretched the closure column to 24 grid units
+                # while the IC body is only ~13 units tall. The cap/resistor
+                # for the bottom pin ended up ~10 units BELOW the IC, and
+                # the auto-routed Manhattan wire snaked 10+ units down — the
+                # long green tails the user saw. The renderer computes IC
+                # pin Y as `c.y + (idx+1) * h/(n+1)` (see getIcSize +
+                # getLocalPinAnchor in symbols/index.tsx); replicate that
+                # here so closure components land NEXT to their pin, not
+                # below the IC body.
+                _sides_count = {"top": 0, "bottom": 0, "left": 0, "right": 0}
+                for _p2 in _ic_pins:
+                    _sd = _p2.get("side")
+                    if _sd in _sides_count:
+                        _sides_count[_sd] += 1
+                _max_lr_for_h = max(_sides_count["left"], _sides_count["right"], 2)
+                _ic_h = max(3, _max_lr_for_h + 1)
+                _n_left = _sides_count["left"] or 1
+                _n_right = _sides_count["right"] or 1
+                _left_step = _ic_h / (_n_left + 1)
+                _right_step = _ic_h / (_n_right + 1)
+
+                def _aligned_y(side_name: str, idx: int) -> float:
+                    step = _left_step if side_name == "left" else _right_step
+                    # Cap at rot=0 has pin1 at (cap.x, cap.y + 0.5); subtract
+                    # 0.5 so cap pin1 lands EXACTLY on the IC pin's y.
+                    return max(c["y"] + (idx + 1) * step - 0.5, 1)
+
                 for p in _ic_pins:
                     if (c["ref"], p["name"]) in connected_pins:
                         continue
@@ -2529,7 +2558,7 @@ Do NOT generate a minimal 2-component skeleton. The netlist must be COMPLETE.
                         g_cap += 1
                         ac_ref = f"C{g_cap}"
                         cx = max(c["x"] - 3, 1)
-                        cy = c["y"] + 1 + _pin_offset * 2
+                        cy = _aligned_y("left", _pin_offset)
                         comps.append({"ref": ac_ref, "type": "capacitor",
                                       "value": "100nF",
                                       "x": cx, "y": cy, "rot": 0})
@@ -2564,7 +2593,7 @@ Do NOT generate a minimal 2-component skeleton. The netlist must be COMPLETE.
                             "ref": tp_ref, "type": "connector",
                             "value": f"TP_{pn}",
                             "x": c["x"] + 5,
-                            "y": c["y"] + 1 + _pin_offset * 2, "rot": 0,
+                            "y": _aligned_y("right", _pin_offset), "rot": 0,
                             "pins": [{"name": "1", "num": "1",
                                       "side": "left"}],
                         })
@@ -2583,9 +2612,11 @@ Do NOT generate a minimal 2-component skeleton. The netlist must be COMPLETE.
                         g_res += 1
                         rref = f"R{g_res}"
                         rx = max(c["x"] - 3, 1)
-                        # Distribute by pin index so each IC's pull-ups
-                        # form a vertical column instead of stacking.
-                        ry = max(c["y"] + _pin_offset * 2, 1)
+                        # Pin-aligned y: resistor (rot=90) has pin 1 at
+                        # (r.x - 0.5, r.y), so r.y == IC pin y aligns the
+                        # connection. Replaces `_pin_offset * 2` which on
+                        # tall ICs put the resistor 10+ units below its pin.
+                        ry = max(c["y"] + (_pin_offset + 1) * _left_step, 1)
                         comps.append({"ref": rref, "type": "resistor",
                                       "value": "10k",
                                       "x": rx, "y": ry, "rot": 90})
@@ -2620,9 +2651,9 @@ Do NOT generate a minimal 2-component skeleton. The netlist must be COMPLETE.
                         g_res += 1
                         rref = f"R{g_res}"
                         rx = max(c["x"] - 3, 1)
-                        # Vertical offset by pin index so multiple
-                        # pull-downs for one IC form a column.
-                        ry = c["y"] + 1 + _pin_offset * 2
+                        # Pin-aligned y so the resistor sits next to its
+                        # IC pin instead of stretching below the IC body.
+                        ry = max(c["y"] + (_pin_offset + 1) * _left_step, 1)
                         comps.append({"ref": rref, "type": "resistor",
                                       "value": "10k",
                                       "x": rx, "y": ry, "rot": 90})
@@ -2657,7 +2688,7 @@ Do NOT generate a minimal 2-component skeleton. The netlist must be COMPLETE.
                             "ref": tp_ref, "type": "connector",
                             "value": f"TP_{pn}",
                             "x": c["x"] + 5,
-                            "y": c["y"] + 1 + _pin_offset * 2, "rot": 0,
+                            "y": _aligned_y("right", _pin_offset), "rot": 0,
                             "pins": [{"name": "1", "num": "1",
                                       "side": "left"}],
                         })

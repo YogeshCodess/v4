@@ -11,12 +11,21 @@ import { jsPDF } from 'jspdf';
 import { svg2pdf } from 'svg2pdf.js';
 import { api } from '../../api';
 import SheetSchematic from './SheetSchematic';
-import type { SchematicData, SheetData, NetData, ComponentData } from './symbols/types';
+import type { SchematicData, SheetData, ComponentData } from './symbols/types';
 import { NET_COLORS } from './symbols/types';
 
 interface Props {
   projectId: number;
   color: string;  // phase color for buttons
+}
+
+interface DrcCounts {
+  critical?: number; high?: number; medium?: number; low?: number; info?: number;
+}
+interface DrcReport {
+  overall_pass?: boolean;
+  counts?: DrcCounts;
+  violations?: Array<{ severity?: string; rule?: string; detail?: string; location?: string }>;
 }
 
 export default function SchematicView({ projectId, color }: Props) {
@@ -27,6 +36,8 @@ export default function SchematicView({ projectId, color }: Props) {
   const [hoveredNet, setHoveredNet] = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
   const [dlError, setDlError] = useState<string | null>(null);
+  const [drc, setDrc] = useState<DrcReport | null>(null);
+  const [drcOpen, setDrcOpen] = useState(false);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   // Fetch schematic.json from the output dir — falls back nicely if missing
@@ -49,6 +60,28 @@ export default function SchematicView({ projectId, color }: Props) {
       } finally {
         if (!aborted) setLoading(false);
       }
+    })();
+    return () => { aborted = true; };
+  }, [projectId]);
+
+  // Fetch DRC report — schematic_drc.json (post-synthesis) preferred, falls
+  // back to netlist_drc.json (pre-synthesis). The phase no longer blocks on
+  // DRC failures (P26 #9), so this is the only place the operator sees them.
+  useEffect(() => {
+    let aborted = false;
+    (async () => {
+      for (const name of ['schematic_drc.json', 'netlist_drc.json']) {
+        try {
+          const raw = await api.getDocumentText(projectId, name);
+          if (aborted) return;
+          const parsed = JSON.parse(raw) as DrcReport;
+          setDrc(parsed);
+          return;
+        } catch {
+          // try next file
+        }
+      }
+      if (!aborted) setDrc(null);
     })();
     return () => { aborted = true; };
   }, [projectId]);
@@ -170,11 +203,35 @@ export default function SchematicView({ projectId, color }: Props) {
           )}
         </div>
 
-        {/* Right side: stats + PDF download */}
+        {/* Right side: stats + DRC badge + PDF download */}
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <span style={{ fontSize: 10, color: 'var(--text4)', fontFamily: "'DM Mono', monospace" }}>
             {sheet.components.length} SYMBOLS · {sheet.nets.length} NETS
           </span>
+          {drc && (() => {
+            const c = drc.counts || {};
+            const crit = c.critical || 0;
+            const high = c.high || 0;
+            const med = c.medium || 0;
+            const fail = crit > 0 || high > 0;
+            const bg = fail ? 'rgba(220,38,38,0.12)' : 'rgba(0,198,167,0.12)';
+            const fg = fail ? '#dc2626' : '#00c6a7';
+            const bd = fail ? 'rgba(220,38,38,0.4)' : 'rgba(0,198,167,0.4)';
+            const label = fail
+              ? `DRC FAIL · ${crit}C · ${high}H${med ? ' · ' + med + 'M' : ''}`
+              : `DRC PASS${med ? ' · ' + med + ' medium' : ''}`;
+            return (
+              <button onClick={() => setDrcOpen(o => !o)}
+                style={{
+                  fontSize: 10, color: fg, background: bg, border: `1px solid ${bd}`,
+                  borderRadius: 4, padding: '4px 9px', cursor: 'pointer',
+                  fontFamily: "'DM Mono', monospace", letterSpacing: 0.5,
+                  whiteSpace: 'nowrap',
+                }}>
+                {label}{drc.violations && drc.violations.length > 0 ? (drcOpen ? ' ▴' : ' ▾') : ''}
+              </button>
+            );
+          })()}
           <button
             onClick={downloadPdf}
             disabled={downloading}
@@ -203,6 +260,51 @@ export default function SchematicView({ projectId, color }: Props) {
         <div style={{ padding: '6px 14px', background: 'rgba(220,38,38,0.08)',
                       color: '#dc2626', fontSize: 11, fontFamily: "'DM Mono', monospace" }}>
           ⚠ PDF export failed: {dlError}
+        </div>
+      )}
+
+      {drcOpen && drc && drc.violations && drc.violations.length > 0 && (
+        <div style={{
+          padding: '8px 14px',
+          background: 'rgba(220,38,38,0.05)',
+          borderBottom: '1px solid var(--border2)',
+          maxHeight: 180,
+          overflowY: 'auto',
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 11,
+        }}>
+          <div style={{ fontSize: 10, color: 'var(--text4)', letterSpacing: 0.6, marginBottom: 6 }}>
+            DRC VIOLATIONS ({drc.violations.length}) — pre & post-synthesis checks
+          </div>
+          {drc.violations.slice(0, 50).map((v, i) => {
+            const sev = (v.severity || 'info').toLowerCase();
+            const sevColor =
+              sev === 'critical' ? '#dc2626' :
+              sev === 'high'     ? '#f59e0b' :
+              sev === 'medium'   ? '#eab308' :
+              'var(--text4)';
+            return (
+              <div key={i} style={{ padding: '3px 0', display: 'flex', gap: 8 }}>
+                <span style={{
+                  color: sevColor, minWidth: 60, fontSize: 9,
+                  textTransform: 'uppercase', letterSpacing: 0.5,
+                  fontFamily: "'DM Mono', monospace",
+                }}>{sev}</span>
+                <span style={{ color: 'var(--text4)', minWidth: 100, fontSize: 10 }}>
+                  {v.rule || ''}
+                </span>
+                <span style={{ color: 'var(--text2)', flex: 1 }}>
+                  {v.detail || ''}
+                  {v.location ? ` — ${v.location}` : ''}
+                </span>
+              </div>
+            );
+          })}
+          {drc.violations.length > 50 && (
+            <div style={{ color: 'var(--text4)', fontSize: 10, paddingTop: 4 }}>
+              … +{drc.violations.length - 50} more (see netlist_drc.json / schematic_drc.json)
+            </div>
+          )}
         </div>
       )}
 
@@ -289,16 +391,44 @@ function SheetIndex({ sheets, activeIdx, onSelect, color }: {
 
 // ──────────────────────────────────────────────────────────────────────────────
 
+interface GroupedNet {
+  name: string;
+  type: string;
+  pinCount: number;   // total endpoints across all same-named nets
+  netCount: number;   // how many physical net entries share this name
+}
+
 function NetSidebar({ sheet, hoveredNet, onHover }: {
   sheet: SheetData; hoveredNet: string | null; onHover: (n: string | null) => void;
 }) {
-  // Group nets by type, sort by name within group
+  // Group nets by type AND collapse same-named nets into a single row.
+  // Synthesizer emits a separate net entry per (IC.VCC_pin → cap.pin1) pair,
+  // so a project with 8 ICs on a VCC rail produces 8 separate "VCC" net rows
+  // — visually unhelpful. We coalesce them into one row showing total pin count.
   const grouped = useMemo(() => {
-    const g: Record<string, NetData[]> = {};
-    for (const n of sheet.nets) (g[n.type || 'signal'] ||= []).push(n);
-    for (const k of Object.keys(g)) g[k].sort((a, b) => a.name.localeCompare(b.name));
-    return g;
+    const byType: Record<string, Map<string, GroupedNet>> = {};
+    for (const n of sheet.nets) {
+      const t = n.type || 'signal';
+      const m = (byType[t] ||= new Map());
+      const cur = m.get(n.name);
+      if (cur) {
+        cur.pinCount += n.endpoints.length;
+        cur.netCount += 1;
+      } else {
+        m.set(n.name, {
+          name: n.name, type: t,
+          pinCount: n.endpoints.length, netCount: 1,
+        });
+      }
+    }
+    const out: Record<string, GroupedNet[]> = {};
+    for (const [t, m] of Object.entries(byType)) {
+      out[t] = Array.from(m.values()).sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return out;
   }, [sheet.nets]);
+
+  const totalRails = Object.values(grouped).reduce((s, list) => s + list.length, 0);
 
   // Orphan pins — every pin on every component that doesn't appear in any net's endpoints
   const orphanPins = useMemo(() => {
@@ -322,7 +452,7 @@ function NetSidebar({ sheet, hoveredNet, onHover }: {
     }}>
       <div style={{ fontSize: 10, color: 'var(--text4)', fontFamily: "'DM Mono', monospace",
                     letterSpacing: 0.8, marginBottom: 10 }}>
-        NETS ({sheet.nets.length})
+        NETS ({totalRails} rails · {sheet.nets.length} segments)
       </div>
       {Object.entries(grouped).map(([type, list]) => (
         <div key={type} style={{ marginBottom: 14 }}>
@@ -347,7 +477,9 @@ function NetSidebar({ sheet, hoveredNet, onHover }: {
                 borderLeft: `2px solid ${hoveredNet === n.name ? (NET_COLORS[type] || NET_COLORS.default) : 'transparent'}`,
                 transition: 'all 0.12s',
               }}>
-              {n.name} <span style={{ color: 'var(--text4)' }}>· {n.endpoints.length} pins</span>
+              {n.name} <span style={{ color: 'var(--text4)' }}>
+                · {n.pinCount} pins{n.netCount > 1 ? ` · ${n.netCount}×` : ''}
+              </span>
             </div>
           ))}
         </div>

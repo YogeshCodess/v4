@@ -31,18 +31,31 @@ const SheetSchematic = forwardRef<SVGSVGElement, SheetSchematicProps>(function S
     return m;
   }, [sheet.components]);
 
-  // Compute sheet bounds so the SVG viewBox fits everything
+  // Visibly-rendered components — the synthesizer emits MANY standalone
+  // `ground` and `vcc` symbols (one per closure cap, plus 5 rail flags at
+  // top-of-sheet). With per-pin rail stubs they are visually redundant and
+  // the duplication produces stacked-symbol columns next to every IC. Hide
+  // them in the renderer; keep them in the data model so DRC / KiCad export
+  // still see the connectivity.
+  const visibleComps = useMemo(
+    () => sheet.components.filter(c => c.type !== 'ground' && c.type !== 'vcc'),
+    [sheet.components],
+  );
+
+  // Compute sheet bounds so the SVG viewBox fits everything visible
   const { vbW, vbH } = useMemo(() => {
     let maxX = 30, maxY = 20;
-    for (const c of sheet.components) {
+    for (const c of visibleComps) {
       const { w, h } = c.type === 'ic' ? getIcSize(c) : symbolBoundingBox(c);
       maxX = Math.max(maxX, c.x + w + 2);
       maxY = Math.max(maxY, c.y + h + 2);
     }
     return { vbW: (maxX + padding) * GRID, vbH: (maxY + padding) * GRID };
-  }, [sheet.components, padding]);
+  }, [visibleComps, padding]);
 
-  // Pre-compute polylines for every net
+  // Pre-compute polylines for every net. Pass the FULL component map so pin
+  // anchors resolve, but the buildNetLines helper itself filters out endpoints
+  // on hidden ground/vcc symbols (no orphan stubs in empty space).
   const netLines = useMemo(() => buildNetLines(sheet.nets, compMap), [sheet.nets, compMap]);
 
   return (
@@ -65,16 +78,35 @@ const SheetSchematic = forwardRef<SVGSVGElement, SheetSchematicProps>(function S
         </g>
       )}
 
-      {/* Nets — drawn BEFORE symbols so symbols sit on top */}
+      {/* Nets — drawn BEFORE symbols so symbols sit on top.
+          Power / ground rails render as stubs at each pin (KiCad convention)
+          rather than polylines, because 39+ power-net wires criss-crossing
+          a single sheet is the dominant source of visual chaos. */}
       <g>
-        {netLines.map((nl) => {
+        {netLines.map((nl, ni) => {
           const isHovered = hoveredNet === nl.net.name;
           const baseColor = NET_COLORS[nl.net.type || 'signal'] || NET_COLORS.default;
           const color = isHovered ? '#00ffe0' : baseColor;
           const strokeWidth = isHovered ? 2.5 : 1.5;
           const opacity = hoveredNet && !isHovered ? 0.25 : 0.95;
+          // Stub-mode rendering: power & ground nets become per-pin stubs.
+          if (nl.stubs && nl.stubs.length > 0) {
+            return (
+              <g key={`${nl.net.name}-${ni}`} opacity={opacity}
+                 onMouseEnter={() => onNetHover?.(nl.net.name)}
+                 onMouseLeave={() => onNetHover?.(null)}
+                 onClick={() => onNetClick?.(nl.net.name)}
+                 style={{ cursor: 'pointer' }}>
+                {nl.stubs.map((s, i) => (
+                  <RailStub key={i} cx={s.pos[0]} cy={s.pos[1]}
+                            kind={s.kind} label={s.label}
+                            color={color} highlighted={isHovered} />
+                ))}
+              </g>
+            );
+          }
           return (
-            <g key={nl.net.name} opacity={opacity}
+            <g key={`${nl.net.name}-${ni}`} opacity={opacity}
                onMouseEnter={() => onNetHover?.(nl.net.name)}
                onMouseLeave={() => onNetHover?.(null)}
                onClick={() => onNetClick?.(nl.net.name)}
@@ -99,9 +131,9 @@ const SheetSchematic = forwardRef<SVGSVGElement, SheetSchematicProps>(function S
         })}
       </g>
 
-      {/* Component symbols */}
+      {/* Component symbols — ground / vcc filtered out (replaced by per-pin stubs) */}
       <g>
-        {sheet.components.map((c) => <Symbol key={c.ref} comp={c} />)}
+        {visibleComps.map((c) => <Symbol key={c.ref} comp={c} />)}
       </g>
 
       {/* Pin number labels (Phase 3 polish) — rendered on top of everything */}
@@ -147,7 +179,23 @@ interface NetLineDrawable {
   net: NetData;
   segments: Array<Array<[number, number]>>; // pixel coords
   junctions: Array<[number, number]>;
+  /** When set, the net is rendered as per-pin rail stubs instead of polylines. */
+  stubs?: Array<{ pos: [number, number]; kind: 'power' | 'ground'; label: string }>;
   labelPos?: [number, number];
+}
+
+// Detect rail nets — type field is authoritative, but we also fall back on
+// canonical rail-name patterns so an LLM-emitted net with a missing/wrong
+// `type` still renders as a stub (e.g. an "EN_HIGH" net the agent typed as
+// "signal" should still look like a rail).
+function classifyRail(net: NetData): 'power' | 'ground' | null {
+  const t = (net.type || '').toLowerCase();
+  if (t === 'ground') return 'ground';
+  if (t === 'power') return 'power';
+  const n = (net.name || '').toUpperCase();
+  if (/^([AD]?GND|VSS|VEE)\b/.test(n)) return 'ground';
+  if (/^(VCC|VDD|AVDD|DVDD|VBAT|VIN|VOUT|EN_HIGH|VPP|V[123]V[358]?|V\d+V\d+)/.test(n)) return 'power';
+  return null;
 }
 
 function buildNetLines(nets: NetData[], compMap: Record<string, ComponentData>): NetLineDrawable[] {
@@ -157,9 +205,33 @@ function buildNetLines(nets: NetData[], compMap: Record<string, ComponentData>):
     for (const ep of net.endpoints) {
       const c = compMap[ep.ref];
       if (!c) continue;
+      // Skip endpoints on hidden ground/vcc standalone symbols. The OTHER
+      // endpoint of the rail net (a real cap/IC pin) gets a stub, which is
+      // sufficient — placing a stub where no symbol is drawn would leave
+      // floating "GND" labels in empty whitespace.
+      if (c.type === 'ground' || c.type === 'vcc') continue;
       const a = getPinAnchor(c, ep.pin);
       if (!a) continue;
       anchors.push([a.x * GRID, a.y * GRID]);
+    }
+    if (anchors.length === 0) {
+      out.push({ net, segments: [], junctions: [] });
+      continue;
+    }
+    // POWER / GROUND nets — render as per-pin stubs (KiCad convention).
+    // We do NOT draw any wire between endpoints; logical connectivity stays
+    // intact in the data, only the visual is suppressed. This is the single
+    // biggest source of visual noise on dense receivers (30+ rail wires
+    // criss-crossing a single sheet).
+    const railKind = classifyRail(net);
+    if (railKind) {
+      const stubs = anchors.map(([x, y]) => ({
+        pos: [x, y] as [number, number],
+        kind: railKind,
+        label: net.name,
+      }));
+      out.push({ net, segments: [], junctions: [], stubs });
+      continue;
     }
     if (anchors.length < 2) {
       out.push({ net, segments: [], junctions: [] });
@@ -214,6 +286,38 @@ function manhattan(a: [number, number], b: [number, number]): Array<[number, num
   if (ax === bx || ay === by) return [a, b];
   // Horizontal-then-vertical
   return [a, [bx, ay], b];
+}
+
+// Per-pin rail stub. Power rails get an upward tick + name above the pin;
+// ground rails get a triangle pointing down + name below. We don't draw any
+// wire between endpoints — the rail name is the contract.
+function RailStub({ cx, cy, kind, label, color, highlighted }: {
+  cx: number; cy: number; kind: 'power' | 'ground'; label: string;
+  color: string; highlighted: boolean;
+}) {
+  const sw = highlighted ? 2 : 1.4;
+  if (kind === 'ground') {
+    // Three horizontal ticks of decreasing width, centered below the pin.
+    return (
+      <g style={{ pointerEvents: 'none' }}>
+        <line x1={cx} y1={cy} x2={cx} y2={cy + 8} stroke={color} strokeWidth={sw} />
+        <line x1={cx - 7} y1={cy + 8} x2={cx + 7} y2={cy + 8} stroke={color} strokeWidth={sw} />
+        <line x1={cx - 4.5} y1={cy + 11} x2={cx + 4.5} y2={cy + 11} stroke={color} strokeWidth={sw} />
+        <line x1={cx - 2} y1={cy + 14} x2={cx + 2} y2={cy + 14} stroke={color} strokeWidth={sw} />
+        <text x={cx} y={cy + 26} fill={color} fontSize={8} textAnchor="middle"
+              fontFamily="'JetBrains Mono', monospace" opacity={0.75}>{label}</text>
+      </g>
+    );
+  }
+  // Power: upward stub line + horizontal cap + name above
+  return (
+    <g style={{ pointerEvents: 'none' }}>
+      <line x1={cx} y1={cy} x2={cx} y2={cy - 10} stroke={color} strokeWidth={sw} />
+      <line x1={cx - 5} y1={cy - 10} x2={cx + 5} y2={cy - 10} stroke={color} strokeWidth={sw} />
+      <text x={cx} y={cy - 14} fill={color} fontSize={8} textAnchor="middle"
+            fontFamily="'JetBrains Mono', monospace" opacity={0.85}>{label}</text>
+    </g>
+  );
 }
 
 function symbolBoundingBox(comp: ComponentData): { w: number; h: number } {
