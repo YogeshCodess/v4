@@ -1,0 +1,66 @@
+{
+  "standard": "EU Directive 2011/65/EU (RoHS 3)",
+  "last_updated": "2024-01-01",
+  "restricted_substances": [
+    {
+      "name": "Lead (Pb)",
+      "cas_number": "7439-92-1",
+      "limit_percent": 0.1,
+      "common_in": "Solder, CRT glass, batteries"
+    },
+    {
+      "name": "Mercury (Hg)",
+      "cas_number": "7439-97-6",
+      "limit_percent": 0.1,
+      "common_in": "Fluorescent lamps, switches"
+    },
+    {
+      "name": "Cadmium (Cd)",
+      "cas_number": "7440-43-9",
+      "limit_percent": 0.01,
+      "common_in": "Batteries, plating, pigments"
+    },
+    {
+      "name": "Hexavalent Chromium (Cr6+)",
+      "cas_number": "18540-29-9",
+      "limit_percent": 0.1,
+      "common_in": "Chrome plating, primers"
+    },
+    {
+      "name": "PBB (Polybrominated biphenyls)",
+      "cas_number": "59536-65-1",
+      "limit_percent": 0.1,
+      "common_in": "Flame retardants in plastics"
+    },
+    {
+      "name": "PBDE (Polybrominated diphenyl ethers)",
+      "cas_number": "N/A",
+      "limit_percent": 0.1,
+      "common_in": "Flame retardants in plastics"
+    },
+    {
+      "name": "Bis(2-ethylhexyl) phthalate (DEHP)",
+      "cas_number": "117-81-7",
+      "limit_percent": 0.1,
+      "common_in": "PVC insulation, cables"
+    },
+    {
+      "name": "Butyl benzyl phthalate (BBP)",
+      "cas_number": "85-68-7",
+      "limit_percent": 0.1,
+      "common_in": "PVC, vinyl flooring"
+    },
+    {
+      "name": "Dibutyl phthalate (DBP)",
+      "cas_number": "84-74-2",
+      "limit_percent": 0.1,
+      "common_in": "Adhesives, inks"
+    },
+    {
+      "name": "Diisobutyl phthalate (DIBP)",
+      "cas_number": "84-69-5",
+      "limit_percent": 0.1,
+      "common_in": "Inks, coatings"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "mpn": "CP2102", "manufacturer": "Silicon Labs", "family": "CP210x",
+  "bus": "uart", "source": "curated", "confidence": 1.0,
+  "description": "Single USB 2.0 Full-Speed to UART bridge, up to 1 Mbaud",
+  "datasheet_url": "https://www.silabs.com/interface/usb-bridges/classic/device.cp2102",
+  "uart_max_baud_hz": 1000000,
+  "uart_levels": "ttl",
+  "fpga_ports": {"reset_n": true, "extra": ["RXD", "TXD", "RTS", "CTS"]},
+  "notes": [
+    "Most common USB-UART bridge for FPGA dev boards",
+    "Driverless on Linux, requires Silabs VCP driver on Win/Mac"
+  ]
+}

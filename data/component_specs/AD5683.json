@@ -1,0 +1,17 @@
+{
+  "mpn": "AD5683", "manufacturer": "Analog Devices", "family": "AD568x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "16-bit, single-channel SPI nanoDAC+, 2.7-5.5V, 50 mA buffer",
+  "datasheet_url": "https://www.analog.com/en/products/ad5683.html",
+  "spi_max_clock_hz": 50000000, "spi_mode": 1, "spi_data_width_bits": 24,
+  "dac_resolution_bits": 16,
+  "dac_max_update_rate_hz": 1000000,
+  "dac_interface": "spi",
+  "dac_n_channels": 1,
+  "fpga_ports": {"reset_n": true, "extra": ["SYNC", "LDAC"]},
+  "notes": [
+    "SPI mode 1 (CPOL=0, CPHA=1)",
+    "24-bit word: 4 command bits + 16 data bits + 4 dont-care",
+    "LDAC pin can be tied low for transparent updates"
+  ]
+}

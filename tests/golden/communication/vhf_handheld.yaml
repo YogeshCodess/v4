@@ -1,0 +1,35 @@
+# Golden scenario — Communication, VHF handheld tactical radio (136-174 MHz)
+domain: communication
+id: vhf_handheld
+
+round1_answers:
+  freq_band: "VHF 136-174 MHz"
+  radio_type: "handheld"
+  modulation: ["FM"]
+  channel_bw_khz: 12.5
+  channels: 16
+  sensitivity_dbm: -118
+  tx_power_w: 5
+  duplex: "half-duplex"
+  crypto: "Type-3"
+  ref_accuracy_ppm: "2 ppm (TCXO)"
+  temp_range: "military -40 to +71"
+  standards: [MIL-STD-461G, MIL-STD-810H, MIL-STD-188-200]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 3.119
+  total_gain_db: 37.0
+  tolerance_db: 0.5
+
+bom:
+  - {name: "LNA",   gain_db: 16.0, nf_db: 1.8, iip3_dbm: 25.0, kind: "LNA"}
+  - {name: "SAW",   gain_db: -2.0, nf_db: 2.0, kind: "filter"}
+  - {name: "Mixer", gain_db: -7.0, nf_db: 7.0, iip3_dbm: 12.0, kind: "mixer"}
+  - {name: "IF",    gain_db: 30.0, nf_db: 4.5, iip3_dbm: 15.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-461G", "RE102"]
+  - ["MIL-STD-810H", "Method 514.8"]
+  - ["MIL-STD-188-200", "Section 5"]

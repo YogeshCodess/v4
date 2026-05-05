@@ -1,0 +1,17 @@
+{
+  "mpn": "MCP23017", "manufacturer": "Microchip", "family": "MCP2301x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "16-bit I2C GPIO expander with configurable interrupt logic",
+  "datasheet_url": "https://www.microchip.com/en-us/product/MCP23017",
+  "i2c_slave_addr_7bit": 32,
+  "i2c_addr_width_bits": 8,
+  "i2c_page_size_bytes": 22,
+  "i2c_max_clock_hz":   1700000,
+  "fpga_ports": {"reset_n": true, "interrupt": true,
+                 "extra": ["INTA", "INTB", "GPA0..GPA7", "GPB0..GPB7"]},
+  "notes": [
+    "Slave addr 0x20 + (A2,A1,A0) strap pins",
+    "22 register file: IODIR, IPOL, GPINTEN, DEFVAL, INTCON, IOCON, GPPU, INTF, INTCAP, GPIO, OLAT (paired A/B)",
+    "Two independent interrupts INTA (port A) + INTB (port B)"
+  ]
+}

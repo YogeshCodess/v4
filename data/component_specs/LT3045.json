@@ -1,0 +1,12 @@
+{
+  "mpn": "LT3045", "manufacturer": "Analog Devices", "family": "LT304x",
+  "bus": "gpio", "source": "curated", "confidence": 1.0,
+  "description": "20V, 500mA, 0.8 uVrms ultra-low-noise, ultra-high-PSRR linear regulator",
+  "datasheet_url": "https://www.analog.com/en/products/lt3045.html",
+  "fpga_ports": {"reset_n": false, "extra": ["EN_UV", "PG"]},
+  "notes": [
+    "Output voltage set by external resistor on SET pin (programmable 0 - VIN-0.3V)",
+    "EN_UV pin from FPGA = enable + undervoltage lockout",
+    "PG (power-good) open-drain output to FPGA"
+  ]
+}

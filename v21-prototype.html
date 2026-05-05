@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>v21.1 Flow Prototype — Silicon to Software (S2S) P1 (RF Architect Mode)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #070b14;
+    --panel: #1a2235;
+    --panel2: #2a3a50;
+    --panel3: #1f2a42;
+    --teal: #00c6a7;
+    --teal-glow: rgba(0,198,167,0.25);
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --border: rgba(42,58,80,0.8);
+    --warning: #f59e0b;
+    --danger: #dc2626;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --amber-soft: rgba(245,158,11,0.08);
+    --teal-soft: rgba(0,198,167,0.08);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--navy); color: var(--text); font-family: 'DM Mono', monospace; font-size: 14px; min-height: 100vh; }
+  a { color: var(--teal); cursor: pointer; }
+  h1, h2, h3 { font-family: 'Syne', sans-serif; margin: 0; font-weight: 700; }
+  code, pre { font-family: 'JetBrains Mono', monospace; }
+  em { font-style: italic; color: var(--text3); }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--navy); z-index: 10; flex-wrap: wrap; gap: 10px; }
+  .brand { display: flex; flex-direction: column; gap: 2px; }
+  .brand .kicker { font-size: 10px; letter-spacing: 2px; color: var(--teal); text-transform: uppercase; }
+  .brand .logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; }
+  .brand .logo span { color: var(--teal); }
+  .brand .sub { font-size: 10px; color: var(--text3); letter-spacing: 1px; }
+
+  .stages { display: flex; gap: 0; align-items: center; flex-wrap: wrap; }
+  .stages .step { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 3px; font-size: 10px; color: var(--text3); background: transparent; border: 1px solid transparent; letter-spacing: 1px; }
+  .stages .step.active { color: var(--teal); border-color: var(--teal); background: rgba(0,198,167,0.06); box-shadow: 0 0 18px var(--teal-glow); }
+  .stages .step.done { color: var(--teal); }
+  .stages .step.done::before { content: '✓ '; }
+  .stages .sep { width: 10px; height: 1px; background: var(--border); margin: 0 2px; }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 28px 32px 80px; }
+
+  .architect-banner { border: 1px solid var(--teal); background: linear-gradient(90deg, rgba(0,198,167,0.08), rgba(0,198,167,0.02)); padding: 16px 20px; border-radius: 6px; margin-bottom: 28px; display: flex; align-items: flex-start; gap: 14px; }
+  .architect-banner .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--teal); color: var(--navy); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; flex-shrink: 0; }
+  .architect-banner .body h3 { font-size: 15px; margin-bottom: 4px; }
+  .architect-banner .body p { margin: 0; color: var(--text2); font-size: 13px; line-height: 1.6; }
+
+  .architect-note { border-left: 3px solid var(--teal); background: rgba(0,198,167,0.05); padding: 10px 14px; margin-bottom: 22px; font-size: 12px; color: var(--text2); line-height: 1.6; font-style: italic; }
+  .architect-note b { color: var(--teal); font-style: normal; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; font-size: 10px; }
+  .architect-note i { color: var(--text2); }
+
+  .chips-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .mini-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--panel); font-size: 10px; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; }
+  .mini-chip.teal { border-color: var(--teal); color: var(--teal); background: rgba(0,198,167,0.06); }
+  .mini-chip a { font-size: 9px; color: var(--text3); text-decoration: underline; }
+
+  .stage-hdr { text-align: center; margin: 8px 0 20px; }
+  .stage-hdr .step-label { font-size: 11px; color: var(--teal); letter-spacing: 2px; text-transform: uppercase; }
+  .stage-hdr h2 { font-size: 26px; margin-top: 6px; }
+  .stage-hdr p { color: var(--text2); margin-top: 10px; font-size: 13px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .card { border: 1px solid var(--border); background: var(--panel); padding: 16px 18px; border-radius: 5px; cursor: pointer; transition: all .12s; position: relative; }
+  .card:hover { border-color: var(--teal); background: var(--panel3); }
+  .card.selected { border-color: var(--teal); background: rgba(0,198,167,0.08); box-shadow: 0 0 20px var(--teal-glow); }
+  .card.disabled { opacity: 0.4; cursor: not-allowed; }
+  .card.disabled:hover { border-color: var(--border); background: var(--panel); }
+  .card h3 { font-size: 15px; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+  .card .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  .card .dot.purple { background: var(--purple); }
+  .card .dot.blue { background: var(--blue); }
+  .card .dot.warning { background: var(--warning); }
+  .card .desc { color: var(--text2); font-size: 12px; line-height: 1.5; }
+  .card .examples { margin-top: 10px; font-size: 10px; color: var(--text3); letter-spacing: 0.5px; line-height: 1.5; }
+  .card .badge { position: absolute; top: 10px; right: 10px; font-size: 9px; padding: 2px 8px; border-radius: 3px; background: var(--warning); color: var(--navy); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+  .card.recommended { border-color: var(--warning); }
+
+  .section-header { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 1px dashed var(--border); display: flex; justify-content: space-between; }
+
+  .clarify-panel { border: 1px solid var(--border); background: var(--panel); border-radius: 6px; padding: 20px 22px; }
+  .clarify-panel .hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .clarify-panel .title { font-size: 12px; color: var(--teal); letter-spacing: 2px; text-transform: uppercase; }
+  .q { margin: 16px 0; }
+  .q .qlabel { font-size: 10px; color: var(--warning); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; font-weight: 500; }
+  .q .qtext { font-size: 14px; margin-bottom: 10px; color: var(--text); }
+  .q .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { padding: 6px 11px; border: 1px solid var(--border); background: var(--panel3); border-radius: 3px; cursor: pointer; font-size: 12px; transition: all .1s; color: var(--text); }
+  .chip:hover { border-color: var(--teal); background: rgba(0,198,167,0.06); }
+  .chip.selected { border-color: var(--teal); background: rgba(0,198,167,0.12); color: var(--teal); }
+
+  .inline-suggestion { margin-top: 8px; padding: 6px 10px; background: var(--teal-soft); border-left: 2px solid var(--teal); border-radius: 2px; font-size: 11px; color: var(--text2); font-style: italic; }
+  .inline-suggestion b { color: var(--teal); font-style: normal; letter-spacing: 1px; text-transform: uppercase; font-size: 10px; }
+
+  .toggle-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--panel3); border: 1px dashed var(--border); border-radius: 4px; margin-bottom: 16px; }
+  .toggle-row input[type=checkbox] { accent-color: var(--teal); cursor: pointer; }
+  .toggle-row label { font-size: 11px; color: var(--text2); letter-spacing: 1px; cursor: pointer; }
+  .toggle-row label b { color: var(--teal); font-weight: 500; }
+
+  .actions { display: flex; justify-content: space-between; margin-top: 24px; align-items: center; gap: 12px; }
+  .btn { padding: 9px 20px; border-radius: 4px; cursor: pointer; font-size: 12px; font-family: 'DM Mono', monospace; border: 1px solid var(--border); background: transparent; color: var(--text2); transition: all .1s; letter-spacing: 1px; text-transform: uppercase; }
+  .btn:hover { border-color: var(--teal); color: var(--teal); }
+  .btn.primary { background: var(--teal); color: var(--navy); border-color: var(--teal); font-weight: 700; }
+  .btn.primary:hover { background: #00b498; color: var(--navy); }
+  .btn.primary:disabled { opacity: .35; cursor: not-allowed; }
+  .remaining { color: var(--text3); font-size: 11px; flex: 1; text-align: center; }
+
+  .diag { margin-top: 28px; border-top: 1px dashed var(--border); padding-top: 16px; }
+  .diag summary { cursor: pointer; color: var(--text3); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; padding: 6px 0; list-style: none; }
+  .diag summary::-webkit-details-marker { display: none; }
+  .diag summary::before { content: '▸ '; color: var(--teal); }
+  .diag[open] summary::before { content: '▾ '; }
+  .diag .panel { background: #0f1424; border: 1px solid var(--border); border-radius: 4px; padding: 12px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text2); line-height: 1.7; }
+  .diag .shown { color: #34d399; }
+  .diag .hidden { color: var(--text3); text-decoration: line-through; }
+  .diag .reason { color: var(--warning); font-style: italic; margin-left: 6px; }
+  .diag h4 { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--teal); margin: 10px 0 6px; letter-spacing: 1px; text-transform: uppercase; font-weight: 500; }
+
+  .summary-tbl { width: 100%; border-collapse: collapse; margin-top: 14px; }
+  .summary-tbl td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: top; }
+  .summary-tbl td:first-child { color: var(--text3); width: 48%; }
+
+  .cascade { margin-top: 20px; padding: 14px 16px; background: var(--amber-soft); border-left: 3px solid var(--warning); border-radius: 3px; font-size: 12px; color: var(--text); line-height: 1.6; }
+  .cascade .lbl { color: var(--warning); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; font-size: 10px; margin-bottom: 6px; }
+  .cascade .rule { margin-top: 6px; padding-left: 14px; text-indent: -14px; }
+  .cascade .rule.warn { color: var(--danger); }
+  .cascade .rule.ok { color: var(--text2); }
+
+  .architect-summary { margin-top: 16px; padding: 14px 16px; background: var(--teal-soft); border-left: 3px solid var(--teal); border-radius: 3px; font-size: 12px; color: var(--text); line-height: 1.6; }
+  .architect-summary .lbl { color: var(--teal); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; font-size: 10px; margin-bottom: 8px; }
+  .architect-summary .item { margin-top: 6px; padding-left: 14px; text-indent: -14px; }
+  .architect-summary .derived { color: var(--teal); }
+  .architect-summary .suggested { color: var(--warning); }
+
+  .build-tag { position: fixed; bottom: 6px; right: 14px; font-size: 9px; color: var(--text3); letter-spacing: 1px; }
+
+  .stub { text-align: center; padding: 60px 20px; color: var(--text3); }
+  .stub h2 { color: var(--text2); margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="kicker">DATA PATTERNS · CODE KNIGHTS</span>
+    <span class="logo">Hardware <span>Pipeline</span></span>
+    <span class="sub">v21.1 PROTOTYPE · RF ARCHITECT MODE</span>
+  </div>
+  <div class="stages" id="stage-bar"></div>
+</div>
+
+<div class="wrap" id="wrap"></div>
+
+<div class="build-tag">v21.1-proto · 7-stage · scope-aware · architect intelligence · 2026-04-19</div>
+
+<script>
+/* =============================================================
+   PROJECT TYPES — Step 0
+   ============================================================= */
+const PROJECT_TYPES = {
+  receiver:    { name: 'Receiver',     desc: 'Antenna → signal capture + conditioning + (optional) digitisation.',   examples: 'Receiver 5-18 GHz wideband · X-band radar RX · Ku-band SATCOM downconverter', supported: true },
+  transmitter: { name: 'Transmitter',  desc: 'Signal generation + amplification + spectral cleanup.',                examples: 'Transmitter 2-8 GHz PA chain · S-band radar TX · Ku-band uplink',             supported: false },
+  transceiver: { name: 'Transceiver',  desc: 'Combined TX + RX — shared LO / antenna.',                              examples: 'SDR TRX 70 MHz-6 GHz · 5G NR front-end · Half-duplex comms link',             supported: false },
+  power_supply:{ name: 'Power Supply', desc: 'DC-DC conversion — buck / boost / LLC / flyback topology.',            examples: 'DC-DC 24V → 5V, 10A · Dual-rail ±12V / 3A · PoE-PD 30W',                      supported: false },
+};
+
+const SCOPE_LABELS = {
+  'full':           'Full Receiver System',
+  'front-end':      'RF Front-End Only',
+  'downconversion': 'Downconversion / IF Stage',
+  'dsp':            'Baseband / DSP Only',
+};
+const SCOPE_DESC = {
+  'full':           { desc: 'Antenna → DSP. Every phase runs (P1 through P8c).',                  covers: 'RF + MIXER + ADC + FPGA + SW' },
+  'front-end':      { desc: 'LNA + pre-select filter + (optional) limiter. No mixer, ADC, FPGA.', covers: 'NF, GAIN, LINEARITY, RETURN LOSS' },
+  'downconversion': { desc: 'Mixer + LO + IF filter + optional IF amp. No ADC, no FPGA.',         covers: 'PHASE NOISE, IMAGE REJECTION, IF BW' },
+  'dsp':            { desc: 'ADC + FPGA/DSP + software. No RF, no mixer.',                        covers: 'SAMPLE RATE, ENOB, FPGA FAMILY' },
+};
+
+/* =============================================================
+   APPLICATIONS — Step 2
+   ============================================================= */
+const APPLICATIONS = [
+  { id: 'radar',    name: 'Radar',                    desc: 'Pulsed, coherent, MTI / pulse-compression · X/S/C/Ku-band',   strong_for: ['superhet_double','superhet_single','digital_if','direct_rf_sample','balanced_lna','lna_filter_limiter'] },
+  { id: 'ew',       name: 'EW / ESM / ELINT',         desc: 'Threat warning, POI, instantaneous wideband monitoring',       strong_for: ['channelized','digital_if','direct_rf_sample','crystal_video','lna_filter_limiter','multi_band_switched','balanced_lna'] },
+  { id: 'sigint',   name: 'SIGINT / COMINT',          desc: 'Channelisation, DF, wideband spectral surveillance',           strong_for: ['channelized','digital_if','direct_rf_sample','multi_band_switched','active_antenna'] },
+  { id: 'comms',    name: 'Communications',           desc: 'Demod, link-budget-driven — QAM / OFDM / QPSK',               strong_for: ['direct_conversion','low_if','superhet_single','std_lna_filter'] },
+  { id: 'satcom',   name: 'SATCOM',                   desc: 'G/T-driven, tracking receiver, Ku / Ka-band',                 strong_for: ['superhet_double','superhet_single','digital_if','active_antenna','balanced_lna'] },
+  { id: 'tnm',      name: 'Test & Measurement',       desc: 'Spectrum analyser, VSA, calibration-grade receiver',           strong_for: ['superhet_double','digital_if','direct_rf_sample','std_lna_filter'] },
+  { id: 'instr',    name: 'Lab / Instrumentation',    desc: 'Research, prototyping, characterisation',                     strong_for: ['digital_if','direct_rf_sample','std_lna_filter'] },
+  { id: 'custom',   name: 'Custom / Other',           desc: 'Tell me in free text after the flow.',                        strong_for: [] },
+];
+
+/* =============================================================
+   ARCHITECTURES — Step 3
+   Each carries `category: 'linear'|'detector'`, scopes, and
+   optional apps_required (detector-only topologies).
+   ============================================================= */
+const ALL_ARCHITECTURES = [
+  /* Front-end linear topologies */
+  { id: 'std_lna_filter',    name: 'Standard LNA + Pre-select Filter',  desc: 'Clean LNA chain with band-pass pre-select. Baseline front-end.',            scopes: ['front-end','full'], category: 'linear' },
+  { id: 'balanced_lna',      name: 'Balanced LNA (quad-hybrid)',        desc: 'Two matched LNAs via 90° hybrids — higher IIP3, better input VSWR.',        scopes: ['front-end','full'], category: 'linear' },
+  { id: 'lna_filter_limiter',name: 'LNA + Filter + Limiter',            desc: 'Protected front-end — PIN-diode limiter for +40 dBm survivability.',        scopes: ['front-end','full'], category: 'linear' },
+  { id: 'active_antenna',    name: 'Active Antenna / Integrated LNA',   desc: 'LNA co-located with antenna feed. Best NF, harder to service.',            scopes: ['front-end','full'], category: 'linear' },
+  { id: 'multi_band_switched', name: 'Multi-band Switched Front-End',   desc: 'Band-select switch → per-band LNA+filter. Octave-plus coverage.',          scopes: ['front-end','full'], category: 'linear' },
+
+  /* Downconversion */
+  { id: 'superhet_single',   name: 'Single-IF Superheterodyne',         desc: 'One LO + one mixer. Classical comms / radar.',                             scopes: ['downconversion','full'], category: 'linear' },
+  { id: 'superhet_double',   name: 'Double-IF Superheterodyne',         desc: 'Two LOs — best image rejection + selectivity.',                            scopes: ['downconversion','full'], category: 'linear' },
+  { id: 'direct_conversion', name: 'Direct Conversion (Zero-IF / Homodyne)', desc: 'RF → I/Q baseband. No IF. Compact, integrated.',                     scopes: ['downconversion','full'], category: 'linear' },
+  { id: 'low_if',            name: 'Low-IF Receiver',                   desc: 'IF near DC — avoids DC-offset while staying compact.',                    scopes: ['downconversion','full'], category: 'linear' },
+  { id: 'image_reject',      name: 'Image-Reject (Hartley / Weaver)',   desc: 'Quadrature mixing cancels image band without filter.',                    scopes: ['downconversion','full'], category: 'linear' },
+
+  /* DSP / digital */
+  { id: 'direct_rf_sample',  name: 'Direct RF Sampling',                desc: 'RF → ADC directly. No analog mixer. SDR-native.',                         scopes: ['dsp','full'], category: 'linear' },
+  { id: 'subsampling',       name: 'Subsampling / Undersampling',       desc: 'Higher Nyquist zone — needs clean clock + BP filter.',                    scopes: ['dsp','full'], category: 'linear' },
+  { id: 'digital_if',        name: 'Digital IF / SDR',                  desc: 'Analog IF → ADC → FPGA DDC. Most flexible.',                              scopes: ['dsp','full'], category: 'linear' },
+  { id: 'channelized',       name: 'Channelised (polyphase FFT)',       desc: 'Parallel filter bank — SIGINT / EW simultaneous monitoring.',             scopes: ['dsp','full'], category: 'linear' },
+
+  /* Special-purpose detector topologies — gated by application */
+  { id: 'crystal_video',     name: 'Crystal Video Detector',            desc: 'Schottky-diode power detector. No LO, non-coherent. RWR-class.',           scopes: ['front-end','full'], category: 'detector', apps_required: ['ew','radar'] },
+  { id: 'log_video',         name: 'Log-Video Detector',                desc: 'Log-amp detector — wide instantaneous dynamic range, no phase info.',     scopes: ['front-end','full'], category: 'detector', apps_required: ['ew'] },
+
+  { id: 'recommend',         name: 'Not sure — you recommend',          desc: 'Architect picks based on your specs + application.',                       scopes: ['front-end','downconversion','dsp','full'], category: 'linear' },
+];
+
+/* =============================================================
+   TIER-1 SPECS — Step 4
+   - Sensitivity removed (derived; optional advanced lock)
+   - SFDR removed from front-end
+   - P1dB moved out of front-end (IIP3 dominates)
+   - Gain label varies per scope via q_override
+   - Environmental specs added
+   ============================================================= */
+const ALL_SPECS = [
+  { id: 'freq_range',      q: 'Frequency range / band of operation?',         drives: 'LNA + filter topology',        chips: ['< 2 GHz','2-6 GHz','6-18 GHz','18-40 GHz','Other'],           scopes: ['full','front-end','downconversion'] },
+  { id: 'ibw',             q: 'Instantaneous bandwidth (IBW)?',                drives: 'Filter + IF + ADC planning',    chips: ['< 10 MHz','10-100 MHz','100-500 MHz','500 MHz - 1 GHz','> 1 GHz','Other'], scopes: ['full','front-end','downconversion','dsp'] },
+  { id: 'noise_figure',    q: 'Target system noise figure (dB)?',              drives: 'LNA + cascade sensitivity',    chips: ['< 2 dB','2-4 dB','4-6 dB','6-10 dB','Other'],                 scopes: ['full','front-end','downconversion'] },
+  { id: 'gain',            q: 'Total system gain (dB)?', q_override: { 'front-end': 'LNA chain gain (dB)?', 'downconversion': 'RF + IF gain (dB)?' }, drives: 'Cascade gain plan', chips: ['< 20 dB','20-40 dB','40-60 dB','> 60 dB','Auto','Other'], scopes: ['full','front-end','downconversion'] },
+  { id: 'selectivity',     q: 'Selectivity / adjacent-channel rejection (dBc)?', drives: 'IF filter + image-reject topology', chips: ['40 dBc','60 dBc','80 dBc','> 100 dBc','Other'],           scopes: ['full','downconversion'] },
+  { id: 'sfdr',            q: 'SFDR (two-tone, IIP3-driven) in dB?',           drives: 'IIP3 + ADC SFDR',              chips: ['60 dB','70 dB','80 dB','> 90 dB','Other'],                    scopes: ['full','downconversion','dsp'] },
+  { id: 'iip3',            q: 'IIP3 / linearity (dBm)?',                       drives: 'Active-device linearity',      chips: ['0 dBm','+10 dBm','+20 dBm','+30 dBm','Other'],                scopes: ['full','front-end','downconversion'] },
+  { id: 'p1db',            q: 'Output P1dB (dBm)?',                             drives: 'PA / driver-amp backoff',      chips: ['0 dBm','+10 dBm','+20 dBm','+30 dBm','Other'],                scopes: ['full','downconversion'] },
+  { id: 'max_input',       q: 'Max safe input / survivability (dBm)?',         drives: 'Limiter / protection',         chips: ['+10 dBm','+20 dBm','+30 dBm','+40 dBm','+50 dBm','Other'],    scopes: ['full','front-end'] },
+  { id: 'return_loss',     q: 'Input return loss / VSWR?',                     drives: 'Match networks',               chips: ['-10 dB (2:1)','-14 dB (1.5:1)','-20 dB (1.2:1)','Other'],     scopes: ['full','front-end'] },
+  { id: 'power_budget',    q: 'Total power consumption budget (W)?',           drives: 'Regulator + DC-DC topology',   chips: ['< 5 W','5-15 W','15-30 W','> 30 W','Auto','Other'],           scopes: ['full','front-end','downconversion','dsp'] },
+  { id: 'supply_voltage',  q: 'Primary supply voltage rail?',                  drives: 'Regulator + active-device',    chips: ['+5 V','+12 V','+15 V','+28 V','Multi-rail','Auto','Other'],   scopes: ['full','front-end','downconversion','dsp'] },
+  /* Environmental — new */
+  { id: 'temp_class',      q: 'Operating temperature class?',                  drives: 'Component grade + thermals',   chips: ['Commercial 0 to 70 °C','Industrial -40 to 85 °C','Military -55 to 125 °C','Space / rad-hard','Other'], scopes: ['full','front-end','downconversion','dsp'] },
+  { id: 'vibration',       q: 'Vibration / shock environment?',                drives: 'Enclosure + connector',        chips: ['Benign (lab)','MIL-STD-810 light','MIL-STD-810 heavy','Airborne','Naval','Other'], scopes: ['full','front-end','downconversion','dsp'] },
+  { id: 'ip_rating',       q: 'Ingress protection?',                           drives: 'Seal + housing',               chips: ['IP20 (lab)','IP54 (outdoor)','IP67 (rugged)','IP68','N/A'],   scopes: ['full','front-end','downconversion','dsp'] },
+  /* MDS — only shown when advanced lock is enabled */
+  { id: 'mds_lock',        q: 'Locked MDS / sensitivity (dBm)?',               drives: 'Constraint that overrides derived value', chips: ['-90 dBm','-100 dBm','-110 dBm','-120 dBm','-130 dBm','Other'], scopes: ['full','front-end','downconversion'], advanced: true },
+];
+
+/* =============================================================
+   STEP 5 — DEEP DIVES (scope × architecture × application)
+   Each question has optional: show_if(state) for conditional inclusion.
+   ============================================================= */
+const DEEP_DIVES = {
+  'front-end': {
+    title: 'RF Front-End deep-dive',
+    note: 'Front-end sets the noise floor AND the survivability envelope. Interferer environment usually decides LNA topology + limiter.',
+    qs: [
+      { id: 'interferer_env', q: 'Strong-interferer / blocker environment?',  chips: ['Low (lab / benign)','Moderate (commercial comms)','High (co-site radar / comms)','Severe (EW / close-in jam)'] },
+      { id: 'parent_arch',    q: 'What receiver will your front-end feed?',   chips: ['Superheterodyne','Direct Conversion (homodyne)','Direct RF Sampling / SDR','Digital IF','Unknown — design agnostic'] },
+      { id: 'n_channels',     q: 'Number of parallel RF channels?',           chips: ['1','2','4','8','16','Other'] },
+      { id: 'antenna_if',     q: 'Antenna interface?',                         chips: ['Single-ended 50Ω','Differential 100Ω','Balun-coupled','Active antenna w/ bias-tee','Other'] },
+      { id: 'connector',      q: 'RF connector type?',                         chips: ['SMA','SMP','2.92mm','N-type','K-connector','Other'] },
+      { id: 'lna_tech',       q: 'LNA semiconductor technology?',              chips: ['GaAs pHEMT','GaN HEMT','SiGe BiCMOS','CMOS','Auto-pick'] },
+      { id: 'filter_tech',    q: 'Pre-select filter technology?',              chips: ['Cavity','SAW','LC discrete','Ceramic','Dielectric resonator','Tunable YIG','Auto'] },
+      { id: 'bias_scheme',    q: 'LNA biasing scheme?',                        chips: ['Self-bias','Active bias','Sequenced (neg-then-pos)','Auto'] },
+      /* Radar-conditional */
+      { id: 'tr_switch',      q: 'T/R switching time?',                        chips: ['< 100 ns','< 1 µs','< 10 µs','No T/R switch (separate antennas)'], show_if: s => s.application === 'radar' },
+      { id: 'tx_leakage',     q: 'Expected TX leakage at LNA input (dBm)?',    chips: ['< 0 dBm','0 - +10 dBm','+10 - +20 dBm','> +20 dBm'],                show_if: s => s.application === 'radar' && s.details?.tr_switch && s.details.tr_switch !== 'No T/R switch (separate antennas)' },
+    ],
+  },
+  'downconversion': {
+    title: 'Downconversion / IF-stage deep-dive',
+    note: 'These choices determine phase-noise floor, image-rejection ceiling, and tuning agility.',
+    qs: [
+      { id: 'parent_arch',    q: 'What digitiser / backend will your IF feed?', chips: ['IF-sampling ADC','Zero-IF I/Q ADC pair','External SDR','Analog demod only','Unknown — design agnostic'] },
+      { id: 'n_channels',     q: 'Number of simultaneous LO/mixer channels?',   chips: ['1','2','4','8','Other'] },
+      { id: 'lo_source',      q: 'LO source / reference?',                      chips: ['TCXO + integer PLL','TCXO + fractional-N PLL','OCXO + PLL','DDS + PLL','External 10 MHz ref','GPS-disciplined','Other'] },
+      { id: 'if_freq',        q: 'IF centre frequency?',                        chips: ['70 MHz','140 MHz','500 MHz','1 GHz','Other'] },
+      /* Double-IF conditional */
+      { id: 'if1_freq',       q: '1st IF centre frequency?',                   chips: ['1 GHz','1.5 GHz','2 GHz','3 GHz','Other'], show_if: s => s.architecture === 'superhet_double' },
+      { id: 'if2_freq',       q: '2nd IF centre frequency?',                   chips: ['70 MHz','140 MHz','455 kHz','Other'],      show_if: s => s.architecture === 'superhet_double' },
+      /* Image-reject conditional */
+      { id: 'ir_topology',    q: 'Image-reject topology?',                      chips: ['Hartley','Weaver','Polyphase filter','Auto'], show_if: s => s.architecture === 'image_reject' },
+      /* Zero-IF conditional */
+      { id: 'iq_balance',     q: 'Required I/Q balance tolerance?',             chips: ['< 0.1 dB / 0.5°','< 0.5 dB / 2°','< 1 dB / 5°','Auto'], show_if: s => s.architecture === 'direct_conversion' },
+      { id: 'baseband_bw',    q: 'Baseband filter bandwidth?',                  chips: ['< 10 MHz','10-100 MHz','> 100 MHz'], show_if: s => s.architecture === 'direct_conversion' || s.architecture === 'low_if' },
+      { id: 'if_filter',      q: 'IF filter technology?',                       chips: ['SAW','Crystal','LC discrete','Ceramic','Digital','Auto'] },
+      { id: 'phase_noise',    q: 'LO phase noise @ 10 kHz offset (dBc/Hz)?',    chips: ['-90 (TCXO)','-100 (TCXO+PLL)','-110 (low-noise PLL)','-120 (OCXO+PLL)','-130 (high-Q OCXO)','-140 (ruby / premium OCXO)','Auto'] },
+      { id: 'tuning_speed',   q: 'Tuning / channel-switch time?',               chips: ['< 1 µs','1-10 µs','10-100 µs','> 100 µs','Other'] },
+      { id: 'image_rej',      q: 'Image rejection target (dB)?',                chips: ['30 dB','50 dB','70 dB','> 80 dB','Other'] },
+    ],
+  },
+  'dsp': {
+    title: 'Baseband / DSP deep-dive',
+    note: 'Clock quality, ENOB, and DSP fabric determine dynamic range and real-time capability. For subsampling, aperture jitter is critical.',
+    qs: [
+      { id: 'parent_arch',    q: 'Upstream RF block feeding your digitiser?',   chips: ['Superheterodyne (analog IF)','Direct RF (no mixer)','Direct Conversion (I/Q baseband)','Channelised front-end','Unknown — design agnostic'] },
+      { id: 'n_channels',     q: 'Number of DDC / channelisation channels?',    chips: ['1','2','4','8','16','32','64','Other'] },
+      { id: 'sample_rate',    q: 'ADC sample rate?',                             chips: ['65 Msps','125 Msps','250 Msps','500 Msps','1 Gsps','> 3 Gsps','Other'] },
+      { id: 'adc_enob',       q: 'ADC ENOB / resolution?',                       chips: ['10-bit','12-bit','14-bit','16-bit','Other'] },
+      { id: 'adc_sfdr',       q: 'ADC SFDR requirement?',                        chips: ['60 dBc','70 dBc','80 dBc','> 90 dBc','Other'] },
+      { id: 'clock_jitter',   q: 'Clock aperture jitter budget (fs rms)?',      chips: ['< 50 fs (subsampling-grade)','< 100 fs','< 250 fs','< 500 fs','< 1 ps','Auto'] },
+      /* Subsampling-conditional */
+      { id: 'nyquist_zone',   q: 'Target Nyquist zone?',                         chips: ['1st (fs/2)','2nd','3rd','4th','Other'], show_if: s => s.architecture === 'subsampling' },
+      { id: 'bp_filter_q',    q: 'Band-pass anti-alias filter Q?',               chips: ['Low Q (LC)','Medium (ceramic)','High (SAW)','Cavity'], show_if: s => s.architecture === 'subsampling' },
+      { id: 'fpga_family',    q: 'Target FPGA / SoC family?',                    chips: ['Artix-7','Kintex-7','Zynq-7000','Zynq UltraScale+','Versal','Intel Agilex','Other'] },
+      { id: 'data_iface',     q: 'Data output interface?',                       chips: ['JESD204B','JESD204C','LVDS','PCIe Gen3','10G Ethernet / VITA49','Other'] },
+    ],
+  },
+  'full': {
+    title: 'Full-Receiver deep-dive',
+    note: 'End-to-end chain — subset of each block\'s critical params so the BOM is complete.',
+    qs: [
+      { id: 'interferer_env', q: 'Strong-interferer / blocker environment?',    chips: ['Low','Moderate','High','Severe'] },
+      { id: 'n_channels',     q: 'Number of RF channels end-to-end?',           chips: ['1','2','4','8','16','Other'] },
+      { id: 'lna_tech',       q: 'LNA technology?',                              chips: ['GaAs pHEMT','GaN HEMT','SiGe','Auto'] },
+      { id: 'lo_source',      q: 'LO source?',                                   chips: ['TCXO + PLL','OCXO + PLL','DDS','External ref','Auto'] },
+      { id: 'phase_noise',    q: 'LO phase noise @ 10 kHz (dBc/Hz)?',           chips: ['-100','-110','-120','-130','-140','Auto'] },
+      { id: 'sample_rate',    q: 'ADC sample rate (Msps)?',                     chips: ['125','250','500','> 1 Gsps','Auto'] },
+      { id: 'adc_enob',       q: 'ADC ENOB (bits)?',                             chips: ['12-bit','14-bit','16-bit','Auto'] },
+      { id: 'clock_jitter',   q: 'Clock jitter (fs rms)?',                       chips: ['< 100','< 250','< 500','< 1 ps','Auto'] },
+      { id: 'fpga_family',    q: 'FPGA / SoC?',                                  chips: ['Zynq UltraScale+','Versal','Kintex-7','Auto'] },
+      { id: 'data_iface',     q: 'Data output interface?',                      chips: ['JESD204B/C','LVDS','10GbE / VITA49','Auto'] },
+      { id: 'tr_switch',      q: 'T/R switching time?',                         chips: ['< 100 ns','< 1 µs','< 10 µs','N/A (separate antennas)'], show_if: s => s.application === 'radar' },
+    ],
+  },
+};
+
+/* =============================================================
+   APPLICATION ADDENDUMS — scope-aware
+   shape: { app: { questions: [{ id, q, chips, scopes: [...] }] } }
+   ============================================================= */
+const APP_QUESTIONS = {
+  radar: {
+    questions: [
+      { id: 'pulse_width',     q: 'Pulse width range?',                 chips: ['< 100 ns','100 ns - 1 µs','1-10 µs','> 10 µs','CW / LFM','Other'], scopes: ['full','front-end','downconversion','dsp'] },
+      { id: 'pri',             q: 'PRI / PRF range?',                   chips: ['Fixed','Staggered','Agile / jittered','MTI-compatible'],           scopes: ['full','downconversion','dsp'] },
+      { id: 'coherent',        q: 'Coherent processing?',               chips: ['Yes — phase-coherent','No — non-coherent'],                         scopes: ['full','downconversion','dsp'] },
+      { id: 'range_res',       q: 'Range resolution target?',           chips: ['< 1 m','1-10 m','10-100 m','> 100 m'],                              scopes: ['full','dsp'] },
+    ],
+  },
+  ew: {
+    questions: [
+      { id: 'poi',             q: 'Probability of intercept target?',   chips: ['> 90% @ 100 µs','> 99% @ 1 ms','Auto'],                             scopes: ['full','downconversion'] },  /* PHY-level — not FE */
+      { id: 'df_accuracy',     q: 'Direction-finding accuracy?',        chips: ['< 1° RMS','1-5°','5-15°','N/A — no DF'],                           scopes: ['full','downconversion','dsp'] },
+      { id: 'simult_signals',  q: 'Simultaneous signal handling?',       chips: ['1','2-4','5-16','> 16'],                                           scopes: ['full','front-end','downconversion'] }, /* linearity — FE keeps */
+      { id: 'threat_bands',    q: 'Threat band coverage?',               chips: ['Single band','Multi-band (octave)','Full 0.5-18 GHz','Custom'],    scopes: ['full','front-end','downconversion'] },
+    ],
+  },
+  sigint: {
+    questions: [
+      { id: 'chan_bw',         q: 'Per-channel bandwidth?',             chips: ['< 1 MHz','1-10 MHz','> 10 MHz'],                                    scopes: ['full','dsp'] },
+      { id: 'df',              q: 'DF capability?',                     chips: ['Yes','No'],                                                         scopes: ['full','downconversion','dsp'] },
+      { id: 'dwell_time',      q: 'Minimum dwell time?',                chips: ['< 1 ms','1-10 ms','> 10 ms'],                                       scopes: ['full','dsp'] },
+    ],
+  },
+  comms: {
+    questions: [
+      { id: 'modulation',      q: 'Modulation type?',                    chips: ['BPSK/QPSK','QAM-16/64/256','OFDM','FM/AM','Custom'],               scopes: ['full','dsp'] },
+      { id: 'demod',           q: 'Demod location?',                     chips: ['Analog','DSP/FPGA','Host CPU'],                                     scopes: ['full','dsp'] },
+      { id: 'channel_sep',     q: 'Adjacent channel separation?',        chips: ['< 50 kHz','50-500 kHz','> 500 kHz','Custom'],                       scopes: ['full','downconversion'] },
+    ],
+  },
+  satcom: {
+    questions: [
+      { id: 'gt_target',       q: 'G/T target (dB/K)?',                 chips: ['< 10','10-20','20-30','> 30'],                                      scopes: ['full','front-end'] },
+      { id: 'tracking',        q: 'Tracking method?',                    chips: ['Step-track','Monopulse','Auto-track','None'],                       scopes: ['full','front-end'] },
+    ],
+  },
+  tnm:    { questions: [] },
+  instr:  { questions: [] },
+  custom: { questions: [] },
+};
+
+/* =============================================================
+   AUTO-SUGGESTIONS — deterministic architect hints
+   Keyed by question id; value-keyed text. Triggered as inline notes.
+   ============================================================= */
+const AUTO_SUGGESTIONS = {
+  interferer_env: {
+    'Severe (EW / close-in jam)':      'IIP3 > +20 dBm + PIN-diode limiter strongly recommended. Consider balanced LNA for extra margin.',
+    'High (co-site radar / comms)':    'IIP3 ≥ +15 dBm, limiter optional. Balanced LNA helps input VSWR under co-site conditions.',
+    'Moderate (commercial comms)':     'IIP3 around +5 to +10 dBm typical. Standard LNA + filter usually sufficient.',
+    'Low (lab / benign)':              'IIP3 can be relaxed — pick lowest-NF LNA that meets gain target.',
+  },
+  noise_figure: {
+    '< 2 dB':                          'At NF < 2 dB across 6-18 GHz, GaAs pHEMT (~1 dB NF) or GaN HEMT (higher power) are the realistic choices.',
+    '2-4 dB':                          'Standard GaAs pHEMT or SiGe BiCMOS covers this comfortably.',
+  },
+  simult_signals: {
+    '> 16':                            'Plan IIP3 > +20 dBm and consider channelised architecture — single linear path will compress.',
+    '5-16':                            'IIP3 > +15 dBm recommended; evaluate balanced LNA topology.',
+  },
+  max_input: {
+    '+40 dBm':                         'Use PIN-diode limiter ahead of LNA. Recovery time < 100 ns if pulsed environment.',
+    '+50 dBm':                         'Co-site grade — circulator + limiter combination; consider T/R switch with high isolation.',
+  },
+  sample_rate: {
+    '> 3 Gsps':                        'Direct RF sampling territory — clock aperture jitter must be < 100 fs for 60 dB SNR at 6 GHz.',
+  },
+  adc_enob: {
+    '16-bit':                          '16-bit ENOB at > 250 Msps drives LVDS → JESD204C. Watch power dissipation.',
+  },
+  tr_switch: {
+    '< 100 ns':                        'Fast T/R → solid-state PIN switch. Verify isolation > 60 dB to protect LNA.',
+  },
+};
+
+/* =============================================================
+   CASCADE RULES — deterministic architect sanity checks
+   ============================================================= */
+const CASCADE_RULES = [
+  {
+    id: 'friis_cascade',
+    fires: s => s.specs.noise_figure,
+    msg: s => {
+      const nf = s.specs.noise_figure;
+      if (nf === '< 2 dB') return `Target system NF < 2 dB → LNA must have NF ≤ 1 dB with gain ≥ 15 dB so Friis makes following stages negligible.`;
+      if (nf === '2-4 dB') return `Target NF ${nf} → LNA NF ≤ 2 dB with gain ≥ 12 dB keeps system NF within budget.`;
+      return null;
+    },
+  },
+  {
+    id: 'gain_stability',
+    fires: s => s.specs.gain === '> 60 dB',
+    msg: () => `Gain > 60 dB: **stability risk** from supply/ground/EM coupling. Mitigations → separate shielded cavities per stage, isolated + decoupled supply rails (LC/ferrite), buffer amp between major blocks, reversed input/output orientation. AGC does NOT prevent oscillation — it only manages dynamic range.`,
+    level: 'warn',
+  },
+  {
+    id: 'freq_plan_image',
+    // Superhet-double answers via if1_freq (the first IF is where the image
+    // lives — 2nd IF is already well-filtered by the 1st). Single-IF uses if_freq.
+    fires: s => (s.architecture === 'superhet_single' || s.architecture === 'superhet_double')
+      && s.specs.freq_range
+      && (s.details.if_freq || s.details.if1_freq),
+    msg: s => {
+      const ifVal = s.details.if1_freq || s.details.if_freq;
+      return `Frequency-plan check: with RF ${s.specs.freq_range} and ${s.architecture === 'superhet_double' ? '1st IF' : 'IF'} ${ifVal}, image falls at RF ± 2·IF. Verify your pre-select filter attenuates this by ≥ selectivity target.`;
+    },
+  },
+  {
+    id: 'subsampling_filter',
+    fires: s => s.architecture === 'subsampling',
+    msg: () => `Subsampling requires a **band-pass anti-alias filter** centred on the target Nyquist zone — not a low-pass. Stopband attenuation ≥ desired SFDR. Aperture jitter σ_j × 2π × f_RF sets the ultimate SNR floor.`,
+    level: 'warn',
+  },
+  {
+    id: 'direct_rf_clock',
+    fires: s => s.architecture === 'direct_rf_sample' && s.details.adc_enob,
+    msg: s => `Direct RF sampling at ${s.details.adc_enob}: clock aperture jitter < 100 fs RMS needed to preserve SNR above 60 dB at RF > 3 GHz.`,
+  },
+  {
+    id: 'zero_if_offset',
+    fires: s => s.architecture === 'direct_conversion',
+    msg: () => `Zero-IF watch-list: DC-offset correction loop, I/Q balance < 0.5 dB / 2°, flicker noise corner below IBW lower edge. Baseband HPF eats DC-adjacent signal content.`,
+  },
+  {
+    id: 'bw_vs_adc',
+    fires: s => s.details.sample_rate && s.specs.ibw,
+    msg: s => {
+      // Normalise every chip (both Full-scope and DSP-scope) to Hz so the
+      // Nyquist comparison is unit-safe.
+      const srHzMap = {
+        '65 Msps': 65e6, '125 Msps': 125e6, '250 Msps': 250e6, '500 Msps': 500e6,
+        '1 Gsps': 1e9, '> 3 Gsps': 3e9,
+        '125': 125e6, '250': 250e6, '500': 500e6, '> 1 Gsps': 1.5e9,
+      };
+      const ibwHzMap = {
+        '< 10 MHz': 10e6, '10-100 MHz': 100e6, '100-500 MHz': 500e6,
+        '500 MHz - 1 GHz': 1e9, '> 1 GHz': 2e9,
+      };
+      const srHz = srHzMap[s.details.sample_rate];
+      const ibwHz = ibwHzMap[s.specs.ibw];
+      if (!srHz || !ibwHz) return null;
+      // Need sample-rate ≥ 2.5× the fastest tone the user cares about.
+      if (srHz < 2.5 * ibwHz) {
+        return `IBW ${s.specs.ibw} with ADC ${s.details.sample_rate} → Nyquist aliasing risk. Need ≥ 2.5× the highest in-band tone. Consider direct-RF-sample or channelised.`;
+      }
+      return null;
+    },
+    level: 'warn',
+  },
+  {
+    id: 'radar_arch_fit',
+    // Coherency is owned by the downconversion / DSP chain — not by the
+    // front-end. Only flag when the user is actually scoped to those layers.
+    fires: s => ['downconversion','full'].includes(s.scope)
+      && s.application === 'radar'
+      && s.architecture
+      && !['superhet_double','superhet_single','direct_rf_sample','digital_if'].includes(s.architecture),
+    msg: s => `⚠  Radar + ${archById(s.architecture)?.name}: phase-coherent processing may be compromised. Verify MTI / Doppler chain compatibility.`,
+    level: 'warn',
+  },
+  {
+    id: 'ew_arch_fit',
+    fires: s => s.application === 'ew' && ['direct_conversion','low_if'].includes(s.architecture),
+    msg: () => `⚠  EW + direct-conversion / low-IF: POI and simultaneous-signal handling suffer. Consider channelised or digital-IF.`,
+    level: 'warn',
+  },
+];
+
+/* =============================================================
+   STATE
+   ============================================================= */
+const state = {
+  stage: 0,
+  projectType: null,
+  scope: null,
+  application: null,
+  architecture: null,
+  detectorMode: null,      // 'linear' | 'detector' | null (pre-Stage 3)
+  specs: {},
+  details: {},
+  appAnswers: {},
+  mdsLockEnabled: false,   // toggles the mds_lock question in Tier-1
+};
+
+/* =============================================================
+   HELPERS
+   ============================================================= */
+function archById(id) { return ALL_ARCHITECTURES.find(a => a.id === id); }
+
+function specLabel(c) {
+  return c.q_override?.[state.scope] || c.q;
+}
+
+function filterSpecsByScope(scope) {
+  const shown = ALL_SPECS.filter(c => {
+    if (!c.scopes.includes(scope)) return false;
+    if (c.advanced && !state.mdsLockEnabled) return false;
+    return true;
+  });
+  const hidden = ALL_SPECS.filter(c => {
+    if (c.advanced) return false;
+    return !c.scopes.includes(scope);
+  });
+  return { shown, hidden };
+}
+
+function detectorsAvailable(scope, appId) {
+  return ALL_ARCHITECTURES.some(a => a.category === 'detector'
+    && a.scopes.includes(scope)
+    && (!a.apps_required || a.apps_required.includes(appId)));
+}
+
+function filterArchByScopeAndApp(scope, appId) {
+  const linear = ALL_ARCHITECTURES.filter(a => a.category === 'linear' && a.scopes.includes(scope));
+  const detector = ALL_ARCHITECTURES.filter(a => a.category === 'detector'
+    && a.scopes.includes(scope)
+    && (!a.apps_required || a.apps_required.includes(appId)));
+  const hidden = ALL_ARCHITECTURES.filter(a => !a.scopes.includes(scope));
+  const app = APPLICATIONS.find(a => a.id === appId);
+  const strong = app ? app.strong_for : [];
+  const sortFn = (a, b) => {
+    const ak = strong.indexOf(a.id) === -1 ? 99 : strong.indexOf(a.id);
+    const bk = strong.indexOf(b.id) === -1 ? 99 : strong.indexOf(b.id);
+    return ak - bk;
+  };
+  return { linear: linear.slice().sort(sortFn), detector: detector.slice().sort(sortFn), hidden, strong };
+}
+
+function resolveDeepDiveQs() {
+  const dive = DEEP_DIVES[state.scope];
+  if (!dive) return { dive: null, qs: [] };
+  const qs = dive.qs.filter(q => !q.show_if || q.show_if(state));
+  return { dive, qs };
+}
+
+function resolveAppQs() {
+  const a = APP_QUESTIONS[state.application];
+  if (!a) return [];
+  return a.questions.filter(q => q.scopes.includes(state.scope));
+}
+
+function allInlineSuggestions() {
+  const out = [];
+  const scan = (bucket, q) => {
+    const v = state[bucket][q.id];
+    const m = AUTO_SUGGESTIONS[q.id]?.[v];
+    if (m) out.push({ qid: q.id, value: v, msg: m });
+  };
+  const { shown } = filterSpecsByScope(state.scope);
+  shown.forEach(q => scan('specs', q));
+  const { qs } = resolveDeepDiveQs();
+  qs.forEach(q => scan('details', q));
+  resolveAppQs().forEach(q => scan('appAnswers', q));
+  return out;
+}
+
+function derivedMDS() {
+  const nf = state.specs.noise_figure;
+  const ibw = state.specs.ibw;
+  if (!nf || !ibw) return null;
+  const nfMap = { '< 2 dB': 1.5, '2-4 dB': 3, '4-6 dB': 5, '6-10 dB': 8 };
+  const bwMap = { '< 10 MHz': 5e6, '10-100 MHz': 50e6, '100-500 MHz': 300e6, '500 MHz - 1 GHz': 750e6, '> 1 GHz': 2e9 };
+  const nfDb = nfMap[nf]; const bwHz = bwMap[ibw];
+  if (nfDb === undefined || bwHz === undefined) return null;
+  const mds = -174 + 10 * Math.log10(bwHz) + nfDb;
+  return mds.toFixed(1);
+}
+
+/* =============================================================
+   STAGE BAR + TOP CHIPS
+   ============================================================= */
+function renderStageBar() {
+  const bar = document.getElementById('stage-bar');
+  const steps = [
+    { n: 0, label: 'TYPE' }, { n: 1, label: 'SCOPE' }, { n: 2, label: 'APP' },
+    { n: 3, label: 'ARCH' }, { n: 4, label: 'SPECS' }, { n: 5, label: 'DETAILS' }, { n: 6, label: 'CONFIRM' },
+  ];
+  bar.innerHTML = '';
+  steps.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'step' + (state.stage === s.n ? ' active' : '') + (state.stage > s.n ? ' done' : '');
+    el.textContent = `${s.n}· ${s.label}`;
+    bar.appendChild(el);
+    if (i < steps.length - 1) { const sep = document.createElement('div'); sep.className = 'sep'; bar.appendChild(sep); }
+  });
+}
+
+function chipsRowHTML() {
+  const bits = [];
+  if (state.projectType) bits.push(`<span class="mini-chip teal">TYPE: ${PROJECT_TYPES[state.projectType].name} <a onclick="gotoStage(0)">change</a></span>`);
+  if (state.scope)       bits.push(`<span class="mini-chip teal">SCOPE: ${SCOPE_LABELS[state.scope]} <a onclick="gotoStage(1)">change</a></span>`);
+  if (state.application) {
+    const app = APPLICATIONS.find(a => a.id === state.application);
+    bits.push(`<span class="mini-chip teal">APP: ${app?.name} <a onclick="gotoStage(2)">change</a></span>`);
+  }
+  if (state.architecture) {
+    const a = archById(state.architecture);
+    bits.push(`<span class="mini-chip teal">ARCH: ${a?.name} <a onclick="gotoStage(3)">change</a></span>`);
+  }
+  if (!bits.length) return '';
+  return `<div class="chips-row">${bits.join('')}</div>`;
+}
+
+function architectNote(body) {
+  return `<div class="architect-note"><b>Architect</b> · ${body}</div>`;
+}
+
+/* =============================================================
+   STAGE 0 — project type
+   ============================================================= */
+function renderStage0() {
+  const wrap = document.getElementById('wrap');
+  wrap.innerHTML = `
+    <div class="architect-banner">
+      <div class="avatar">RF</div>
+      <div class="body">
+        <h3>Hello — I'm your RF systems architect.</h3>
+        <p>I'll walk you through 7 gated decisions before we touch component selection.
+        Each decision narrows the design space so the pipeline doesn't hallucinate specs or parts. Inline architect notes explain the *why* at every step.</p>
+      </div>
+    </div>
+    <div class="stage-hdr">
+      <div class="step-label">STEP 0 · PROJECT TYPE</div>
+      <h2>What are we building?</h2>
+    </div>
+    <div class="grid-2">
+      ${Object.entries(PROJECT_TYPES).map(([key, t]) => {
+        const active = state.projectType === key ? 'selected' : '';
+        const disabled = !t.supported ? 'disabled' : '';
+        const badge = !t.supported ? '<div class="badge">soon</div>' : '';
+        const handler = t.supported ? `onclick="pickProjectType('${key}')"` : '';
+        return `
+          <div class="card ${active} ${disabled}" ${handler}>
+            ${badge}
+            <h3><span class="dot"></span>${t.name}</h3>
+            <div class="desc">${t.desc}</div>
+            <div class="examples">e.g. ${t.examples}</div>
+          </div>`;
+      }).join('')}
+    </div>
+    <div class="actions" style="justify-content:flex-end;">
+      <button class="btn primary" onclick="gotoStage(1)" ${state.projectType ? '' : 'disabled'}>Continue →</button>
+    </div>
+  `;
+}
+
+/* =============================================================
+   STAGE 1 — scope
+   ============================================================= */
+function renderStage1() {
+  if (state.projectType !== 'receiver') {
+    document.getElementById('wrap').innerHTML = `
+      <div class="stub">
+        <h2>${PROJECT_TYPES[state.projectType]?.name} flow — not implemented in prototype</h2>
+        <p>Switch back to Receiver to walk the full 7-stage demo.</p>
+        <button class="btn" onclick="gotoStage(0)">← Back to type picker</button>
+      </div>`;
+    return;
+  }
+  const wrap = document.getElementById('wrap');
+  wrap.innerHTML = `
+    ${chipsRowHTML()}
+    ${architectNote(`We scoped to <b>Receiver</b>. Receivers come in four flavours depending on <i>which slice</i> of the signal chain you're designing. Pick the slice — I'll only ask questions that actually matter for that block.`)}
+    <div class="stage-hdr">
+      <div class="step-label">STEP 1 · RECEIVER SCOPE</div>
+      <h2>Which slice of the receiver?</h2>
+    </div>
+    <div class="grid-2">
+      ${Object.entries(SCOPE_LABELS).map(([key, label]) => {
+        const d = SCOPE_DESC[key];
+        return `
+          <div class="card ${state.scope === key ? 'selected' : ''}" onclick="pickScope('${key}')">
+            <h3><span class="dot"></span>${label}</h3>
+            <div class="desc">${d.desc}</div>
+            <div class="examples">COVERS: ${d.covers}</div>
+          </div>`;
+      }).join('')}
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="gotoStage(0)">← Back</button>
+      <button class="btn primary" onclick="gotoStage(2)" ${state.scope ? '' : 'disabled'}>Continue →</button>
+    </div>
+  `;
+}
+
+/* =============================================================
+   STAGE 2 — application
+   ============================================================= */
+function renderStage2() {
+  const wrap = document.getElementById('wrap');
+  wrap.innerHTML = `
+    ${chipsRowHTML()}
+    ${architectNote(`Application drives which architectures I'll recommend. <b>Radar</b> wants phase-coherent superhet or direct-RF-sampling. <b>EW/SIGINT</b> wants channelised or wideband digital IF. <b>Comms</b> typically zero-IF / low-IF. Detector-only topologies (Crystal Video / Log-Video) only surface for Radar and EW where non-coherent detection is the right answer.`)}
+    <div class="stage-hdr">
+      <div class="step-label">STEP 2 · PRIMARY APPLICATION</div>
+      <h2>What is this receiver for?</h2>
+    </div>
+    <div class="grid-2">
+      ${APPLICATIONS.map(a => `
+        <div class="card ${state.application === a.id ? 'selected' : ''}" onclick="pickApp('${a.id}')">
+          <h3><span class="dot blue"></span>${a.name}</h3>
+          <div class="desc">${a.desc}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="gotoStage(1)">← Back</button>
+      <button class="btn primary" onclick="gotoStage(3)" ${state.application ? '' : 'disabled'}>Continue →</button>
+    </div>
+  `;
+}
+
+/* =============================================================
+   STAGE 3 — architecture (split linear / detector)
+   ============================================================= */
+function renderStage3() {
+  const { linear, detector, hidden, strong } = filterArchByScopeAndApp(state.scope, state.application);
+  const app = APPLICATIONS.find(a => a.id === state.application);
+  const topPick = linear.find(a => strong.includes(a.id)) || detector.find(a => strong.includes(a.id));
+  const scopeNote = ({
+    'front-end':      `These are <b>front-end topologies</b>. Classical receiver architectures (superheterodyne, homodyne, SDR) live at Downconversion / Full-Receiver scope; Step 5 captures which one your front-end will feed.`,
+    'downconversion': `These are <b>downconversion architectures</b> — how the mixer stage is organised. Superhet, homodyne, image-reject, low-IF live here.`,
+    'dsp':            `These are <b>digital-backend architectures</b>. Direct RF sampling, digital IF, channelised, subsampling — no analog receiver architectures here.`,
+    'full':           `Full-receiver architectures — all layers. Sorted by fit to your application.`,
+  })[state.scope];
+  const rationale = topPick
+    ? `${scopeNote} For <b>${app.name}</b> I'd rank <b>${topPick.name}</b> first because ${archRationale(topPick.id, app.id)}.`
+    : scopeNote;
+
+  const renderCard = a => {
+    const rec = strong.includes(a.id);
+    const idx = strong.indexOf(a.id);
+    const badge = rec ? `<div class="badge">${idx === 0 ? '★ top pick' : 'strong fit'}</div>` : '';
+    return `
+      <div class="card ${state.architecture === a.id ? 'selected' : ''} ${rec ? 'recommended' : ''}" onclick="pickArch('${a.id}')">
+        ${badge}
+        <h3><span class="dot ${rec ? 'warning' : ''}"></span>${a.name}</h3>
+        <div class="desc">${a.desc}</div>
+      </div>`;
+  };
+
+  const wrap = document.getElementById('wrap');
+  wrap.innerHTML = `
+    ${chipsRowHTML()}
+    ${architectNote(rationale)}
+    <div class="stage-hdr">
+      <div class="step-label">STEP 3 · ARCHITECTURE</div>
+      <h2>Pick the architecture</h2>
+      <p>${linear.length + detector.length} options for <b>${SCOPE_LABELS[state.scope]}</b> · ${hidden.length} hidden as out-of-scope</p>
+    </div>
+
+    <div class="section-header"><span>Linear signal-chain topologies</span><span>${linear.length}</span></div>
+    <div class="grid-2">${linear.map(renderCard).join('')}</div>
+
+    ${detector.length ? `
+      <div class="section-header"><span>Special-purpose / detector topologies</span><span>available for ${app.name}</span></div>
+      <div class="grid-2">${detector.map(renderCard).join('')}</div>
+    ` : ''}
+
+    <div class="actions">
+      <button class="btn" onclick="gotoStage(2)">← Back</button>
+      <button class="btn primary" onclick="gotoStage(4)" ${state.architecture ? '' : 'disabled'}>Continue →</button>
+    </div>
+    ${renderDiagArch(linear, detector, hidden, strong)}
+  `;
+}
+
+/* =============================================================
+   STAGE 4 — tier-1 specs with inline suggestions + MDS toggle
+   ============================================================= */
+function renderStage4() {
+  const { shown, hidden } = filterSpecsByScope(state.scope);
+  const answered = shown.filter(c => state.specs[c.id]).length;
+  const archName = archById(state.architecture)?.name || '—';
+  const mds = derivedMDS();
+  const wrap = document.getElementById('wrap');
+  wrap.innerHTML = `
+    ${chipsRowHTML()}
+    ${architectNote(`Tier-1 spec gate. I filtered to <b>${shown.length}</b> questions for <b>${SCOPE_LABELS[state.scope]}</b>. Sensitivity is <b>auto-derived</b> from NF + bandwidth; flip the advanced toggle if you need to lock MDS explicitly. Gain label adapts to your scope.`)}
+    <div class="stage-hdr">
+      <div class="step-label">STEP 4 · BASIC SPECIFICATIONS</div>
+      <h2>Tier-1 requirements</h2>
+      <p>${shown.length} questions · architecture = <b>${archName}</b></p>
+    </div>
+
+    <div class="toggle-row">
+      <input type="checkbox" id="mdsToggle" ${state.mdsLockEnabled ? 'checked' : ''} onchange="toggleMdsLock(this.checked)" />
+      <label for="mdsToggle"><b>Advanced</b> · I need to lock MDS / sensitivity as a separate constraint (not derive it)</label>
+    </div>
+
+    ${mds ? `<div class="architect-summary"><div class="lbl">Derived sensitivity</div><div class="item">• MDS = −174 + 10·log(BW) + NF = <b>${mds} dBm</b> from your current NF + IBW choices. ${state.mdsLockEnabled ? `If locked value below differs, the constraint takes precedence.` : ``}</div></div>` : ''}
+
+    <div class="clarify-panel">
+      <div class="hdr"><span class="title">◈ Core specs · ${answered}/${shown.length} answered</span></div>
+      ${shown.map((c, i) => renderSpecQ(c, i+1, 'specs')).join('')}
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="gotoStage(3)">← Back</button>
+      <div class="remaining">${shown.length - answered} remaining</div>
+      <button class="btn primary" onclick="gotoStage(5)" ${answered === shown.length ? '' : 'disabled'}>Continue →</button>
+    </div>
+    ${renderDiagSpecs(shown, hidden)}
+  `;
+}
+
+/* =============================================================
+   STAGE 5 — deep-dive + app addendum (both scope-filtered)
+   ============================================================= */
+function renderStage5() {
+  const { dive, qs } = resolveDeepDiveQs();
+  const appQs = resolveAppQs();
+  const totalQs = qs.length + appQs.length;
+  const answered = qs.filter(q => state.details[q.id]).length + appQs.filter(q => state.appAnswers[q.id]).length;
+  const archName = archById(state.architecture)?.name || '—';
+  const appName = APPLICATIONS.find(a => a.id === state.application)?.name || '—';
+  const wrap = document.getElementById('wrap');
+  wrap.innerHTML = `
+    ${chipsRowHTML()}
+    ${architectNote(dive.note + (appQs.length ? ` Plus <b>${appQs.length}</b> question(s) specific to <b>${appName}</b> (filtered for ${SCOPE_LABELS[state.scope]}).` : ` No <b>${appName}</b>-specific questions apply to ${SCOPE_LABELS[state.scope]}.`))}
+    <div class="stage-hdr">
+      <div class="step-label">STEP 5 · DEEP-DIVE DETAILS</div>
+      <h2>${dive.title}</h2>
+      <p>Scope-specific follow-ups · architecture = <b>${archName}</b></p>
+    </div>
+    <div class="clarify-panel">
+      <div class="hdr"><span class="title">◎ ${SCOPE_LABELS[state.scope]} deep-dive · ${answered}/${totalQs} answered</span></div>
+      ${qs.map((q, i) => renderSpecQ(q, i+1, 'details')).join('')}
+      ${appQs.length ? `
+        <div style="margin-top:22px;padding-top:18px;border-top:1px dashed var(--border);">
+          <div class="title" style="margin-bottom:8px;">◈ ${appName}-specific addendum</div>
+          ${appQs.map((q, i) => renderSpecQ(q, i+1, 'appAnswers')).join('')}
+        </div>
+      ` : ''}
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="gotoStage(4)">← Back</button>
+      <div class="remaining">${totalQs - answered} remaining</div>
+      <button class="btn primary" onclick="gotoStage(6)" ${answered === totalQs ? '' : 'disabled'}>Continue →</button>
+    </div>
+  `;
+}
+
+/* =============================================================
+   STAGE 6 — confirm with architect summary + cascade
+   ============================================================= */
+function renderStage6() {
+  const { shown: specs } = filterSpecsByScope(state.scope);
+  const { qs: dds } = resolveDeepDiveQs();
+  const appQs = resolveAppQs();
+  const archName = archById(state.architecture)?.name || '—';
+  const appName = APPLICATIONS.find(a => a.id === state.application)?.name || '—';
+  const mds = derivedMDS();
+  const suggestions = allInlineSuggestions();
+
+  const wrap = document.getElementById('wrap');
+  wrap.innerHTML = `
+    ${chipsRowHTML()}
+    ${architectNote(`Final review. The <b>Architect Summary</b> below aggregates everything I derived or suggested during the flow. Cascade check flags any red lines. Hit Confirm and I'll generate a verified BOM + block diagram.`)}
+    <div class="stage-hdr">
+      <div class="step-label">STEP 6 · VALIDATE & CONFIRM</div>
+      <h2>Requirements summary</h2>
+    </div>
+
+    <div class="architect-summary">
+      <div class="lbl">Architect summary — derived + suggested values</div>
+      ${mds ? `<div class="item derived">• <b>Derived MDS</b> = ${mds} dBm (from NF + IBW)${state.specs.mds_lock ? ` · locked user constraint = ${state.specs.mds_lock}` : ''}</div>` : '<div class="item">• MDS: fill NF + IBW to derive</div>'}
+      ${suggestions.length
+        ? suggestions.map(s => `<div class="item suggested">• <b>${s.qid}</b> = ${s.value} → ${s.msg}</div>`).join('')
+        : '<div class="item">• No deterministic suggestions triggered yet.</div>'}
+    </div>
+
+    <div class="clarify-panel" style="margin-top:16px;">
+      <div class="hdr"><span class="title">◎ Full requirements lock</span></div>
+      <table class="summary-tbl">
+        <tr><td>Project type</td><td><b>${PROJECT_TYPES[state.projectType].name}</b></td></tr>
+        <tr><td>Scope</td><td><b>${SCOPE_LABELS[state.scope]}</b></td></tr>
+        <tr><td>Application</td><td><b>${appName}</b></td></tr>
+        <tr><td>Architecture</td><td><b>${archName}</b></td></tr>
+        ${specs.map(c => `<tr><td>${specLabel(c)}</td><td>${state.specs[c.id] || '<span style="color:var(--text3)">—</span>'}</td></tr>`).join('')}
+        ${dds.map(c => `<tr><td>${c.q}</td><td>${state.details[c.id] || '<span style="color:var(--text3)">—</span>'}</td></tr>`).join('')}
+        ${appQs.map(c => `<tr><td>${c.q} <em>[${appName}]</em></td><td>${state.appAnswers[c.id] || '<span style="color:var(--text3)">—</span>'}</td></tr>`).join('')}
+      </table>
+
+      <div class="cascade">
+        <div class="lbl">Architect cascade check</div>
+        ${renderCascade()}
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" onclick="gotoStage(5)">← Back</button>
+      <button class="btn primary" onclick="finalize()">Confirm → generate BOM</button>
+    </div>
+  `;
+}
+
+/* =============================================================
+   Q RENDER (with inline architect suggestion)
+   ============================================================= */
+function renderSpecQ(c, n, bucket) {
+  const picked = state[bucket][c.id];
+  const drives = c.drives ? `<div class="qlabel">Q${n} · ${c.drives}</div>` : `<div class="qlabel">Q${n}</div>`;
+  const label = specLabel(c);
+  const suggestion = picked && AUTO_SUGGESTIONS[c.id]?.[picked]
+    ? `<div class="inline-suggestion"><b>Architect</b> · ${AUTO_SUGGESTIONS[c.id][picked]}</div>`
+    : '';
+  return `
+    <div class="q">
+      ${drives}
+      <div class="qtext">${label}</div>
+      <div class="chips">
+        ${c.chips.map(v => `<div class="chip ${picked === v ? 'selected' : ''}" onclick="pickAnswer('${bucket}','${c.id}','${v.replace(/'/g,"\\'")}')">${v}</div>`).join('')}
+      </div>
+      ${suggestion}
+    </div>
+  `;
+}
+
+/* =============================================================
+   CASCADE RENDER
+   ============================================================= */
+function renderCascade() {
+  const firedMsgs = CASCADE_RULES
+    .filter(r => r.fires(state))
+    .map(r => ({ msg: r.msg(state), level: r.level || 'ok' }))
+    .filter(x => x.msg);
+  if (!firedMsgs.length) return '<div class="rule ok">• All checks within envelope — ready to generate.</div>';
+  return firedMsgs.map(x => `<div class="rule ${x.level}">• ${x.msg}</div>`).join('');
+}
+
+/* =============================================================
+   RATIONALE (unchanged architect brain)
+   ============================================================= */
+function archRationale(archId, appId) {
+  const map = {
+    std_lna_filter: {
+      comms: 'clean LNA + pre-select is the integration-friendly baseline for SoC comms',
+      tnm:   'simplest topology — easiest to calibrate and characterise',
+      default: 'baseline front-end block — minimum component count',
+    },
+    balanced_lna: {
+      radar: 'high IIP3 keeps the front-end linear under strong in-band clutter returns',
+      ew:    'better input VSWR and linearity survive co-site jam environments',
+      satcom:'low input return loss matters for the antenna match budget',
+      default: 'higher linearity and return loss than a single-ended LNA',
+    },
+    lna_filter_limiter: {
+      ew:    'high-power survivability is non-negotiable in close-in jam environments',
+      radar: 'PIN-diode limiter protects the LNA from T/R leakage during transmit',
+      default: 'protected front-end for high-power environments',
+    },
+    active_antenna: {
+      sigint: 'LNA at the antenna eliminates cable loss — crucial when NF budget is tight',
+      satcom: 'co-locating the LNA with the feed maximises G/T',
+      default: 'noise-floor-critical applications where cable loss matters',
+    },
+    multi_band_switched: {
+      ew:     'one front-end that covers octaves — essential for wideband threat scanning',
+      sigint: 'single-box solution across HF to microwave surveillance bands',
+      default:'wide frequency coverage without compromising any single band',
+    },
+    crystal_video: {
+      ew:    'simple, latency-free pulse detector — RWR-class applications',
+      default:'detector-only — no LO, no coherent processing',
+    },
+    log_video: {
+      ew:    'wide instantaneous DR detection — useful alongside a main coherent chain',
+      default:'log-amp detector — wide DR, no phase information',
+    },
+    superhet_double: {
+      radar:  'two-stage downconversion gives image rejection + selectivity your pulse receiver needs',
+      satcom: 'low phase noise + high image rejection — key for Ku/Ka link budgets',
+      tnm:    'delivers measurement-grade dynamic range and phase stability',
+      default:'best image rejection + phase noise floor in the list',
+    },
+    superhet_single: {
+      comms:  'classical, well-understood — a good default for narrow-band comms',
+      default:'simple mixer-based downconverter',
+    },
+    digital_if: {
+      radar:  'keeps coherent phase while gaining FPGA-side pulse-compression flexibility',
+      ew:     'wideband digitising + DDC lets you re-slice the spectrum in firmware',
+      sigint: 'single front-end fans out to many FPGA-defined channels',
+      default:'most flexible RX — any modulation, any channelisation, post-capture',
+    },
+    channelized: {
+      ew:     'parallel filter-bank → POI > 99% across wide IBW simultaneously',
+      sigint: 'native simultaneous monitoring across the full captured band',
+      default:'parallel channels — use when you need everything at once',
+    },
+    direct_rf_sample: {
+      radar: 'no LO phase noise, zero image issue — best coherency with clean clock',
+      tnm:   'minimum analog path → minimum calibration burden',
+      default:'zero mixer, zero image — complexity shifts to the ADC clock tree',
+    },
+    direct_conversion: {
+      comms:  'compact integrated RFIC path — ideal for comms SoCs',
+      default:'compact, single-LO — watch DC offset and I/Q imbalance',
+    },
+  };
+  const key = map[archId];
+  if (!key) return 'it matches your scope and application profile';
+  return key[appId] || key.default || 'it matches your scope and application profile';
+}
+
+/* =============================================================
+   DIAG PANELS
+   ============================================================= */
+function renderDiagArch(linear, detector, hidden, strong) {
+  return `
+    <details class="diag">
+      <summary>Architect filter — ${linear.length + detector.length} shown (${linear.length} linear / ${detector.length} detector) · ${hidden.length} hidden</summary>
+      <div class="panel">
+        <h4>Linear in-scope (${linear.length})</h4>
+        ${linear.map(a => `<div class="shown">✓ ${a.name}${strong.includes(a.id) ? ` <span class="reason">[strong-fit]</span>` : ''}</div>`).join('')}
+        ${detector.length ? `
+          <h4>Detector topologies (${detector.length}) — gated by application=${state.application}</h4>
+          ${detector.map(a => `<div class="shown">✓ ${a.name}</div>`).join('')}
+        ` : '<h4>Detector topologies (0)</h4><div style="color:var(--text3);">not available for this scope + application</div>'}
+        <h4>Hidden out-of-scope (${hidden.length})</h4>
+        ${hidden.map(a => `<div class="hidden">✗ ${a.name} <span class="reason">— not in ${state.scope}</span></div>`).join('') || '<div style="color:var(--text3);">— none —</div>'}
+      </div>
+    </details>
+  `;
+}
+
+function renderDiagSpecs(shown, hidden) {
+  return `
+    <details class="diag">
+      <summary>Spec filter — ${shown.length} shown / ${hidden.length} hidden</summary>
+      <div class="panel">
+        <h4>Asked (${shown.length})</h4>
+        ${shown.map(c => `<div class="shown">✓ ${specLabel(c)}${c.advanced ? ' <span class="reason">[advanced]</span>' : ''}</div>`).join('')}
+        <h4>Skipped (${hidden.length})</h4>
+        ${hidden.map(c => `<div class="hidden">✗ ${c.q} <span class="reason">— not applicable for ${state.scope}</span></div>`).join('') || '<div style="color:var(--text3);">— none —</div>'}
+      </div>
+    </details>
+  `;
+}
+
+/* =============================================================
+   EVENT HANDLERS
+   ============================================================= */
+function pickProjectType(t) { state.projectType = t; if (t !== 'receiver') { state.scope = state.application = state.architecture = null; } renderStage0(); }
+function pickScope(s)       { if (state.scope !== s) { state.specs = {}; state.details = {}; state.architecture = null; } state.scope = s; renderStage1(); }
+function pickApp(a)         { if (state.application !== a) { state.architecture = null; } state.application = a; renderStage2(); }
+function pickArch(a)        { if (state.architecture !== a) { state.details = {}; } state.architecture = a; renderStage3(); }
+function pickAnswer(bucket, id, v) { state[bucket][id] = v; gotoStage(state.stage); }
+function toggleMdsLock(on)  { state.mdsLockEnabled = on; if (!on) delete state.specs.mds_lock; renderStage4(); }
+
+function gotoStage(n) {
+  state.stage = n;
+  renderStageBar();
+  const fns = [renderStage0, renderStage1, renderStage2, renderStage3, renderStage4, renderStage5, renderStage6];
+  fns[n]();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function finalize() {
+  const payload = {
+    projectType: state.projectType,
+    scope: state.scope,
+    application: state.application,
+    architecture: state.architecture,
+    mdsLockEnabled: state.mdsLockEnabled,
+    specs: state.specs,
+    details: state.details,
+    app_answers: state.appAnswers,
+    derived: { mds_dbm: derivedMDS() },
+    suggestions: allInlineSuggestions(),
+  };
+  alert('READY TO SEND TO BACKEND (structured payload + derivations):\n\n' + JSON.stringify(payload, null, 2));
+}
+
+/* =============================================================
+   BOOT
+   ============================================================= */
+renderStageBar();
+renderStage0();
+</script>
+</body>
+</html>

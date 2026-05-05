@@ -1,0 +1,19 @@
+{
+  "mpn": "AD9694", "manufacturer": "Analog Devices", "family": "AD969x",
+  "bus": "adc", "source": "curated", "confidence": 1.0,
+  "description": "14-bit, 500 MSPS, quad-channel JESD204B ADC",
+  "datasheet_url": "https://www.analog.com/en/products/ad9694.html",
+  "spi_max_clock_hz": 25000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "adc_resolution_bits": 14,
+  "adc_max_sample_rate_hz": 500000000,
+  "adc_interface": "jesd204b",
+  "adc_jesd_lanes": 8,
+  "adc_n_channels": 4,
+  "fpga_ports": {"sysref": true, "devclk": true, "sync": true, "reset_n": true,
+                 "extra": ["SDIO", "SCLK", "CSB", "FD_A", "FD_B", "FD_C", "FD_D"]},
+  "notes": [
+    "JESD204B subclass-1; 12.5 Gbps per lane",
+    "Quad-channel, on-chip DDC for IF subsampling on each channel",
+    "Lower-cost alternative to AD9208 when ENOB > 11.5 not required"
+  ]
+}

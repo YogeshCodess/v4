@@ -1,0 +1,707 @@
+{
+  "generated_at": "2026-04-18T05:22:09+00:00",
+  "mode": "offline",
+  "summary": {
+    "total_parts": 75,
+    "verified": 75,
+    "live_reachable": 0,
+    "whitelist_only": 75,
+    "missing_url": 0,
+    "unreachable": 0,
+    "by_domain": {
+      "communication": {
+        "total": 19,
+        "verified": 19
+      },
+      "ew": {
+        "total": 19,
+        "verified": 19
+      },
+      "radar": {
+        "total": 20,
+        "verified": 20
+      },
+      "satcom": {
+        "total": 17,
+        "verified": 17
+      }
+    }
+  },
+  "parts": [
+    {
+      "domain": "communication",
+      "part_number": "AD9361",
+      "url": "https://www.analog.com/en/products/ad9361.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "ADRV9002",
+      "url": "https://www.analog.com/en/products/adrv9002.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "HMC833",
+      "url": "https://www.analog.com/en/products/hmc833.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "MGA-633P8",
+      "url": "https://www.broadcom.com/products/wireless/amplifiers/low-noise-amplifiers/mga-633p8",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "SKY66318-21",
+      "url": "https://www.skyworksinc.com/Products/Amplifiers/SKY66318-21",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "nRF52840",
+      "url": "https://www.nordicsemi.com/Products/nRF52840",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "CC1352R",
+      "url": "https://www.ti.com/product/CC1352R",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "SX1276",
+      "url": "https://www.semtech.com/products/wireless-rf/lora-core/sx1276",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "SKY66112-11",
+      "url": "https://www.skyworksinc.com/Products/Amplifiers/SKY66112-11",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "MAX2830",
+      "url": "https://www.analog.com/en/products/max2830.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "SI4463",
+      "url": "https://www.silabs.com/wireless/proprietary/ezradiopro-sub-ghz-ics/device.si4463",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "BGT24MTR11",
+      "url": "https://www.infineon.com/cms/en/product/rf/radar-rf-transceiver-ic/bgt24mtr11/",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "ADF7030",
+      "url": "https://www.analog.com/en/products/adf7030-1.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "MAX2870",
+      "url": "https://www.analog.com/en/products/max2870.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "LTC6957-1",
+      "url": "https://www.analog.com/en/products/ltc6957-1.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "ADCLK846",
+      "url": "https://www.analog.com/en/products/adclk846.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "TPS7A47",
+      "url": "https://www.ti.com/product/TPS7A47",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "CC1310F128",
+      "url": "https://www.ti.com/product/CC1310",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "communication",
+      "part_number": "AT86RF233",
+      "url": "https://www.microchip.com/en-us/product/AT86RF233",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "ADRV9009",
+      "url": "https://www.analog.com/en/products/adrv9009.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "ZX60-P33ULN+",
+      "url": "https://www.minicircuits.com/WebStore/dashboard.html?model=ZX60-P33ULN%2B",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "ADL5387",
+      "url": "https://www.analog.com/en/products/adl5387.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "ADF5610",
+      "url": "https://www.analog.com/en/products/adf5610.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "HMC773A",
+      "url": "https://www.analog.com/en/products/hmc773a.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "HMC717ALP3E",
+      "url": "https://www.analog.com/en/products/hmc717a.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "ADMV1013",
+      "url": "https://www.analog.com/en/products/admv1013.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "ADMV1014",
+      "url": "https://www.analog.com/en/products/admv1014.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "HMC499LC4",
+      "url": "https://www.analog.com/en/products/hmc499.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "HMC1190",
+      "url": "https://www.analog.com/en/products/hmc1190.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "HMC921LP4E",
+      "url": "https://www.analog.com/en/products/hmc921a.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "LTC5594",
+      "url": "https://www.analog.com/en/products/ltc5594.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "ADRF6510",
+      "url": "https://www.analog.com/en/products/adrf6510.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "AD9371",
+      "url": "https://www.analog.com/en/products/ad9371.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "HMC6290",
+      "url": "https://www.analog.com/en/products/hmc6290.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "ADL5569",
+      "url": "https://www.analog.com/en/products/adl5569.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "ERA-5SM+",
+      "url": "https://www.minicircuits.com/pdfs/ERA-5SM+.pdf",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "HMC1065LP4E",
+      "url": "https://www.analog.com/en/products/hmc1065.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "ew",
+      "part_number": "ADL5902",
+      "url": "https://www.analog.com/en/products/adl5902.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "TGA2578",
+      "url": "https://www.qorvo.com/products/p/TGA2578",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "ADL8107",
+      "url": "https://www.analog.com/en/products/adl8107.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "MAAL-011146",
+      "url": "https://www.macom.com/products/product-detail/MAAL-011146",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "AD9625",
+      "url": "https://www.analog.com/en/products/ad9625.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "XCZU47DR",
+      "url": "https://www.xilinx.com/products/silicon-devices/soc/rfsoc/zynq-ultrascale-plus-rfsoc.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "HMC1049LP5E",
+      "url": "https://www.analog.com/en/products/hmc1049.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "ADF4351",
+      "url": "https://www.analog.com/en/products/adf4351.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "LMX2594",
+      "url": "https://www.ti.com/product/LMX2594",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "ADRF5720",
+      "url": "https://www.analog.com/en/products/adrf5720.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "AD9208",
+      "url": "https://www.analog.com/en/products/ad9208.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "AD9162",
+      "url": "https://www.analog.com/en/products/ad9162.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "HMC7044",
+      "url": "https://www.analog.com/en/products/hmc7044.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "AD8367",
+      "url": "https://www.analog.com/en/products/ad8367.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "TQP3M9008",
+      "url": "https://www.qorvo.com/products/p/TQP3M9008",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "SKYA21012",
+      "url": "https://www.skyworksinc.com/Products/Switches/SKYA21012",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "HMC-ALH482",
+      "url": "https://www.analog.com/en/products/hmc-alh482.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "LTC6228",
+      "url": "https://www.analog.com/en/products/ltc6228.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "HMC6981",
+      "url": "https://www.analog.com/en/products/hmc6981.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "HMC8410",
+      "url": "https://www.analog.com/en/products/hmc8410.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "radar",
+      "part_number": "ADL5375",
+      "url": "https://www.analog.com/en/products/adl5375.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "MAAL-011130",
+      "url": "https://www.macom.com/products/product-detail/MAAL-011130",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "QPL9547",
+      "url": "https://www.qorvo.com/products/p/QPL9547",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "HMC8411",
+      "url": "https://www.analog.com/en/products/hmc8411.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "TGA2594-HM",
+      "url": "https://www.qorvo.com/products/p/TGA2594-HM",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "ADL5545",
+      "url": "https://www.analog.com/en/products/adl5545.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "ADMV4420",
+      "url": "https://www.analog.com/en/products/admv4420.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "HMC8500",
+      "url": "https://www.analog.com/en/products/hmc8500.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "ADF4159",
+      "url": "https://www.analog.com/en/products/adf4159.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "AD9082",
+      "url": "https://www.analog.com/en/products/ad9082.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "AD9528",
+      "url": "https://www.analog.com/en/products/ad9528.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "HMC1063",
+      "url": "https://www.analog.com/en/products/hmc1063.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "TGA4544",
+      "url": "https://www.qorvo.com/products/p/TGA4544",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "ADL5324",
+      "url": "https://www.analog.com/en/products/adl5324.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "LMX2592",
+      "url": "https://www.ti.com/product/LMX2592",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "AD9914",
+      "url": "https://www.analog.com/en/products/ad9914.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "ERA-8SM+",
+      "url": "https://www.minicircuits.com/pdfs/ERA-8SM+.pdf",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    },
+    {
+      "domain": "satcom",
+      "part_number": "ADRF5510",
+      "url": "https://www.analog.com/en/products/adrf5510.html",
+      "live_reachable": false,
+      "trusted_vendor": true,
+      "verified": true,
+      "reason": "offline-mode"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "mpn": "MAX3485", "manufacturer": "Maxim Integrated", "family": "MAX348x",
+  "bus": "uart", "source": "curated", "confidence": 1.0,
+  "description": "3.3V, 10 Mbps half-duplex RS-485/RS-422 transceiver",
+  "datasheet_url": "https://www.analog.com/en/products/max3485.html",
+  "uart_max_baud_hz": 10000000,
+  "uart_levels": "rs485",
+  "fpga_ports": {"reset_n": false, "driver_enable": true,
+                 "extra": ["DE", "RE_N"]},
+  "notes": [
+    "Higher-speed RS-485 (10 Mbps); pin-compatible with SN65HVD485",
+    "DE + RE_N tied together = simple half-duplex single-control mode"
+  ]
+}

@@ -1,0 +1,1148 @@
+{
+  "timestamp": 1776487987,
+  "scenarios_total": 30,
+  "scenarios_passed": 30,
+  "all_passed": true,
+  "results": [
+    {
+      "domain": "communication",
+      "id": "bluetooth_ble",
+      "architecture": "low_if",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 3.78,
+          "computed": 3.785,
+          "delta": 0.005,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 23.5,
+          "computed": 23.5,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/communication/bluetooth_ble.yaml"
+    },
+    {
+      "domain": "communication",
+      "id": "hf_ale",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 7.08,
+          "computed": 7.079,
+          "delta": 0.001,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 30.5,
+          "computed": 30.5,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/communication/hf_ale.yaml"
+    },
+    {
+      "domain": "communication",
+      "id": "ism_lora_iot",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 3.23,
+          "computed": 3.232,
+          "delta": 0.002,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 24.0,
+          "computed": 24.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/communication/ism_lora_iot.yaml"
+    },
+    {
+      "domain": "communication",
+      "id": "uhf_tactical",
+      "architecture": "zero_if_sdr",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 0.56,
+          "computed": 0.557,
+          "delta": 0.003,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 52.0,
+          "computed": 52.0,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/communication/uhf_tactical.yaml"
+    },
+    {
+      "domain": "communication",
+      "id": "vhf_air_to_ground",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 2.42,
+          "computed": 2.423,
+          "delta": 0.003,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 32.5,
+          "computed": 32.5,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/communication/vhf_air_to_ground.yaml"
+    },
+    {
+      "domain": "communication",
+      "id": "vhf_handheld",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 3.119,
+          "computed": 3.119,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 37.0,
+          "computed": 37.0,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/communication/vhf_handheld.yaml"
+    },
+    {
+      "domain": "communication",
+      "id": "vhf_land_mobile",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 3.42,
+          "computed": 3.424,
+          "delta": 0.004,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 27.0,
+          "computed": 27.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/communication/vhf_land_mobile.yaml"
+    },
+    {
+      "domain": "communication",
+      "id": "zigbee_mesh",
+      "architecture": "low_if",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 3.34,
+          "computed": 3.344,
+          "delta": 0.004,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 25.5,
+          "computed": 25.5,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/communication/zigbee_mesh.yaml"
+    },
+    {
+      "domain": "ew",
+      "id": "anti_drone",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 2.1,
+          "computed": 2.097,
+          "delta": 0.003,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 32.0,
+          "computed": 32.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/ew/anti_drone.yaml"
+    },
+    {
+      "domain": "ew",
+      "id": "comint_hf",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 5.47,
+          "computed": 5.466,
+          "delta": 0.004,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 28.0,
+          "computed": 28.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/ew/comint_hf.yaml"
+    },
+    {
+      "domain": "ew",
+      "id": "elint_narrowband",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 1.43,
+          "computed": 1.431,
+          "delta": 0.001,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 36.0,
+          "computed": 36.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/ew/elint_narrowband.yaml"
+    },
+    {
+      "domain": "ew",
+      "id": "mmwave_radar_warn",
+      "architecture": "crystal_video",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 4.51,
+          "computed": 4.51,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 42.0,
+          "computed": 42.0,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/ew/mmwave_radar_warn.yaml"
+    },
+    {
+      "domain": "ew",
+      "id": "radar_warning_receiver",
+      "architecture": "crystal_video",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 2.19,
+          "computed": 2.19,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 35.0,
+          "computed": 35.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/ew/radar_warning_receiver.yaml"
+    },
+    {
+      "domain": "ew",
+      "id": "vhf_doa",
+      "architecture": "direct_rf_sampling",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 2.152,
+          "computed": 2.152,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 24.0,
+          "computed": 24.0,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/ew/vhf_doa.yaml"
+    },
+    {
+      "domain": "ew",
+      "id": "wideband_sigint",
+      "architecture": "direct_rf_sampling",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 0.93,
+          "computed": 0.929,
+          "delta": 0.001,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 33.0,
+          "computed": 33.0,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/ew/wideband_sigint.yaml"
+    },
+    {
+      "domain": "radar",
+      "id": "c_band_weather",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 1.62,
+          "computed": 1.623,
+          "delta": 0.003,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 41.0,
+          "computed": 41.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 1,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/radar/c_band_weather.yaml"
+    },
+    {
+      "domain": "radar",
+      "id": "ka_band_ground_mapping",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 3.06,
+          "computed": 3.064,
+          "delta": 0.004,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 36.5,
+          "computed": 36.5,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/radar/ka_band_ground_mapping.yaml"
+    },
+    {
+      "domain": "radar",
+      "id": "ku_band_seeker",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 2.44,
+          "computed": 2.437,
+          "delta": 0.003,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 33.5,
+          "computed": 33.5,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/radar/ku_band_seeker.yaml"
+    },
+    {
+      "domain": "radar",
+      "id": "l_band_long_range_search",
+      "architecture": "dual_conversion_digital_if",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 0.93,
+          "computed": 0.931,
+          "delta": 0.001,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 25.5,
+          "computed": 25.5,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/radar/l_band_long_range_search.yaml"
+    },
+    {
+      "domain": "radar",
+      "id": "l_band_surveillance",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 1.259,
+          "computed": 1.259,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 32.5,
+          "computed": 32.5,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/radar/l_band_surveillance.yaml"
+    },
+    {
+      "domain": "radar",
+      "id": "s_band_air_surveillance",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 1.43,
+          "computed": 1.434,
+          "delta": 0.004,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 35.5,
+          "computed": 35.5,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/radar/s_band_air_surveillance.yaml"
+    },
+    {
+      "domain": "radar",
+      "id": "w_band_automotive",
+      "architecture": "direct_rf_sampling",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 2.848,
+          "computed": 2.848,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 37.0,
+          "computed": 37.0,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/radar/w_band_automotive.yaml"
+    },
+    {
+      "domain": "radar",
+      "id": "x_band_fire_control",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 2.3,
+          "computed": 1.966,
+          "delta": 0.334,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 40.0,
+          "computed": 40.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/radar/x_band_fire_control.yaml"
+    },
+    {
+      "domain": "satcom",
+      "id": "c_band_teleport",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 0.74,
+          "computed": 0.738,
+          "delta": 0.002,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 42.0,
+          "computed": 42.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/satcom/c_band_teleport.yaml"
+    },
+    {
+      "domain": "satcom",
+      "id": "gnss_l1l5",
+      "architecture": "direct_rf_sampling",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 1.34,
+          "computed": 1.342,
+          "delta": 0.002,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 38.0,
+          "computed": 38.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/satcom/gnss_l1l5.yaml"
+    },
+    {
+      "domain": "satcom",
+      "id": "ka_sotm",
+      "architecture": "superheterodyne_digital_if",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 2.0,
+          "computed": 1.924,
+          "delta": 0.076,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 45.0,
+          "computed": 45.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/satcom/ka_sotm.yaml"
+    },
+    {
+      "domain": "satcom",
+      "id": "ku_vsat",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 0.8,
+          "computed": 0.8,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 62.0,
+          "computed": 62.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 1,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/satcom/ku_vsat.yaml"
+    },
+    {
+      "domain": "satcom",
+      "id": "l_band_inmarsat",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 1.01,
+          "computed": 1.011,
+          "delta": 0.001,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 45.5,
+          "computed": 45.5,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/satcom/l_band_inmarsat.yaml"
+    },
+    {
+      "domain": "satcom",
+      "id": "x_band_milsatcom",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 1.28,
+          "computed": 1.277,
+          "delta": 0.003,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 38.5,
+          "computed": 38.5,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": true,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/satcom/x_band_milsatcom.yaml"
+    },
+    {
+      "domain": "satcom",
+      "id": "x_band_tt_c",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 1.574,
+          "computed": 1.574,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 36.5,
+          "computed": 36.5,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/satcom/x_band_tt_c.yaml"
+    }
+  ]
+}

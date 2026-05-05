@@ -1,0 +1,62 @@
+# Core AI/LLM
+anthropic>=0.42.0
+chromadb>=0.5.0
+openai>=1.50.0
+
+# Backend
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+pydantic>=2.9.0
+pydantic-settings>=2.5.0
+sqlalchemy>=2.0.35
+alembic>=1.13.0
+
+# Document Generation
+Jinja2>=3.1.4
+openpyxl>=3.1.5
+python-docx>=1.1.0      # DOCX generation fallback (pandoc may not be available)
+reportlab>=4.0.0        # PDF generation fallback (no LaTeX/pandoc required)
+
+# Datasheet extraction (services/datasheet_extractor.py - 4-layer extractor)
+pypdf>=4.0.0            # Layer 1: PDF text extraction
+pdfplumber>=0.11.0      # Layer 2: PDF table extraction (opcode/register tables)
+pytesseract>=0.3.10     # Layer 3: OCR for scanned datasheets (requires Tesseract binary)
+Pillow>=10.0.0          # required by pytesseract
+
+# Engineering
+networkx>=3.4
+numpy>=2.1.0
+
+# Utilities
+python-dotenv>=1.0.1
+httpx>=0.27.0
+rich>=13.9.0
+tenacity>=9.0.0
+
+# Observability (OpenTelemetry) — no-op when OTEL_EXPORTER_OTLP_ENDPOINT is unset
+opentelemetry-api>=1.27
+opentelemetry-sdk>=1.27
+opentelemetry-exporter-otlp-proto-http>=1.27
+opentelemetry-instrumentation-fastapi>=0.48b0
+opentelemetry-instrumentation-sqlalchemy>=0.48b0
+
+# Retrieval (LangChain — used ONLY in tools/component_search + seed_components)
+langchain-chroma>=0.1.4
+langchain-core>=0.3
+langchain-openai>=0.2
+langchain-huggingface>=0.1   # local-embedding fallback when no OPENAI_API_KEY
+
+# Static Analysis
+lizard>=1.17.0          # cyclomatic complexity (pure Python, no binary required)
+
+# SBOM
+cyclonedx-bom>=4.0.0   # CycloneDX 1.4/1.5 SBOM generation
+packageurl-python>=0.11.0
+
+# Git + GitHub PR
+gitpython>=3.1.40       # local git operations
+PyGithub>=2.1.1         # GitHub API for PR creation
+
+# Qt GUI (for gui_application.py output)
+PySide6>=6.6.0          # installed at runtime by end-user; not required for pipeline server
+pyserial>=3.5           # optional: used by generated GUI for serial communication

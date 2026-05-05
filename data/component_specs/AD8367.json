@@ -1,0 +1,12 @@
+{
+  "mpn": "AD8367", "manufacturer": "Analog Devices", "family": "AD836x",
+  "bus": "gpio", "source": "curated", "confidence": 1.0,
+  "description": "500 MHz, 45 dB linear-in-dB VGA with analog gain-control voltage input",
+  "datasheet_url": "https://www.analog.com/en/products/ad8367.html",
+  "fpga_ports": {"reset_n": false, "extra": ["GAIN", "MODE", "DETO", "HPFL"]},
+  "notes": [
+    "Analog gain control via GAIN pin (0-1V -> -2.5 dB to +42.5 dB)",
+    "From the FPGA side: drive GAIN via an external DAC (e.g. AD5683 or PWM+RC)",
+    "MODE pin selects up/down gain slope; DETO is RMS detector output"
+  ]
+}

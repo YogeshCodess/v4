@@ -1,0 +1,18 @@
+{
+  "mpn": "KSZ9031RNX", "manufacturer": "Microchip (Micrel)", "family": "KSZ903x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "Gigabit Ethernet PHY, RGMII interface, IEEE 1588 PTP",
+  "datasheet_url": "https://www.microchip.com/en-us/product/KSZ9031RNX",
+  "spi_max_clock_hz": 12500000, "spi_mode": 0, "spi_data_width_bits": 16,
+  "fpga_ports": {"reset_n": true, "interrupt": true,
+                 "extra": ["MDC", "MDIO", "INT_N",
+                           "RGMII_TX_CLK", "RGMII_TX_CTL", "RGMII_TXD0..3",
+                           "RGMII_RX_CLK", "RGMII_RX_CTL", "RGMII_RXD0..3",
+                           "PTP_TRIG_OUT", "PTP_PPS_OUT"]},
+  "notes": [
+    "MDIO/MDC clause-22 management interface (32 PHY addresses, 32 16-bit registers)",
+    "RGMII data interface to FPGA Ethernet MAC core",
+    "Hardware strap pins set initial PHY address and master/slave mode",
+    "PTP_PPS_OUT can return 1 PPS to FPGA for time-sync applications"
+  ]
+}

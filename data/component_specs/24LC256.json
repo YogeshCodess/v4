@@ -1,0 +1,13 @@
+{
+  "mpn": "24LC256", "manufacturer": "Microchip", "family": "24LC",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "256kb (32 KB) I2C EEPROM, 2.5-5.5V",
+  "datasheet_url": "https://www.microchip.com/en-us/product/24LC256",
+  "i2c_slave_addr_7bit": 80,
+  "i2c_addr_width_bits": 16,
+  "i2c_page_size_bytes": 64,
+  "i2c_max_clock_hz":    400000,
+  "i2c_write_cycle_ms": 5,
+  "fpga_ports": {"write_protect": true},
+  "notes": ["Older Microchip 5V variant of AT24C256; same protocol"]
+}

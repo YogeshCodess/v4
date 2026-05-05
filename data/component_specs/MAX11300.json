@@ -1,0 +1,17 @@
+{
+  "mpn": "MAX11300", "manufacturer": "Analog Devices", "family": "MAX113xx",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "20-port, programmable mixed-signal I/O (PIXI): 12-bit ADC + DAC + GPIO + temp sensor",
+  "datasheet_url": "https://www.analog.com/en/products/max11300.html",
+  "spi_max_clock_hz": 20000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "adc_resolution_bits": 12,
+  "adc_max_sample_rate_hz": 400000,
+  "dac_resolution_bits": 12,
+  "dac_max_update_rate_hz": 400000,
+  "fpga_ports": {"reset_n": true, "interrupt": true, "extra": ["CSB", "CNVT", "INT"]},
+  "notes": [
+    "20 mixed-signal ports - each independently configurable as ADC/DAC/GPIO/level translator",
+    "24-bit SPI: 1 R/W + 7-bit addr + 16-bit data",
+    "On-chip die temp sensor + 2 external temp inputs for system thermal monitoring"
+  ]
+}

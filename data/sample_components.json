@@ -1,0 +1,1789 @@
+{
+  "components": [
+    {
+      "part_number": "STM32F407VGT6",
+      "manufacturer": "STMicroelectronics",
+      "description": "ARM Cortex-M4 32-bit MCU, 168MHz, 1MB Flash, 192KB RAM, FPU, DSP, USB OTG, Ethernet",
+      "category": "MCU",
+      "key_specs": {
+        "core": "Cortex-M4",
+        "freq_mhz": 168,
+        "flash_kb": 1024,
+        "ram_kb": 192,
+        "gpio": 82,
+        "package": "LQFP100",
+        "voltage_v": "1.8-3.6"
+      },
+      "datasheet_url": "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 8.5,
+      "search_text": "STM32F407 ARM Cortex-M4 168MHz 1MB flash 192KB RAM FPU DSP motor control USB OTG Ethernet CAN advanced timer PWM LQFP100 industrial IoT robotics high performance"
+    },
+    {
+      "part_number": "STM32H743ZIT6",
+      "manufacturer": "STMicroelectronics",
+      "description": "ARM Cortex-M7 480MHz 2MB Flash 1MB RAM with FPU, DSP, crypto, TFT-LCD controller",
+      "category": "MCU",
+      "key_specs": {
+        "core": "Cortex-M7",
+        "freq_mhz": 480,
+        "flash_kb": 2048,
+        "ram_kb": 1024,
+        "gpio": 114,
+        "package": "LQFP144",
+        "voltage_v": "1.62-3.6"
+      },
+      "datasheet_url": "https://www.st.com/resource/en/datasheet/stm32h743zi.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 18.0,
+      "search_text": "STM32H743 ARM Cortex-M7 480MHz high performance 2MB flash 1MB RAM crypto JPEG LCD-TFT high-speed USB OTG HDMI-CEC industrial vision graphics processing"
+    },
+    {
+      "part_number": "STM32L432KCU6",
+      "manufacturer": "STMicroelectronics",
+      "description": "Ultra-low-power ARM Cortex-M4 80MHz 256KB Flash 64KB RAM, USB, BLE ready",
+      "category": "MCU",
+      "key_specs": {
+        "core": "Cortex-M4",
+        "freq_mhz": 80,
+        "flash_kb": 256,
+        "ram_kb": 64,
+        "package": "UFQFPN32",
+        "voltage_v": "1.71-3.6",
+        "current_ua_run": 100
+      },
+      "datasheet_url": "https://www.st.com/resource/en/datasheet/stm32l432kc.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 4.2,
+      "search_text": "STM32L432 ultra-low-power ARM Cortex-M4 80MHz battery powered IoT wearable 256KB flash USB 2.0 FS AES crypto ADC DAC small form factor UFQFPN32 low energy"
+    },
+    {
+      "part_number": "ESP32-WROOM-32E",
+      "manufacturer": "Espressif",
+      "description": "WiFi 802.11 + Bluetooth 4.2/BLE dual-core 240MHz Xtensa LX6 4MB flash, SPI, I2C, UART, ADC, DAC",
+      "category": "MCU",
+      "key_specs": {
+        "core": "Xtensa LX6 dual-core",
+        "freq_mhz": 240,
+        "flash_mb": 4,
+        "ram_kb": 520,
+        "wifi": "802.11b/g/n",
+        "bt": "BT4.2+BLE",
+        "package": "Module"
+      },
+      "datasheet_url": "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32e_datasheet_en.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 3.5,
+      "search_text": "ESP32 WiFi Bluetooth BLE dual core 240MHz IoT wireless connectivity 4MB flash 520KB SRAM AWS Azure cloud MQTT HTTP REST API OTA update PWM ADC DAC module antenna"
+    },
+    {
+      "part_number": "nRF52840",
+      "manufacturer": "Nordic Semiconductor",
+      "description": "Multiprotocol BT5, Thread, Zigbee, ANT SoC, Cortex-M4F 64MHz, 1MB Flash 256KB RAM",
+      "category": "MCU",
+      "key_specs": {
+        "core": "Cortex-M4F",
+        "freq_mhz": 64,
+        "flash_kb": 1024,
+        "ram_kb": 256,
+        "bluetooth": "5.0",
+        "protocols": "BLE,Thread,Zigbee,ANT,802.15.4",
+        "package": "QFN73"
+      },
+      "datasheet_url": "https://infocenter.nordicsemi.com/pdf/nRF52840_PS_v1.7.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 6.8,
+      "search_text": "nRF52840 Bluetooth 5 BLE Thread Zigbee ANT 802.15.4 multiprotocol wearable mesh network IoT low power USB 2.0 NFC crypto accelerator QSPI"
+    },
+    {
+      "part_number": "RP2040",
+      "manufacturer": "Raspberry Pi",
+      "description": "Dual Cortex-M0+ 133MHz, 264KB SRAM, 2x PIO state machines, USB 1.1, QFN-56",
+      "category": "MCU",
+      "key_specs": {
+        "core": "Dual Cortex-M0+",
+        "freq_mhz": 133,
+        "ram_kb": 264,
+        "pio": 2,
+        "gpio": 30,
+        "package": "QFN56",
+        "voltage_v": "1.8-3.3"
+      },
+      "datasheet_url": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.0,
+      "search_text": "RP2040 Raspberry Pi Pico dual core Cortex-M0+ PIO state machine USB custom protocol hobbyist maker low cost 264KB SRAM SPI I2C UART ADC PWM"
+    },
+    {
+      "part_number": "ATSAMD51J20A",
+      "manufacturer": "Microchip",
+      "description": "Cortex-M4F 120MHz 1MB Flash 256KB SRAM USB HS Device/Host, CAN, crypto, QFN64",
+      "category": "MCU",
+      "key_specs": {
+        "core": "Cortex-M4F",
+        "freq_mhz": 120,
+        "flash_kb": 1024,
+        "ram_kb": 256,
+        "usb": "HS 480Mbps",
+        "package": "QFN64",
+        "can": true
+      },
+      "datasheet_url": "https://ww1.microchip.com/downloads/en/DeviceDoc/SAM_D5x_E5x_Family_Data_Sheet_DS60001507F.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 5.9,
+      "search_text": "SAMD51 Cortex-M4F 120MHz USB HS high speed host device CAN FD crypto hardware accelerator industrial IoT 1MB flash 256KB RAM QFN64 DMA"
+    },
+    {
+      "part_number": "GD32F407VKT6",
+      "manufacturer": "GigaDevice",
+      "description": "STM32F4 pin-compatible, Cortex-M4 168MHz, 3MB Flash, 192KB RAM, CAN, USB OTG",
+      "category": "MCU",
+      "key_specs": {
+        "core": "Cortex-M4",
+        "freq_mhz": 168,
+        "flash_kb": 3072,
+        "ram_kb": 192,
+        "package": "LQFP100",
+        "voltage_v": "2.6-3.6"
+      },
+      "datasheet_url": "https://www.gigadevice.com/datasheet/gd32f407xx-datasheet/",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 4.0,
+      "search_text": "GD32F407 STM32 compatible Cortex-M4 168MHz 3MB flash cost-effective alternative CAN USB OTG Ethernet LQFP100 industrial automation low cost"
+    },
+    {
+      "part_number": "MIMXRT1062DVJ6B",
+      "manufacturer": "NXP",
+      "description": "i.MX RT1062 Crossover MCU, Cortex-M7 600MHz, 2MB RAM, FlexSPI, Ethernet, MIPI-DSI",
+      "category": "MCU",
+      "key_specs": {
+        "core": "Cortex-M7",
+        "freq_mhz": 600,
+        "ram_mb": 2,
+        "usb": "OTG",
+        "ethernet": "RMII",
+        "display": "MIPI-DSI,LCD",
+        "package": "BGA196"
+      },
+      "datasheet_url": "https://www.nxp.com/docs/en/data-sheet/IMXRT1060CEC.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 16.5,
+      "search_text": "iMXRT1062 NXP crossover MCU Cortex-M7 600MHz 2MB SRAM high performance graphics HMI MIPI DSI LCD QSPI FlexSPI Ethernet USB OTG industrial display touchscreen"
+    },
+    {
+      "part_number": "TMS320F28388D",
+      "manufacturer": "Texas Instruments",
+      "description": "C2000 dual-core DSP 200MHz, real-time control, motor drive, CLA, ePWM, eCAP, HRPWM, 24-ch ADC",
+      "category": "MCU",
+      "key_specs": {
+        "core": "C28x dual + CLA",
+        "freq_mhz": 200,
+        "flash_kb": 1024,
+        "ram_kb": 204,
+        "pwm_channels": 24,
+        "adc_channels": 24,
+        "package": "LQFP176"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/tms320f28388d.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 22.0,
+      "search_text": "TMS320F28388 C2000 DSP real-time control motor drive BLDC PMSM power supply inverter PWM ADC HRPWM FOC field oriented control digital power PFC solar"
+    },
+    {
+      "part_number": "CH32V307VCT6",
+      "manufacturer": "WCH",
+      "description": "RISC-V 144MHz 256KB Flash 64KB RAM, USB HS OTG, Ethernet MAC, CAN, 10-Bit ADC",
+      "category": "MCU",
+      "key_specs": {
+        "core": "RISC-V QINGKE V4F",
+        "freq_mhz": 144,
+        "flash_kb": 256,
+        "ram_kb": 64,
+        "usb": "HS OTG",
+        "ethernet": true,
+        "package": "LQFP100"
+      },
+      "datasheet_url": "https://www.wch-ic.com/products/CH32V307.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.8,
+      "search_text": "CH32V307 RISC-V open source ISA 144MHz USB high speed OTG Ethernet CAN affordable ultra-low-cost alternative industrial IoT LQFP100"
+    },
+    {
+      "part_number": "EFM32PG22C200F512IM32",
+      "manufacturer": "Silicon Labs",
+      "description": "Cortex-M33 38.4MHz ultra-low-power 512KB Flash, 32KB RAM, 36uA/MHz, QFN32",
+      "category": "MCU",
+      "key_specs": {
+        "core": "Cortex-M33",
+        "freq_mhz": 38.4,
+        "flash_kb": 512,
+        "ram_kb": 32,
+        "current_ua_run": 36,
+        "package": "QFN-32"
+      },
+      "datasheet_url": "https://www.silabs.com/microcontrollers/32-bit/efm32-pearl-gecko",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 5.2,
+      "search_text": "EFM32 Pearl Gecko ultra-low power Cortex-M33 36uA energy harvesting IoT sensor node coin cell battery years lifetime sleep current"
+    },
+    {
+      "part_number": "AMS1117-3.3",
+      "manufacturer": "AMS",
+      "description": "1A Low Dropout Regulator, 3.3V Fixed Output, SOT-223",
+      "category": "Power",
+      "key_specs": {
+        "output_v": 3.3,
+        "current_a": 1.0,
+        "dropout_v": 1.2,
+        "package": "SOT-223",
+        "type": "LDO"
+      },
+      "datasheet_url": "https://www.advanced-monolithic.com/pdf/ds1117.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 0.15,
+      "search_text": "AMS1117 LDO linear regulator 3.3V 1A low dropout SOT-223 simple 3.3 volt supply MCU power USB powered board common inexpensive"
+    },
+    {
+      "part_number": "TPS54360B",
+      "manufacturer": "Texas Instruments",
+      "description": "60V 3.5A step-down DC-DC buck converter, 100kHz-2.5MHz, integrated FETs, DCS-Control",
+      "category": "Power",
+      "key_specs": {
+        "vin_max_v": 60,
+        "vout_min_v": 0.8,
+        "current_a": 3.5,
+        "freq_khz": "100-2500",
+        "efficiency_pct": 95,
+        "package": "HSOIC-8"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/tps54360b.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.2,
+      "search_text": "TPS54360 buck converter 60V input 3.5A synchronous step-down wide input industrial 24V 48V rail adjustable output high efficiency switching power supply"
+    },
+    {
+      "part_number": "TPS563201",
+      "manufacturer": "Texas Instruments",
+      "description": "4.5-17V 3A synchronous buck converter, 500kHz, DCS-Control, SOT-23-6",
+      "category": "Power",
+      "key_specs": {
+        "vin_max_v": 17,
+        "vout_min_v": 0.76,
+        "current_a": 3,
+        "freq_khz": 500,
+        "package": "SOT-23-6"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/tps563201.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 0.9,
+      "search_text": "TPS563201 3A buck converter 5V 12V input synchronous step-down small package SOT-23 compact power supply MCU FPGA core voltage"
+    },
+    {
+      "part_number": "LM5175",
+      "manufacturer": "Texas Instruments",
+      "description": "4-switch non-inverting buck-boost controller, 3-65V in, 1-65V out, automotive/industrial",
+      "category": "Power",
+      "key_specs": {
+        "vin_v": "3-65",
+        "vout_v": "1-65",
+        "topology": "4-switch buck-boost",
+        "package": "WQFN-32",
+        "freq_khz": "50-1000"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/lm5175.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 5.4,
+      "search_text": "LM5175 4-switch buck-boost converter wide input range automotive 12V battery 48V mild hybrid 24V non-inverting bidirectional vehicle"
+    },
+    {
+      "part_number": "TPS65988DH",
+      "manufacturer": "Texas Instruments",
+      "description": "USB Type-C and USB PD 3.0 dual port controller, 100W, integrated MCU, QFPN-59",
+      "category": "Power",
+      "key_specs": {
+        "usb_pd": "3.0",
+        "ports": 2,
+        "power_w": 100,
+        "protocol": "USB-C,PD,PPS",
+        "package": "QFPN-59"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/tps65988.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 9.8,
+      "search_text": "USB Power Delivery PD 3.0 100W dual port USB-C charger controller PPS fast charging laptop power adapter negotiation"
+    },
+    {
+      "part_number": "MAX17048G+T",
+      "manufacturer": "Maxim Integrated",
+      "description": "1-Cell Li-Ion/LiPo fuel gauge with ModelGauge, I2C, 1% SOC accuracy, TDFN-8",
+      "category": "Power",
+      "key_specs": {
+        "cells": 1,
+        "interface": "I2C",
+        "accuracy_pct": 1,
+        "quiescent_ua": 23,
+        "package": "TDFN8"
+      },
+      "datasheet_url": "https://datasheets.maximintegrated.com/en/ds/MAX17048-MAX17049.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.8,
+      "search_text": "MAX17048 battery fuel gauge LiPo lithium SOC state of charge I2C battery monitor wearable IoT accurate battery level percentage 1-cell"
+    },
+    {
+      "part_number": "BQ24298",
+      "manufacturer": "Texas Instruments",
+      "description": "USB 5V 2A single-cell Li-Ion charger with power path management, I2C, QFN-20",
+      "category": "Power",
+      "key_specs": {
+        "input_v": "4-6.5",
+        "charge_current_a": 2,
+        "cells": 1,
+        "power_path": true,
+        "interface": "I2C",
+        "package": "QFN20"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/bq24298.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 3.2,
+      "search_text": "BQ24298 lithium ion charger USB 5V 2A power path management battery charger IC wearable portable IoT single cell"
+    },
+    {
+      "part_number": "MCP73831T-2ACI/OT",
+      "manufacturer": "Microchip",
+      "description": "Li-Ion/LiPo single-cell linear charger IC 500mA, USB compatible, SOT-23-5",
+      "category": "Power",
+      "key_specs": {
+        "charge_current_ma": 500,
+        "input_v": "3.75-6",
+        "output_v": 4.2,
+        "topology": "linear",
+        "package": "SOT-23-5"
+      },
+      "datasheet_url": "https://ww1.microchip.com/downloads/en/DeviceDoc/20001984g.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 0.55,
+      "search_text": "MCP73831 LiPo lithium charger USB 500mA simple single cell battery charger wearable portable linear small SOT-23"
+    },
+    {
+      "part_number": "LT3080EDD",
+      "manufacturer": "Analog Devices",
+      "description": "Adjustable 1.1A LDO 0-38V output range, parallel-able, low noise, DFN8",
+      "category": "Power",
+      "key_specs": {
+        "vin_max_v": 40,
+        "vout_range_v": "0-38",
+        "current_a": 1.1,
+        "dropout_mv": 300,
+        "package": "DFN8/MSOP-8"
+      },
+      "datasheet_url": "https://www.analog.com/media/en/technical-documentation/data-sheets/3080fd.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 4.5,
+      "search_text": "LT3080 low dropout regulator adjustable 0V output paralleling low noise precision RF analog supply post-regulation clean power rail"
+    },
+    {
+      "part_number": "LM2596S-5.0",
+      "manufacturer": "Texas Instruments",
+      "description": "Simple Switcher 3A step-down voltage regulator 5V fixed, 40V input, TO-263",
+      "category": "Power",
+      "key_specs": {
+        "vin_max_v": 40,
+        "output_v": 5.0,
+        "current_a": 3.0,
+        "freq_khz": 150,
+        "package": "D2PAK/TO-263"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/lm2596.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.5,
+      "search_text": "LM2596 buck regulator 5V 3A step-down 40V input simple switcher minimal external components low cost industrial power supply 12V to 5V"
+    },
+    {
+      "part_number": "CC1101",
+      "manufacturer": "Texas Instruments",
+      "description": "Sub-1GHz low-power RF transceiver 315/433/868/915MHz, OOK/FSK/GFSK/MSK, QLP-20",
+      "category": "RF",
+      "key_specs": {
+        "freq_mhz": "315/433/868/915",
+        "sensitivity_dbm": -116,
+        "power_dbm": 12,
+        "modulation": "OOK/FSK/GFSK/MSK",
+        "interface": "SPI",
+        "package": "QLP20"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/cc1101.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.1,
+      "search_text": "CC1101 sub-GHz ISM 433MHz 868MHz 915MHz FSK OOK low-power transceiver sensor network remote control automation metering SCADA"
+    },
+    {
+      "part_number": "RFM95W",
+      "manufacturer": "HopeRF",
+      "description": "LoRa 868/915MHz 100mW transceiver module SX1276 based, up to 20dBm, SPI, IPEX",
+      "category": "RF",
+      "key_specs": {
+        "freq_mhz": "868/915",
+        "power_dbm": 20,
+        "sensitivity_dbm": -148,
+        "protocol": "LoRa",
+        "range_km": 10,
+        "interface": "SPI",
+        "package": "Module"
+      },
+      "datasheet_url": "https://www.hoperf.com/data/upload/portal/20191030/RFM95W-V2.0.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 6.5,
+      "search_text": "RFM95 LoRa long range 868MHz 915MHz IoT LPWAN smart city agriculture tracking 10km range low power module SPI"
+    },
+    {
+      "part_number": "CC2652P",
+      "manufacturer": "Texas Instruments",
+      "description": "Multiprotocol 2.4GHz SoC: BLE5, Zigbee, Thread, Matter, 20dBm PA, Cortex-M4F",
+      "category": "RF",
+      "key_specs": {
+        "freq_ghz": 2.4,
+        "protocols": "BLE5,Zigbee,Thread,IEEE802.15.4",
+        "power_dbm": 20,
+        "core": "Cortex-M4F",
+        "package": "VQFN48"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/cc2652p.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 5.9,
+      "search_text": "CC2652P multiprotocol BLE Bluetooth 5 Zigbee Thread Matter IEEE 802.15.4 mesh network smart home 20dBm long range"
+    },
+    {
+      "part_number": "SX1278",
+      "manufacturer": "Semtech",
+      "description": "137-1020MHz LoRa/FSK transceiver -148dBm sensitivity, 20dBm output, QFN-28",
+      "category": "RF",
+      "key_specs": {
+        "freq_mhz": "137-1020",
+        "protocol": "LoRa/FSK/OOK",
+        "power_dbm": 20,
+        "sensitivity_dbm": -148,
+        "interface": "SPI",
+        "package": "QFN28"
+      },
+      "datasheet_url": "https://semtech.com/uploads/documents/DS_SX1278_V2.2_STD.PDF",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 5.2,
+      "search_text": "SX1278 LoRa FSK long range transceiver 433MHz 868MHz 915MHz LPWAN smart metering GPS tracker asset tracking IoT"
+    },
+    {
+      "part_number": "BG96",
+      "manufacturer": "Quectel",
+      "description": "LTE Cat M1/NB1/EGPRS + GNSS module, 3GPP R14, USB/UART, LCC+LGA",
+      "category": "RF",
+      "key_specs": {
+        "tech": "LTE-M/NB-IoT/EGPRS",
+        "gnss": "GPS/GLONASS/BeiDou",
+        "interface": "USB/UART/SPI",
+        "antenna": "ext",
+        "package": "LCC+LGA"
+      },
+      "datasheet_url": "https://www.quectel.com/product/lte-bg96/",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 14.0,
+      "search_text": "BG96 LTE Cat M1 NB-IoT NB1 cellular IoT 4G GNSS GPS GLONASS location tracking smart meter water meter utility industrial M2M"
+    },
+    {
+      "part_number": "nRF24L01+",
+      "manufacturer": "Nordic Semiconductor",
+      "description": "2.4GHz ISM RF transceiver, 250kbps/1Mbps/2Mbps, -82dBm sensitivity, SPI, QFN-20",
+      "category": "RF",
+      "key_specs": {
+        "freq_ghz": 2.4,
+        "data_rate_mbps": "0.25/1/2",
+        "sensitivity_dbm": -82,
+        "power_dbm": 0,
+        "interface": "SPI",
+        "package": "QFN20"
+      },
+      "datasheet_url": "https://www.nordicsemi.com/products/nrf24l01-plus",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.0,
+      "search_text": "nRF24L01 2.4GHz wireless transceiver SPI ISM band remote control RC car drone hobby sensor node indoor point to point"
+    },
+    {
+      "part_number": "MPU-6050",
+      "manufacturer": "TDK InvenSense",
+      "description": "6-Axis IMU: 3-axis gyroscope + 3-axis accelerometer, DMP, I2C/SPI, QFN-24",
+      "category": "Sensor",
+      "key_specs": {
+        "axes": 6,
+        "interface": "I2C/SPI",
+        "gyro_dps": 2000,
+        "accel_g": 16,
+        "package": "QFN24",
+        "supply_v": "2.375-3.46"
+      },
+      "datasheet_url": "https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.5,
+      "search_text": "MPU6050 IMU accelerometer gyroscope 6-axis motion tracking I2C gesture drone quadcopter wearable robotics balance stability"
+    },
+    {
+      "part_number": "BMI270",
+      "manufacturer": "Bosch Sensortec",
+      "description": "6-axis IMU for wearable, AI motion classification, ultra-low power 900uA, SPI/I2C",
+      "category": "Sensor",
+      "key_specs": {
+        "axes": 6,
+        "accel_g": 16,
+        "gyro_dps": 2000,
+        "power_ua": 900,
+        "interface": "SPI/I2C",
+        "package": "LGA-14"
+      },
+      "datasheet_url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmi270-ds000.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.8,
+      "search_text": "BMI270 IMU wearable fitness step counter activity recognition ultra-low power gesture smartwatch sports watch Bosch 6-axis"
+    },
+    {
+      "part_number": "ICM-42688-P",
+      "manufacturer": "TDK InvenSense",
+      "description": "6-axis IMU 32kHz ODR, ultra-low noise gyro 2.8mdps/rtHz, ±16g accel, LGA-14",
+      "category": "Sensor",
+      "key_specs": {
+        "axes": 6,
+        "gyro_noise": "2.8mdps/rtHz",
+        "accel_g": 16,
+        "odr_hz": 32000,
+        "interface": "SPI/I2C",
+        "package": "LGA-14"
+      },
+      "datasheet_url": "https://invensense.tdk.com/wp-content/uploads/2021/07/DS-000347-ICM-42688-P-v1.4.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 4.2,
+      "search_text": "ICM-42688-P high performance IMU drone stabilization FPV racing autopilot 32kHz sampling low noise precision gyroscope accelerometer"
+    },
+    {
+      "part_number": "BMP388",
+      "manufacturer": "Bosch Sensortec",
+      "description": "Barometric pressure and temperature sensor, ±0.5m altitude accuracy, SPI/I2C, LGA-10",
+      "category": "Sensor",
+      "key_specs": {
+        "range_hpa": "300-1250",
+        "accuracy_pa": 3,
+        "altitude_m": 0.5,
+        "interface": "SPI/I2C",
+        "package": "LGA-10"
+      },
+      "datasheet_url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp388-ds001.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.1,
+      "search_text": "BMP388 barometric pressure sensor altitude measurement drone weather station GPS altitude MEMS LGA pressure temperature Bosch"
+    },
+    {
+      "part_number": "BME688",
+      "manufacturer": "Bosch Sensortec",
+      "description": "4-in-1 environmental sensor: gas/VOC, pressure, humidity, temperature, AI on-chip, I2C/SPI",
+      "category": "Sensor",
+      "key_specs": {
+        "sensors": "Gas/Pressure/Humidity/Temp",
+        "interface": "I2C/SPI",
+        "gas_sensor": "VOC/air quality",
+        "package": "LGA-8"
+      },
+      "datasheet_url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme688-ds000.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 4.5,
+      "search_text": "BME688 environmental sensor VOC air quality CO2 humidity temperature pressure BSEC AI smart home IAQ indoor air quality IoT weather"
+    },
+    {
+      "part_number": "MLX90614ESF-DAA",
+      "manufacturer": "Melexis",
+      "description": "Non-contact IR thermometer -70 to 380C, I2C/SMBus/PWM, 0.02C resolution, TO-39",
+      "category": "Sensor",
+      "key_specs": {
+        "range_c": "-70 to 380",
+        "resolution_c": 0.02,
+        "accuracy_c": 0.5,
+        "interface": "SMBus/PWM",
+        "package": "TO-39"
+      },
+      "datasheet_url": "https://www.melexis.com/en/documents/documentation/datasheets/datasheet-mlx90614",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 6.8,
+      "search_text": "MLX90614 infrared temperature sensor non-contact contactless IR thermometer body temperature fever HVAC industrial TO-39 I2C"
+    },
+    {
+      "part_number": "VL53L4CX",
+      "manufacturer": "STMicroelectronics",
+      "description": "Multi-target Time-of-Flight ranging sensor, 6m range, 940nm VCSEL laser, I2C, LGA-12",
+      "category": "Sensor",
+      "key_specs": {
+        "range_m": 6,
+        "wavelength_nm": 940,
+        "fov_deg": 18,
+        "interface": "I2C",
+        "package": "LGA-12"
+      },
+      "datasheet_url": "https://www.st.com/resource/en/datasheet/vl53l4cx.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 3.2,
+      "search_text": "VL53L4CX time-of-flight ToF distance sensor 6m LIDAR proximity robotics obstacle detection gesture LGA 940nm laser"
+    },
+    {
+      "part_number": "INA226AIDT",
+      "manufacturer": "Texas Instruments",
+      "description": "36V 16-bit bidirectional current/power monitor, I2C, ±0.1% gain error, SOT-23-8",
+      "category": "Sensor",
+      "key_specs": {
+        "vin_max_v": 36,
+        "resolution_bits": 16,
+        "accuracy_pct": 0.1,
+        "interface": "I2C",
+        "package": "SOT-23-8"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/ina226.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.9,
+      "search_text": "INA226 current sensor power monitor I2C 36V shunt voltage high-side current measurement energy monitoring power management"
+    },
+    {
+      "part_number": "ACS712ELCTR-05B-T",
+      "manufacturer": "Allegro MicroSystems",
+      "description": "Fully integrated 5A Hall-effect current sensor, 185mV/A, galvanic isolation, SOIC-8",
+      "category": "Sensor",
+      "key_specs": {
+        "range_a": 5,
+        "sensitivity_mv_a": 185,
+        "accuracy_pct": 1.5,
+        "supply_v": 5,
+        "package": "SOIC-8"
+      },
+      "datasheet_url": "https://www.allegromicro.com/en/products/sense/current-sensor-ics/acs712",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.1,
+      "search_text": "ACS712 current sensor Hall effect 5A isolated galvanic isolation motor current measurement power monitoring inverter"
+    },
+    {
+      "part_number": "DS18B20+",
+      "manufacturer": "Maxim Integrated",
+      "description": "1-Wire digital temperature sensor, -55 to +125C, 0.0625C resolution, parasitic power",
+      "category": "Sensor",
+      "key_specs": {
+        "range_c": "-55 to +125",
+        "resolution_c": 0.0625,
+        "accuracy_c": 0.5,
+        "interface": "1-Wire",
+        "package": "TO-92/SOIC-8"
+      },
+      "datasheet_url": "https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.8,
+      "search_text": "DS18B20 temperature sensor 1-wire parasitic power multiple sensors single bus thermometer waterproof industrial pipeline"
+    },
+    {
+      "part_number": "Si7021-A20",
+      "manufacturer": "Silicon Labs",
+      "description": "Digital I2C relative humidity and temperature sensor, ±2% RH, ±0.4C, DFN-6",
+      "category": "Sensor",
+      "key_specs": {
+        "accuracy_rh_pct": 2,
+        "accuracy_temp_c": 0.4,
+        "interface": "I2C",
+        "supply_v": "1.9-3.6",
+        "package": "DFN-6"
+      },
+      "datasheet_url": "https://www.silabs.com/documents/public/data-sheets/Si7021-A20.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.2,
+      "search_text": "Si7021 humidity temperature sensor I2C HVAC smart home thermostat climate control indoor environment monitoring accurate"
+    },
+    {
+      "part_number": "INMP441ACEZ-R7",
+      "manufacturer": "TDK InvenSense",
+      "description": "Omnidirectional MEMS I2S microphone, -26dBFS sensitivity, SNR 61dB, LGA-6",
+      "category": "Sensor",
+      "key_specs": {
+        "interface": "I2S",
+        "sensitivity_db": -26,
+        "snr_db": 61,
+        "supply_v": "1.8-3.3",
+        "package": "LGA-6"
+      },
+      "datasheet_url": "https://invensense.tdk.com/products/analog/inmp441/",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.4,
+      "search_text": "INMP441 I2S MEMS microphone digital microphone voice command smart speaker audio recording noise cancellation IoT"
+    },
+    {
+      "part_number": "W25Q128JVPM",
+      "manufacturer": "Winbond",
+      "description": "128Mbit (16MB) SPI/QPI NOR Flash, 133MHz, 104MB/s, 3.3V, SOIC-8",
+      "category": "Memory",
+      "key_specs": {
+        "capacity_mb": 16,
+        "interface": "SPI/QSPI",
+        "speed_mhz": 133,
+        "voltage_v": "2.7-3.6",
+        "package": "SOIC-8/WSON-8"
+      },
+      "datasheet_url": "https://www.winbond.com/resource-files/w25q128jv_dtr.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.2,
+      "search_text": "W25Q128 SPI QSPI NOR flash 16MB 128Mbit firmware storage XIP execute in place bootloader embedded MCU FPGA configuration"
+    },
+    {
+      "part_number": "IS42S16160J-6BLI",
+      "manufacturer": "ISSI",
+      "description": "256Mbit (32MB) SDRAM 166MHz, 16Mx16 organization, 3.3V, TSOP-54",
+      "category": "Memory",
+      "key_specs": {
+        "capacity_mb": 32,
+        "width_bits": 16,
+        "speed_mhz": 166,
+        "voltage_v": 3.3,
+        "package": "TSOP-54"
+      },
+      "datasheet_url": "https://www.issi.com/WW/pdf/42-45S16160J.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.5,
+      "search_text": "SDRAM 256Mbit 32MB external memory MCU FPGA frame buffer video audio DSP image processing data buffer TSOP"
+    },
+    {
+      "part_number": "S25FL256SAGMFI001",
+      "manufacturer": "Infineon",
+      "description": "256Mbit (32MB) QSPI DDR NOR Flash, 80MHz, 1.8V/3V, WSON-8",
+      "category": "Memory",
+      "key_specs": {
+        "capacity_mb": 32,
+        "interface": "QSPI DDR",
+        "speed_mhz": 80,
+        "voltage_v": "1.7-3.6",
+        "package": "WSON-8"
+      },
+      "datasheet_url": "https://www.infineon.com/dgdl/Infineon-S25FL256S_256-Mb_DataSheet-v19_00-EN.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 3.8,
+      "search_text": "S25FL256 QSPI NOR flash 32MB 256Mbit DDR high speed firmware storage FPGA bitstream configuration XIP large program memory"
+    },
+    {
+      "part_number": "AT24C256C-SSHL-T",
+      "manufacturer": "Microchip",
+      "description": "256Kbit (32KB) I2C EEPROM, 1MHz, 2.5-5.5V, 1 million write endurance, SOT-23-5",
+      "category": "Memory",
+      "key_specs": {
+        "capacity_kb": 32,
+        "interface": "I2C",
+        "speed_mhz": 1,
+        "endurance_cycles": 1000000,
+        "retention_years": 100,
+        "package": "SOT-23-5"
+      },
+      "datasheet_url": "https://ww1.microchip.com/downloads/en/DeviceDoc/AT24C256C.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 0.45,
+      "search_text": "AT24C256 EEPROM 32KB I2C non-volatile configuration calibration settings storage serial number MAC address inventory"
+    },
+    {
+      "part_number": "CY15B104QN-40SXI",
+      "manufacturer": "Infineon",
+      "description": "4Mbit (512KB) F-RAM SPI, 40MHz, 100 trillion write endurance, no write delay, SOIC-8",
+      "category": "Memory",
+      "key_specs": {
+        "capacity_kb": 512,
+        "interface": "SPI",
+        "speed_mhz": 40,
+        "endurance": "100 trillion cycles",
+        "package": "SOIC-8"
+      },
+      "datasheet_url": "https://www.infineon.com/dgdl/Infineon-CY15B104Q-DataSheet-v03_03-EN.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 8.9,
+      "search_text": "FRAM ferroelectric RAM non-volatile fast write infinite endurance data logging black box event recorder industrial safety-critical"
+    },
+    {
+      "part_number": "MCP2515-I/ST",
+      "manufacturer": "Microchip",
+      "description": "Stand-alone CAN 2.0B controller, SPI interface, 1Mbps, 6 filters, TSSOP-20",
+      "category": "Interface",
+      "key_specs": {
+        "protocol": "CAN 2.0B",
+        "speed_mbps": 1,
+        "interface": "SPI",
+        "filters": 6,
+        "package": "TSSOP-20"
+      },
+      "datasheet_url": "https://ww1.microchip.com/downloads/en/DeviceDoc/MCP2515-Stand-Alone-CAN-Controller-with-SPI-20001801J.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.6,
+      "search_text": "MCP2515 CAN bus controller SPI interface automotive OBD industrial CANBUS network automotive ECU communication protocol"
+    },
+    {
+      "part_number": "ISO1050DUB",
+      "manufacturer": "Texas Instruments",
+      "description": "Isolated 1Mbps CAN bus transceiver, 5kV isolation, 3.3V and 5V supply, SOT-23-8",
+      "category": "Interface",
+      "key_specs": {
+        "isolation_v": 5000,
+        "speed_mbps": 1,
+        "protocol": "CAN",
+        "supply_v": "3.3/5",
+        "package": "SOT-23-8"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/iso1050.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 3.2,
+      "search_text": "ISO1050 isolated CAN transceiver galvanic isolation 5kV automotive industrial harsh environment noise immunity motor drive"
+    },
+    {
+      "part_number": "MAX3232ECPW",
+      "manufacturer": "Maxim Integrated",
+      "description": "3V/5V RS-232 transceiver 2-driver/2-receiver, 120kbps, 3-5.5V supply, TSSOP-16",
+      "category": "Interface",
+      "key_specs": {
+        "protocol": "RS-232",
+        "speed_kbps": 120,
+        "drivers": 2,
+        "receivers": 2,
+        "supply_v": "3.0-5.5",
+        "package": "TSSOP-16"
+      },
+      "datasheet_url": "https://datasheets.maximintegrated.com/en/ds/MAX3222-MAX3241.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.8,
+      "search_text": "MAX3232 RS-232 transceiver UART serial interface legacy equipment industrial PC communication DB9 COM port level shifter"
+    },
+    {
+      "part_number": "MAX3485EESA+",
+      "manufacturer": "Maxim Integrated",
+      "description": "RS-485/RS-422 half-duplex transceiver 3.3V, 10Mbps, fail-safe, 32 nodes, SOIC-8",
+      "category": "Interface",
+      "key_specs": {
+        "protocol": "RS-485/RS-422",
+        "speed_mbps": 10,
+        "supply_v": 3.3,
+        "nodes": 32,
+        "package": "SOIC-8"
+      },
+      "datasheet_url": "https://datasheets.maximintegrated.com/en/ds/MAX3483-MAX3491.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.2,
+      "search_text": "MAX3485 RS-485 RS-422 half-duplex transceiver differential bus industrial Modbus PROFIBUS long distance communication noise immunity"
+    },
+    {
+      "part_number": "CH340G",
+      "manufacturer": "WCH",
+      "description": "USB to UART bridge controller, USB 1.1 Full Speed, 2Mbps, 5V/3.3V, SOP-16",
+      "category": "Interface",
+      "key_specs": {
+        "usb": "1.1 Full Speed",
+        "uart_speed_mbps": 2,
+        "supply_v": "3.3/5",
+        "package": "SOP-16"
+      },
+      "datasheet_url": "https://www.wch-ic.com/downloads/CH340DS1_PDF.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 0.3,
+      "search_text": "CH340 USB UART serial converter debug programming Arduino serial monitor low cost USB COM port virtual serial"
+    },
+    {
+      "part_number": "CP2102N-A02-GQFN28R",
+      "manufacturer": "Silicon Labs",
+      "description": "USB to UART/SPI/I2C bridge, USB 2.0 Full Speed, 3Mbps UART, GPIO, QFN-28",
+      "category": "Interface",
+      "key_specs": {
+        "usb": "2.0 Full Speed",
+        "uart_mbps": 3,
+        "interfaces": "UART/SPI/I2C",
+        "package": "QFN-28"
+      },
+      "datasheet_url": "https://www.silabs.com/documents/public/data-sheets/cp2102n-datasheet.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.8,
+      "search_text": "CP2102N USB UART bridge SPI I2C GPIO 3Mbps programmable debug interface development board console serial"
+    },
+    {
+      "part_number": "LAN8720AI-CP-TR",
+      "manufacturer": "Microchip",
+      "description": "10/100 Ethernet PHY with MII/RMII interface, HP Auto-MDI/MDIX, 3.3V, QFN-32",
+      "category": "Interface",
+      "key_specs": {
+        "speed_mbps": "10/100",
+        "interface": "MII/RMII",
+        "supply_v": 3.3,
+        "auto_mdix": true,
+        "package": "QFN-32"
+      },
+      "datasheet_url": "https://ww1.microchip.com/downloads/en/DeviceDoc/8720a.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.4,
+      "search_text": "LAN8720 Ethernet PHY 100Mbps RMII STM32 networking TCP/IP IoT industrial gateway web server embedded Ethernet"
+    },
+    {
+      "part_number": "W5500",
+      "manufacturer": "WIZnet",
+      "description": "Hardwired TCP/IP 10/100 Ethernet controller with SPI, 8 sockets, full stack offload",
+      "category": "Interface",
+      "key_specs": {
+        "speed_mbps": "10/100",
+        "tcp_offload": true,
+        "interface": "SPI",
+        "sockets": 8,
+        "package": "LQFP-48"
+      },
+      "datasheet_url": "https://docs.wiznet.io/Product/iEthernet/W5500/datasheet",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 3.9,
+      "search_text": "W5500 Ethernet controller hardwired TCP IP stack SPI offload 8 sockets simple MCU networking no software stack IoT gateway"
+    },
+    {
+      "part_number": "TCA9548APWR",
+      "manufacturer": "Texas Instruments",
+      "description": "8-channel I2C bus multiplexer/switch, independent voltage levels, TSSOP-24",
+      "category": "Interface",
+      "key_specs": {
+        "channels": 8,
+        "protocol": "I2C",
+        "freq_mhz": 1,
+        "supply_v": "1.65-5.5",
+        "package": "TSSOP-24"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/tca9548a.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.5,
+      "search_text": "TCA9548 I2C multiplexer 8-channel bus switch address conflict resolution multiple same-address devices sensor hub expansion"
+    },
+    {
+      "part_number": "PCA9685PW",
+      "manufacturer": "NXP",
+      "description": "16-channel 12-bit PWM/servo driver, I2C, 24Hz-1.5kHz, LED brightness control, TSSOP-28",
+      "category": "Interface",
+      "key_specs": {
+        "channels": 16,
+        "resolution_bits": 12,
+        "freq_hz": "24-1526",
+        "interface": "I2C",
+        "package": "TSSOP-28"
+      },
+      "datasheet_url": "https://www.nxp.com/docs/en/data-sheet/PCA9685.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.1,
+      "search_text": "PCA9685 PWM servo controller 16-channel I2C robotics servo arm LED brightness control pan-tilt camera gimbal"
+    },
+    {
+      "part_number": "MCP3208-CI/SL",
+      "manufacturer": "Microchip",
+      "description": "8-channel 12-bit SPI ADC, 100ksps, 2.7-5.5V supply, SOIC-16",
+      "category": "Analog",
+      "key_specs": {
+        "channels": 8,
+        "resolution_bits": 12,
+        "speed_ksps": 100,
+        "supply_v": "2.7-5.5",
+        "interface": "SPI",
+        "package": "SOIC-16"
+      },
+      "datasheet_url": "https://ww1.microchip.com/downloads/en/DeviceDoc/21298e.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.8,
+      "search_text": "MCP3208 ADC analog digital converter 12-bit 8 channel SPI sensor reading temperature pressure joystick potentiometer multichannel"
+    },
+    {
+      "part_number": "ADS1115IDGSR",
+      "manufacturer": "Texas Instruments",
+      "description": "4-channel 16-bit I2C delta-sigma ADC, 860sps, programmable gain amplifier, comparator",
+      "category": "Analog",
+      "key_specs": {
+        "channels": 4,
+        "resolution_bits": 16,
+        "speed_sps": 860,
+        "gain": "up to 16x PGA",
+        "interface": "I2C",
+        "package": "MSOP-10"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/ads1115.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.1,
+      "search_text": "ADS1115 16-bit ADC I2C high resolution differential single-ended current voltage measurement precision data acquisition small signal"
+    },
+    {
+      "part_number": "MCP4725A0T-E/CH",
+      "manufacturer": "Microchip",
+      "description": "Single-channel 12-bit I2C DAC with EEPROM, 2.7-5.5V, SOT-23-6",
+      "category": "Analog",
+      "key_specs": {
+        "channels": 1,
+        "resolution_bits": 12,
+        "interface": "I2C",
+        "eeprom": true,
+        "supply_v": "2.7-5.5",
+        "package": "SOT-23-6"
+      },
+      "datasheet_url": "https://ww1.microchip.com/downloads/en/DeviceDoc/22039d.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.1,
+      "search_text": "MCP4725 DAC digital analog converter 12-bit I2C waveform generator analog output voltage reference servo motor control audio"
+    },
+    {
+      "part_number": "OPA2134UA",
+      "manufacturer": "Texas Instruments",
+      "description": "Dual FET-input audio op-amp, THD 0.00008%, ±18V supply, 8MHz GBW, SO-8",
+      "category": "Analog",
+      "key_specs": {
+        "channels": 2,
+        "gbw_mhz": 8,
+        "thd_pct": 8e-05,
+        "supply_v": "±2.5 to ±18",
+        "input": "FET",
+        "package": "SO-8"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/opa2134.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 4.2,
+      "search_text": "OPA2134 audio op-amp low distortion high fidelity preamplifier mixer audio DAC output buffer instrumentation precision"
+    },
+    {
+      "part_number": "AD8232ACPZ-R7",
+      "manufacturer": "Analog Devices",
+      "description": "Single-lead ECG/heart rate front-end IC, integrated instrumentation amp + filters, LFCSP-20",
+      "category": "Analog",
+      "key_specs": {
+        "application": "ECG/heart rate",
+        "gain": "100x",
+        "cmrr_db": 80,
+        "supply_v": "1.9-3.6",
+        "package": "LFCSP-20"
+      },
+      "datasheet_url": "https://www.analog.com/media/en/technical-documentation/data-sheets/ad8232.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 5.8,
+      "search_text": "AD8232 ECG heart rate monitor biopotential front-end instrumentation amplifier EKG wearable medical health monitoring lead detection"
+    },
+    {
+      "part_number": "INA128PA",
+      "manufacturer": "Texas Instruments",
+      "description": "Precision instrumentation amplifier, 130dB CMRR, G=1-10000, ±15V, SO-8",
+      "category": "Analog",
+      "key_specs": {
+        "gain": "1-10000",
+        "cmrr_db": 130,
+        "noise_nv_hz": 8,
+        "supply_v": "±2.25 to ±18",
+        "bandwidth_mhz": 1.3,
+        "package": "DIP-8/SOIC-8"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/ina128.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 6.5,
+      "search_text": "INA128 instrumentation amplifier precision differential bridge strain gauge load cell pressure sensor Wheatstone signal conditioning"
+    },
+    {
+      "part_number": "MAX98357AEWL+T",
+      "manufacturer": "Maxim Integrated",
+      "description": "I2S PCM Class D amplifier 3.2W, filterless, 92% efficiency, tiny WLP-9",
+      "category": "Analog",
+      "key_specs": {
+        "power_w": 3.2,
+        "interface": "I2S/PCM",
+        "efficiency_pct": 92,
+        "supply_v": "2.5-5.5",
+        "package": "WLP-9"
+      },
+      "datasheet_url": "https://datasheets.maximintegrated.com/en/ds/MAX98357A-MAX98357B.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 2.1,
+      "search_text": "MAX98357 Class D amplifier I2S audio speaker amplifier filterless compact IoT smart speaker voice assistant audio output"
+    },
+    {
+      "part_number": "DRV8833PWPR",
+      "manufacturer": "Texas Instruments",
+      "description": "Dual H-bridge motor driver, 2A per channel, 2.7-10.8V, sleep mode, HTSSOP-16",
+      "category": "MotorDriver",
+      "key_specs": {
+        "channels": 2,
+        "current_a": 2,
+        "voltage_v": "2.7-10.8",
+        "topology": "H-bridge",
+        "protection": "OCP/OTP",
+        "package": "HTSSOP-16"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/drv8833.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.9,
+      "search_text": "DRV8833 dual H-bridge motor driver DC motor brushed stepper robot 2A 5V low voltage toy drone arm gripper"
+    },
+    {
+      "part_number": "TMC2209-LA-T",
+      "manufacturer": "Trinamic",
+      "description": "Stepper motor driver 2.8A UART/STEP+DIR, StealthChop2, SpreadCycle, stallGuard4, TQFP-28",
+      "category": "MotorDriver",
+      "key_specs": {
+        "current_a": 2.8,
+        "interface": "UART/STEP+DIR",
+        "voltage_v": "4.75-29",
+        "microstepping": 256,
+        "features": "StealthChop/stallGuard",
+        "package": "TQFP-28"
+      },
+      "datasheet_url": "https://www.trinamic.com/fileadmin/assets/Products/ICs_Documents/TMC2209_Datasheet_V103.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 5.5,
+      "search_text": "TMC2209 stepper motor driver 3D printer CNC silent stealthchop NEMA17 sensorless homing stallguard UART configuration"
+    },
+    {
+      "part_number": "DRV8305NPHP",
+      "manufacturer": "Texas Instruments",
+      "description": "3-phase BLDC gate driver, 60V, SPI, OCP/OVP/UVLO, integrated 3-phase current sense amp",
+      "category": "MotorDriver",
+      "key_specs": {
+        "phases": 3,
+        "voltage_v": "6-60",
+        "gate_current_a": 1.5,
+        "interface": "SPI",
+        "sensing": "integrated 3-phase shunt",
+        "package": "HTSSOP-56"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/drv8305.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 4.8,
+      "search_text": "DRV8305 BLDC brushless DC motor 3-phase gate driver FOC field oriented control 60V E-bike drone EV inverter SPI"
+    },
+    {
+      "part_number": "DRV8313",
+      "manufacturer": "Texas Instruments",
+      "description": "3-phase BLDC motor pre-driver, 1.7A peak per phase, 8-60V, SPI/PWM, HTSSOP-28",
+      "category": "MotorDriver",
+      "key_specs": {
+        "phases": 3,
+        "current_a": 1.7,
+        "voltage_v": "8-60",
+        "interface": "SPI/PWM",
+        "package": "HTSSOP-28"
+      },
+      "datasheet_url": "https://www.ti.com/lit/ds/symlink/drv8313.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 5.0,
+      "search_text": "DRV8313 BLDC motor driver 3-phase predriver PWM SPI brushless motor control spindle disk fan"
+    },
+    {
+      "part_number": "STSPIN32F0A",
+      "manufacturer": "STMicroelectronics",
+      "description": "BLDC gate driver + Cortex-M0 MCU SoC, 45V, 3-phase, UART/SPI/I2C, integrated bootstrap",
+      "category": "MotorDriver",
+      "key_specs": {
+        "phases": 3,
+        "voltage_v": 45,
+        "core": "Cortex-M0",
+        "package": "QFN-48",
+        "features": "bootstrap,OCP,OVP"
+      },
+      "datasheet_url": "https://www.st.com/resource/en/datasheet/stspin32f0a.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 7.2,
+      "search_text": "STSPIN32F0 integrated BLDC motor driver MCU 3-phase FOC field oriented 45V e-scooter fan pump HVAC gate driver single chip solution"
+    },
+    {
+      "part_number": "SSD1306",
+      "manufacturer": "Solomon Systech",
+      "description": "128x64 monochrome OLED display driver, I2C/SPI, 3.3V, built-in charge pump",
+      "category": "Display",
+      "key_specs": {
+        "resolution": "128x64",
+        "interface": "I2C/SPI",
+        "supply_v": "1.65-3.3",
+        "color": "monochrome",
+        "charge_pump": true
+      },
+      "datasheet_url": "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 1.0,
+      "search_text": "SSD1306 OLED display 128x64 I2C SPI small screen IoT wearable status display text graphics embedded HMI 0.96 inch"
+    },
+    {
+      "part_number": "WS2812B",
+      "manufacturer": "Worldsemi",
+      "description": "Intelligent addressable RGB LED, integrated WS2811 driver, single-wire protocol, 5V, 5050",
+      "category": "Display",
+      "key_specs": {
+        "colors": 16777216,
+        "protocol": "Single-wire 800kbps",
+        "supply_v": 5,
+        "current_ma": 60,
+        "package": "5050 SMD"
+      },
+      "datasheet_url": "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 0.3,
+      "search_text": "WS2812B NeoPixel addressable RGB LED strip lighting animation status indicator single wire chainable IoT decoration maker"
+    },
+    {
+      "part_number": "ICE40UP5K-SG48ITR",
+      "manufacturer": "Lattice Semiconductor",
+      "description": "Ultra-low power 5.3K LUT iCE40 FPGA, open toolchain, SPRAM, DSP, 39 IOs, SG48",
+      "category": "FPGA",
+      "key_specs": {
+        "luts": 5280,
+        "spram_kb": 1024,
+        "io": 39,
+        "standby_ua": 75,
+        "package": "SG48",
+        "toolchain": "open-source"
+      },
+      "datasheet_url": "https://www.latticesemi.com/view_document?document_id=51022",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 5.0,
+      "search_text": "iCE40UP5K ultra-low-power FPGA small open source toolchain IceStorm Yosys NextPNR wearable always-on interface bridge glue logic"
+    },
+    {
+      "part_number": "XC9572XL-10VQG64C",
+      "manufacturer": "AMD Xilinx",
+      "description": "72 macrocell CPLD, 5ns propagation delay, 3.3V, ISP in-circuit programmable, 52 IOs",
+      "category": "FPGA",
+      "key_specs": {
+        "macrocells": 72,
+        "propagation_ns": 5,
+        "supply_v": 3.3,
+        "io": 52,
+        "isp": true,
+        "package": "VQG64"
+      },
+      "datasheet_url": "https://www.xilinx.com/support/documentation/data_sheets/ds057.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 4.5,
+      "search_text": "XC9572XL CPLD 72 macrocell glue logic state machine bus arbiter address decoder interface bridge low latency deterministic 3.3V"
+    },
+    {
+      "part_number": "XC7A35T-1CPG236C",
+      "manufacturer": "AMD Xilinx",
+      "description": "Artix-7 FPGA 33K LUTs, 90 DSP slices, 1.8Mb BRAM, 106 IOs, 1Gbps SerDes, CPG236",
+      "category": "FPGA",
+      "key_specs": {
+        "luts": 33280,
+        "dsp": 90,
+        "bram_kb": 1800,
+        "io": 106,
+        "serdes_gbps": 1.0,
+        "package": "CPG236"
+      },
+      "datasheet_url": "https://www.xilinx.com/support/documentation/data_sheets/ds181_Artix_7_Data_Sheet.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 28.0,
+      "search_text": "Xilinx Artix-7 XC7A35T FPGA 33K LUT DSP BRAM SerDes image processing signal processing protocol implementation mid-range"
+    },
+    {
+      "part_number": "USBLC6-2SC6",
+      "manufacturer": "STMicroelectronics",
+      "description": "Ultra-low capacitance 0.2pF ESD protection for USB 2.0 lines, SOT-23-6",
+      "category": "Protection",
+      "key_specs": {
+        "capacitance_pf": 0.2,
+        "interface": "USB 2.0",
+        "vclamp_v": 7,
+        "channels": 2,
+        "package": "SOT-23-6"
+      },
+      "datasheet_url": "https://www.st.com/resource/en/datasheet/usblc6-2.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 0.35,
+      "search_text": "USBLC6 ESD protection USB 2.0 TVS diode ultra-low capacitance SOT-23 data line protection IEC61000-4-2 standard"
+    },
+    {
+      "part_number": "74HC595D",
+      "manufacturer": "NXP",
+      "description": "8-bit SPI shift register with output latch, 74HC logic, 2-6V supply, SOIC-16",
+      "category": "Logic",
+      "key_specs": {
+        "bits": 8,
+        "type": "shift register + latch",
+        "interface": "SPI compatible",
+        "supply_v": "2-6",
+        "package": "SOIC-16"
+      },
+      "datasheet_url": "https://www.nxp.com/docs/en/data-sheet/74HC_HCT595.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 0.25,
+      "search_text": "74HC595 shift register IO expander GPIO SPI serial-to-parallel LED control output port expansion daisy chain"
+    },
+    {
+      "part_number": "HMC8410LP2FE",
+      "manufacturer": "Analog Devices",
+      "description": "Wideband GaAs pHEMT LNA, 0.5-8 GHz, 1.4 dB NF, 20 dB gain, +22 dBm IIP3, LP2F-14 package",
+      "category": "RF-LNA",
+      "key_specs": {
+        "freq_min_ghz": 0.5,
+        "freq_max_ghz": 8.0,
+        "nf_db": 1.4,
+        "gain_db": 20,
+        "iip3_dbm": 22,
+        "package": "LP2F-14",
+        "vdd_v": 5.0,
+        "idd_ma": 60
+      },
+      "datasheet_url": "https://www.analog.com/en/products/hmc8410.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 18.0,
+      "search_text": "HMC8410 LNA low-noise amplifier 0.5-8 GHz 1.4 dB NF 20 dB gain IIP3 22 dBm GaAs pHEMT wideband receiver front-end S-band C-band X-band"
+    },
+    {
+      "part_number": "ADL8107",
+      "manufacturer": "Analog Devices",
+      "description": "Ultra-low-noise GaAs pHEMT LNA, 2-18 GHz, 1.3 dB NF, 22 dB gain, +20 dBm OIP3, SOT-89",
+      "category": "RF-LNA",
+      "key_specs": {
+        "freq_min_ghz": 2.0,
+        "freq_max_ghz": 18.0,
+        "nf_db": 1.3,
+        "gain_db": 22,
+        "oip3_dbm": 20,
+        "package": "SOT-89",
+        "vdd_v": 5.0,
+        "idd_ma": 70
+      },
+      "datasheet_url": "https://www.analog.com/en/products/adl8107.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 24.0,
+      "search_text": "ADL8107 LNA 2-18 GHz wideband ultra-low noise 1.3 dB 22 dB gain GaAs pHEMT radar EW SIGINT receiver"
+    },
+    {
+      "part_number": "QPL9057",
+      "manufacturer": "Qorvo",
+      "description": "GaAs pHEMT LNA, 0.05-6 GHz, 0.6 dB NF, 22 dB gain, +37 dBm OIP3, DFN-8",
+      "category": "RF-LNA",
+      "key_specs": {
+        "freq_min_ghz": 0.05,
+        "freq_max_ghz": 6.0,
+        "nf_db": 0.6,
+        "gain_db": 22,
+        "oip3_dbm": 37,
+        "package": "DFN-8",
+        "vdd_v": 5.0,
+        "idd_ma": 88
+      },
+      "datasheet_url": "https://www.qorvo.com/products/p/QPL9057",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 6.5,
+      "search_text": "QPL9057 Qorvo LNA 50 MHz to 6 GHz 0.6 dB NF 22 dB gain 37 dBm OIP3 wireless infrastructure test instrumentation"
+    },
+    {
+      "part_number": "MAAL-011138",
+      "manufacturer": "MACOM",
+      "description": "Low-noise amplifier, 0.7-6 GHz, 0.6 dB NF, 20 dB gain, +30 dBm OIP3, 3x3 DFN",
+      "category": "RF-LNA",
+      "key_specs": {
+        "freq_min_ghz": 0.7,
+        "freq_max_ghz": 6.0,
+        "nf_db": 0.6,
+        "gain_db": 20,
+        "oip3_dbm": 30,
+        "package": "DFN-8",
+        "vdd_v": 5.0
+      },
+      "datasheet_url": "https://www.macom.com/products/product-detail/MAAL-011138",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 8.0,
+      "search_text": "MACOM MAAL-011138 LNA 700 MHz to 6 GHz 0.6 dB NF cellular base station test instrumentation"
+    },
+    {
+      "part_number": "HMC8411LP2FE",
+      "manufacturer": "Analog Devices",
+      "description": "GaAs pHEMT LNA, 0.01-10 GHz, 1.2 dB NF, 22 dB gain, +30 dBm IIP3, LP2F-14",
+      "category": "RF-LNA",
+      "key_specs": {
+        "freq_min_ghz": 0.01,
+        "freq_max_ghz": 10.0,
+        "nf_db": 1.2,
+        "gain_db": 22,
+        "iip3_dbm": 30,
+        "package": "LP2F-14",
+        "vdd_v": 5.0
+      },
+      "datasheet_url": "https://www.analog.com/en/products/hmc8411.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 22.0,
+      "search_text": "HMC8411 LNA 10 MHz to 10 GHz 1.2 dB NF 22 dB gain high linearity wideband EW test instrumentation"
+    },
+    {
+      "part_number": "HMC1049LP5E",
+      "manufacturer": "Analog Devices",
+      "description": "Double-balanced passive mixer, 3-10 GHz RF, 2-6 GHz LO, 8 dB conversion loss, +28 dBm IIP3, LP5-32",
+      "category": "RF-Mixer",
+      "key_specs": {
+        "rf_min_ghz": 3.0,
+        "rf_max_ghz": 10.0,
+        "lo_min_ghz": 2.0,
+        "lo_max_ghz": 6.0,
+        "conv_loss_db": 8,
+        "iip3_dbm": 28,
+        "package": "LP5-32"
+      },
+      "datasheet_url": "https://www.analog.com/en/products/hmc1049.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 45.0,
+      "search_text": "HMC1049LP5E mixer double-balanced 3-10 GHz passive high linearity 28 dBm IIP3 radar EW downconversion"
+    },
+    {
+      "part_number": "ADL5801",
+      "manufacturer": "Analog Devices",
+      "description": "Active mixer, 10 MHz to 6 GHz RF, +28 dBm IIP3, +13 dB conversion gain, 4x4 LFCSP",
+      "category": "RF-Mixer",
+      "key_specs": {
+        "rf_min_ghz": 0.01,
+        "rf_max_ghz": 6.0,
+        "conv_gain_db": 13,
+        "iip3_dbm": 28,
+        "nf_db": 12,
+        "package": "LFCSP-16",
+        "vdd_v": 5.0
+      },
+      "datasheet_url": "https://www.analog.com/en/products/adl5801.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 12.5,
+      "search_text": "ADL5801 active mixer 10 MHz to 6 GHz high IIP3 downconverter upconverter cellular base station"
+    },
+    {
+      "part_number": "M1-0212LA",
+      "manufacturer": "Marki Microwave",
+      "description": "Double-balanced diode mixer, 2-18 GHz RF/LO, +14 dBm LO drive, +20 dBm IIP3, 2.4x2.4 mm QFN",
+      "category": "RF-Mixer",
+      "key_specs": {
+        "rf_min_ghz": 2.0,
+        "rf_max_ghz": 18.0,
+        "lo_drive_dbm": 14,
+        "conv_loss_db": 8,
+        "iip3_dbm": 20,
+        "package": "QFN-16"
+      },
+      "datasheet_url": "https://www.markimicrowave.com/mixers/m1-0212la.aspx",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 120.0,
+      "search_text": "Marki M1-0212LA mixer 2-18 GHz wideband double-balanced low conversion loss radar ECM SIGINT"
+    },
+    {
+      "part_number": "HMC998APM5E",
+      "manufacturer": "Analog Devices",
+      "description": "GaAs pHEMT driver amplifier, DC-20 GHz, 15 dB gain, +24 dBm P1dB, +35 dBm IIP3, QFN-24",
+      "category": "RF-Amplifier",
+      "key_specs": {
+        "freq_min_ghz": 0.01,
+        "freq_max_ghz": 20.0,
+        "gain_db": 15,
+        "p1db_dbm": 24,
+        "iip3_dbm": 35,
+        "package": "QFN-24",
+        "vdd_v": 10.0
+      },
+      "datasheet_url": "https://www.analog.com/en/products/hmc998.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 75.0,
+      "search_text": "HMC998 GaAs pHEMT driver amplifier DC-20 GHz medium power high linearity radar EW instrumentation"
+    },
+    {
+      "part_number": "ZBSF-95+",
+      "manufacturer": "Mini-Circuits",
+      "description": "Cavity bandpass filter, 9.0-9.5 GHz, 1 dB IL, >60 dB rejection at 8.5/10 GHz, SMA-F",
+      "category": "RF-Filter",
+      "key_specs": {
+        "f_low_ghz": 9.0,
+        "f_high_ghz": 9.5,
+        "insertion_loss_db": 1.0,
+        "rejection_db": 60,
+        "package": "SMA-F",
+        "connector": "SMA"
+      },
+      "datasheet_url": "https://www.minicircuits.com/pdfs/ZBSF-95+.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 175.0,
+      "search_text": "Mini-Circuits ZBSF-95 cavity bandpass filter 9.0-9.5 GHz X-band radar preselector low insertion loss"
+    },
+    {
+      "part_number": "VBFZ-1400-S+",
+      "manufacturer": "Mini-Circuits",
+      "description": "LTCC bandpass filter, 1300-1450 MHz, 1.8 dB IL, 60 dB reject at 950/1900 MHz, 0603 SMT",
+      "category": "RF-Filter",
+      "key_specs": {
+        "f_low_mhz": 1300,
+        "f_high_mhz": 1450,
+        "insertion_loss_db": 1.8,
+        "rejection_db": 60,
+        "package": "0603"
+      },
+      "datasheet_url": "https://www.minicircuits.com/pdfs/VBFZ-1400-S+.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 18.0,
+      "search_text": "Mini-Circuits VBFZ-1400 LTCC bandpass filter L-band GPS preselector low profile SMT"
+    },
+    {
+      "part_number": "HMC1045",
+      "manufacturer": "Analog Devices",
+      "description": "PIN diode limiter, 0.1-18 GHz, +43 dBm CW, 0.5 dB IL, 0.5 W leakage, LFCSP-8",
+      "category": "RF-Limiter",
+      "key_specs": {
+        "freq_min_ghz": 0.1,
+        "freq_max_ghz": 18.0,
+        "max_cw_dbm": 43,
+        "max_leakage_w": 0.5,
+        "insertion_loss_db": 0.5,
+        "package": "LFCSP-8"
+      },
+      "datasheet_url": "https://www.analog.com/en/products/hmc1045.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 28.0,
+      "search_text": "HMC1045 PIN diode limiter 100 MHz to 18 GHz survivability 20 W CW front-end protection radar T/R"
+    },
+    {
+      "part_number": "MALR-010802-TR1000",
+      "manufacturer": "MACOM",
+      "description": "PIN-diode limiter, 0.5-18 GHz, +43 dBm CW, 0.8 dB IL, 1 ns recovery, LGA-4",
+      "category": "RF-Limiter",
+      "key_specs": {
+        "freq_min_ghz": 0.5,
+        "freq_max_ghz": 18.0,
+        "max_cw_dbm": 43,
+        "recovery_ns": 1,
+        "insertion_loss_db": 0.8,
+        "package": "LGA-4"
+      },
+      "datasheet_url": "https://www.macom.com/products/product-detail/MALR-010802",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 15.0,
+      "search_text": "MACOM MALR-010802 PIN-diode limiter fast recovery radar EW receiver protection"
+    },
+    {
+      "part_number": "HMC933LP4E",
+      "manufacturer": "Analog Devices",
+      "description": "6-bit digital phase shifter, 2-4 GHz, 5.6° LSB, 7 dB IL, 4x4 QFN-24",
+      "category": "RF-PhaseShifter",
+      "key_specs": {
+        "freq_min_ghz": 2.0,
+        "freq_max_ghz": 4.0,
+        "bits": 6,
+        "lsb_deg": 5.6,
+        "insertion_loss_db": 7.0,
+        "package": "QFN-24"
+      },
+      "datasheet_url": "https://www.analog.com/en/products/hmc933.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 60.0,
+      "search_text": "HMC933 digital phase shifter 2-4 GHz 6-bit phased array beam steering radar"
+    },
+    {
+      "part_number": "HMC472ALP4E",
+      "manufacturer": "Analog Devices",
+      "description": "6-bit digital step attenuator, DC-4 GHz, 31.5 dB range, 0.5 dB LSB, 4x4 QFN-24",
+      "category": "RF-VGA",
+      "key_specs": {
+        "freq_min_ghz": 0.0,
+        "freq_max_ghz": 4.0,
+        "range_db": 31.5,
+        "lsb_db": 0.5,
+        "package": "QFN-24"
+      },
+      "datasheet_url": "https://www.analog.com/en/products/hmc472a.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 14.0,
+      "search_text": "HMC472A step attenuator DC-4 GHz digital 6-bit AGC gain control"
+    },
+    {
+      "part_number": "ADL5902",
+      "manufacturer": "Analog Devices",
+      "description": "RMS power detector, 50 MHz to 9 GHz, 65 dB dynamic range, log response, 4x4 LFCSP",
+      "category": "RF-Detector",
+      "key_specs": {
+        "freq_min_ghz": 0.05,
+        "freq_max_ghz": 9.0,
+        "dynamic_range_db": 65,
+        "package": "LFCSP-16",
+        "vdd_v": 5.0
+      },
+      "datasheet_url": "https://www.analog.com/en/products/adl5902.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 20.0,
+      "search_text": "ADL5902 RMS power detector 9 GHz 65 dB dynamic range logarithmic cellular base station radar AGC"
+    },
+    {
+      "part_number": "AD9208",
+      "manufacturer": "Analog Devices",
+      "description": "Dual 14-bit 3 GSPS ADC, 9 GHz AFE, JESD204B, 4 digital downconverters, CSPBGA-196",
+      "category": "RF-ADC",
+      "key_specs": {
+        "resolution_bits": 14,
+        "sample_rate_gsps": 3.0,
+        "afe_ghz": 9.0,
+        "interface": "JESD204B",
+        "package": "CSPBGA-196",
+        "vdd_v": 1.25
+      },
+      "datasheet_url": "https://www.analog.com/en/products/ad9208.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 425.0,
+      "search_text": "AD9208 dual 14-bit 3 GSPS ADC direct RF sampling JESD204B DDC wideband software defined radio EW SIGINT"
+    },
+    {
+      "part_number": "AD9680",
+      "manufacturer": "Analog Devices",
+      "description": "Dual 14-bit 1 GSPS ADC, 2 GHz AFE, JESD204B, CSPBGA-144",
+      "category": "RF-ADC",
+      "key_specs": {
+        "resolution_bits": 14,
+        "sample_rate_gsps": 1.0,
+        "afe_ghz": 2.0,
+        "interface": "JESD204B",
+        "package": "CSPBGA-144",
+        "vdd_v": 1.25
+      },
+      "datasheet_url": "https://www.analog.com/en/products/ad9680.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 320.0,
+      "search_text": "AD9680 dual 14-bit 1 GSPS ADC IF sampling JESD204B software defined radio instrumentation radar"
+    },
+    {
+      "part_number": "AD9082",
+      "manufacturer": "Analog Devices",
+      "description": "MxFE quad 12-bit 12 GSPS DAC + dual 6 GSPS 12-bit ADC, CSPBGA-324",
+      "category": "RF-MxFE",
+      "key_specs": {
+        "dac_rate_gsps": 12.0,
+        "adc_rate_gsps": 6.0,
+        "dac_bits": 12,
+        "adc_bits": 12,
+        "package": "CSPBGA-324"
+      },
+      "datasheet_url": "https://www.analog.com/en/products/ad9082.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 950.0,
+      "search_text": "AD9082 MxFE mixed-signal front end 12 GSPS DAC 6 GSPS ADC direct RF sampling phased array radar EW transceiver"
+    },
+    {
+      "part_number": "LMX2594",
+      "manufacturer": "Texas Instruments",
+      "description": "Wideband PLL synthesizer, 10 MHz to 15 GHz, -115 dBc/Hz at 1 MHz offset, WQFN-40",
+      "category": "RF-PLL",
+      "key_specs": {
+        "freq_min_mhz": 10,
+        "freq_max_ghz": 15,
+        "phase_noise_dbchz": -115,
+        "package": "WQFN-40",
+        "vdd_v": 3.3
+      },
+      "datasheet_url": "https://www.ti.com/product/LMX2594",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 28.0,
+      "search_text": "LMX2594 TI PLL synthesizer 15 GHz integer-N fractional-N low phase noise LO generation RF signal generation"
+    },
+    {
+      "part_number": "ADF4371",
+      "manufacturer": "Analog Devices",
+      "description": "Microwave wideband synthesizer with integrated VCO, 62.5 MHz to 32 GHz, -110 dBc/Hz, LFCSP-32",
+      "category": "RF-PLL",
+      "key_specs": {
+        "freq_min_mhz": 62.5,
+        "freq_max_ghz": 32,
+        "phase_noise_dbchz": -110,
+        "package": "LFCSP-32",
+        "vdd_v": 3.3
+      },
+      "datasheet_url": "https://www.analog.com/en/products/adf4371.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 180.0,
+      "search_text": "ADF4371 ADI PLL synthesizer 32 GHz wideband integrated VCO mmWave test instrumentation"
+    },
+    {
+      "part_number": "HMC830LP6GE",
+      "manufacturer": "Analog Devices",
+      "description": "Fractional-N PLL + VCO, 25 MHz to 3 GHz, -110 dBc/Hz at 1 MHz, QFN-36",
+      "category": "RF-PLL",
+      "key_specs": {
+        "freq_min_mhz": 25,
+        "freq_max_mhz": 3000,
+        "phase_noise_dbchz": -110,
+        "package": "QFN-36",
+        "vdd_v": 3.3
+      },
+      "datasheet_url": "https://www.analog.com/en/products/hmc830.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 32.0,
+      "search_text": "HMC830 fractional-N PLL integrated VCO 3 GHz low phase noise LO synthesizer"
+    },
+    {
+      "part_number": "HMC547ALC3",
+      "manufacturer": "Analog Devices",
+      "description": "SPDT RF switch, DC-28 GHz, 40 dB isolation, 2 dB IL, reflective, LCC-12",
+      "category": "RF-Switch",
+      "key_specs": {
+        "freq_min_ghz": 0.0,
+        "freq_max_ghz": 28,
+        "isolation_db": 40,
+        "insertion_loss_db": 2.0,
+        "package": "LCC-12"
+      },
+      "datasheet_url": "https://www.analog.com/en/products/hmc547a.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 20.0,
+      "search_text": "HMC547A SPDT RF switch DC-28 GHz high isolation wideband T/R switching radar EW"
+    },
+    {
+      "part_number": "TCM1-83X+",
+      "manufacturer": "Mini-Circuits",
+      "description": "RF balun, 10 MHz to 8 GHz, 2:1 impedance, 1.5 dB IL, 0.3 dB amplitude imbalance, SMT",
+      "category": "RF-Balun",
+      "key_specs": {
+        "freq_min_mhz": 10,
+        "freq_max_ghz": 8,
+        "insertion_loss_db": 1.5,
+        "amplitude_imbalance_db": 0.3,
+        "package": "LTCC-SMT"
+      },
+      "datasheet_url": "https://www.minicircuits.com/pdfs/TCM1-83X+.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 6.0,
+      "search_text": "Mini-Circuits TCM1-83X balun 10 MHz to 8 GHz 1:1 impedance ratio ADC differential driver I/Q"
+    },
+    {
+      "part_number": "AD9164",
+      "manufacturer": "Analog Devices",
+      "description": "16-bit 12 GSPS RF DAC, 9 GHz synthesis bandwidth, JESD204B, CSPBGA-169",
+      "category": "RF-DAC",
+      "key_specs": {
+        "resolution_bits": 16,
+        "sample_rate_gsps": 12.0,
+        "bandwidth_ghz": 9.0,
+        "interface": "JESD204B",
+        "package": "CSPBGA-169"
+      },
+      "datasheet_url": "https://www.analog.com/en/products/ad9164.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 650.0,
+      "search_text": "AD9164 16-bit 12 GSPS RF DAC direct digital synthesis JESD204B radar EW transmit chain"
+    },
+    {
+      "part_number": "CCHD-957-25-100.000",
+      "manufacturer": "Crystek",
+      "description": "100 MHz OCXO, 0.5 ppb stability, -155 dBc/Hz at 1 kHz, 14-pin DIP",
+      "category": "RF-Clock",
+      "key_specs": {
+        "freq_mhz": 100.0,
+        "phase_noise_1khz_dbchz": -155,
+        "stability_ppb": 0.5,
+        "package": "DIP-14",
+        "vdd_v": 3.3
+      },
+      "datasheet_url": "https://www.crystek.com/crystal/spec-sheets/oscillator/CCHD-957.pdf",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 280.0,
+      "search_text": "Crystek CCHD-957 OCXO 100 MHz ultra-low phase noise reference clock ADC sample clock"
+    },
+    {
+      "part_number": "ADM7154",
+      "manufacturer": "Analog Devices",
+      "description": "Ultra-low noise LDO, 1.2-3.3 V fixed/adj, 1 uVrms noise 10-100 kHz, 80 dB PSRR at 10 kHz, TSOT",
+      "category": "Power-LDO",
+      "key_specs": {
+        "vout_v": "1.2-3.3",
+        "iout_ma": 600,
+        "noise_uvrms": 1.0,
+        "psrr_db": 80,
+        "package": "TSOT-23"
+      },
+      "datasheet_url": "https://www.analog.com/en/products/adm7154.html",
+      "lifecycle_status": "active",
+      "estimated_cost_usd": 3.5,
+      "search_text": "ADM7154 ultra-low-noise LDO 1 uVrms RF bias PLL VCO clean power rail"
+    }
+  ]
+}

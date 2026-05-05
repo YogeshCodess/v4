@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>6-Antenna × 4-Channel Independent RF Chains — Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700&family=DM+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --navy:   #070b14;
+    --panel:  #1a2235;
+    --panel2: #2a3a50;
+    --teal:   #00c6a7;
+    --blue:   #3b82f6;
+    --amber:  #f59e0b;
+    --purple: #8b5cf6;
+    --text:   #e2e8f0;
+    --text2:  #94a3b8;
+    --text3:  #64748b;
+    --border: rgba(42,58,80,0.8);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+  }
+  header {
+    padding: 32px 40px 16px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0,198,167,0.06), transparent);
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+  }
+  h1 .accent { color: var(--teal); }
+  .sub {
+    color: var(--text2);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .tagline { color: var(--text2); font-size: 14px; max-width: 900px; line-height: 1.6; }
+  .rules {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .rule {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .rule .k { color: var(--teal); font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; font-size: 10px; display: block; margin-bottom: 4px; }
+  .rule .v { color: var(--text); }
+  main {
+    padding: 24px 40px 64px;
+  }
+  .diagram-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 0 28px rgba(0,198,167,0.08);
+    overflow-x: auto;
+  }
+  .mermaid {
+    background: transparent;
+    font-family: 'JetBrains Mono', monospace;
+    text-align: center;
+    min-width: 1200px;
+  }
+  .legend {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    font-size: 12px;
+  }
+  .legend .item { display: flex; align-items: center; gap: 8px; color: var(--text2); }
+  .legend .swatch {
+    width: 14px; height: 14px; border-radius: 3px;
+    border: 1px solid var(--border);
+  }
+  .count-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .pill {
+    background: rgba(0,198,167,0.1);
+    color: var(--teal);
+    border: 1px solid rgba(0,198,167,0.3);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  footer {
+    padding: 20px 40px;
+    color: var(--text3);
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sub">Silicon to Software (S2S) · P1 Architecture Revision</div>
+  <h1>6-Antenna × 4-Channel <span class="accent">Independent RF Chains</span></h1>
+  <div class="tagline">
+    Each receiver antenna drives a <strong>fully independent RF chain</strong>. After the per-antenna LNA,
+    the signal fans out into its own <strong>4-channel channelised filter bank</strong> — no shared splitter,
+    no pre-channelisation combining. Spatial (AoA / DF) information is preserved end-to-end for radar / EW use.
+  </div>
+  <div class="count-pills">
+    <span class="pill">6 Antennas</span>
+    <span class="pill">6 Independent Chains</span>
+    <span class="pill">6× SAW Preselectors</span>
+    <span class="pill">4 Channels per Chain</span>
+    <span class="pill">24 RF Outputs</span>
+    <span class="pill">No Shared Combiner</span>
+  </div>
+</header>
+
+<div class="rules">
+  <div class="rule"><span class="k">Topology rule 1</span><span class="v">No RF combining between antennas before channelisation.</span></div>
+  <div class="rule"><span class="k">Topology rule 2</span><span class="v">Each antenna owns its SMA → Limiter → Bias-T → LNA → 4-way splitter → 4× BPF.</span></div>
+  <div class="rule"><span class="k">Topology rule 3</span><span class="v">ChannelSplitter block removed — replaced by 6 per-antenna 1:4 splitters.</span></div>
+  <div class="rule"><span class="k">Topology rule 4</span><span class="v">24 RF outputs preserve phase/amplitude per antenna per band for DF / monopulse / beamforming.</span></div>
+</div>
+
+<main>
+  <div class="diagram-card">
+    <div class="mermaid">
+flowchart TD
+    %% ================= ANTENNA INPUTS =================
+    A1([Antenna 1]):::ant
+    A2([Antenna 2]):::ant
+    A3([Antenna 3]):::ant
+    A4([Antenna 4]):::ant
+    A5([Antenna 5]):::ant
+    A6([Antenna 6]):::ant
+
+    %% ================= SMA CONNECTORS =================
+    S1[SMA 1]:::conn
+    S2[SMA 2]:::conn
+    S3[SMA 3]:::conn
+    S4[SMA 4]:::conn
+    S5[SMA 5]:::conn
+    S6[SMA 6]:::conn
+
+    %% ================= LIMITERS =================
+    L1[Limiter 1]:::prot
+    L2[Limiter 2]:::prot
+    L3[Limiter 3]:::prot
+    L4[Limiter 4]:::prot
+    L5[Limiter 5]:::prot
+    L6[Limiter 6]:::prot
+
+    %% ================= PRESELECTOR SAW FILTERS =================
+    PS1[SAW Preselector 1]:::pre
+    PS2[SAW Preselector 2]:::pre
+    PS3[SAW Preselector 3]:::pre
+    PS4[SAW Preselector 4]:::pre
+    PS5[SAW Preselector 5]:::pre
+    PS6[SAW Preselector 6]:::pre
+
+    %% ================= BIAS-T =================
+    B1[Bias-T 1]:::bias
+    B2[Bias-T 2]:::bias
+    B3[Bias-T 3]:::bias
+    B4[Bias-T 4]:::bias
+    B5[Bias-T 5]:::bias
+    B6[Bias-T 6]:::bias
+
+    %% ================= LNA =================
+    N1[LNA 1]:::lna
+    N2[LNA 2]:::lna
+    N3[LNA 3]:::lna
+    N4[LNA 4]:::lna
+    N5[LNA 5]:::lna
+    N6[LNA 6]:::lna
+
+    %% ================= PER-ANTENNA 1:4 SPLITTERS =================
+    P1[1:4 Splitter 1]:::split
+    P2[1:4 Splitter 2]:::split
+    P3[1:4 Splitter 3]:::split
+    P4[1:4 Splitter 4]:::split
+    P5[1:4 Splitter 5]:::split
+    P6[1:4 Splitter 6]:::split
+
+    %% ================= RF CHAIN EDGES =================
+    A1 --> S1 --> L1 --> PS1 --> B1 --> N1 --> P1
+    A2 --> S2 --> L2 --> PS2 --> B2 --> N2 --> P2
+    A3 --> S3 --> L3 --> PS3 --> B3 --> N3 --> P3
+    A4 --> S4 --> L4 --> PS4 --> B4 --> N4 --> P4
+    A5 --> S5 --> L5 --> PS5 --> B5 --> N5 --> P5
+    A6 --> S6 --> L6 --> PS6 --> B6 --> N6 --> P6
+
+    %% ================= PER-ANTENNA 4-CHANNEL FILTER BANKS =================
+    subgraph FB1 [Filter Bank 1]
+      F1A[BPF 1a]:::filt
+      F1B[BPF 1b]:::filt
+      F1C[BPF 1c]:::filt
+      F1D[BPF 1d]:::filt
+    end
+    subgraph FB2 [Filter Bank 2]
+      F2A[BPF 2a]:::filt
+      F2B[BPF 2b]:::filt
+      F2C[BPF 2c]:::filt
+      F2D[BPF 2d]:::filt
+    end
+    subgraph FB3 [Filter Bank 3]
+      F3A[BPF 3a]:::filt
+      F3B[BPF 3b]:::filt
+      F3C[BPF 3c]:::filt
+      F3D[BPF 3d]:::filt
+    end
+    subgraph FB4 [Filter Bank 4]
+      F4A[BPF 4a]:::filt
+      F4B[BPF 4b]:::filt
+      F4C[BPF 4c]:::filt
+      F4D[BPF 4d]:::filt
+    end
+    subgraph FB5 [Filter Bank 5]
+      F5A[BPF 5a]:::filt
+      F5B[BPF 5b]:::filt
+      F5C[BPF 5c]:::filt
+      F5D[BPF 5d]:::filt
+    end
+    subgraph FB6 [Filter Bank 6]
+      F6A[BPF 6a]:::filt
+      F6B[BPF 6b]:::filt
+      F6C[BPF 6c]:::filt
+      F6D[BPF 6d]:::filt
+    end
+
+    P1 --> F1A
+    P1 --> F1B
+    P1 --> F1C
+    P1 --> F1D
+    P2 --> F2A
+    P2 --> F2B
+    P2 --> F2C
+    P2 --> F2D
+    P3 --> F3A
+    P3 --> F3B
+    P3 --> F3C
+    P3 --> F3D
+    P4 --> F4A
+    P4 --> F4B
+    P4 --> F4C
+    P4 --> F4D
+    P5 --> F5A
+    P5 --> F5B
+    P5 --> F5C
+    P5 --> F5D
+    P6 --> F6A
+    P6 --> F6B
+    P6 --> F6C
+    P6 --> F6D
+
+    %% ================= 24 RF OUTPUTS =================
+    O1A([RF Out 1a]):::out
+    O1B([RF Out 1b]):::out
+    O1C([RF Out 1c]):::out
+    O1D([RF Out 1d]):::out
+    O2A([RF Out 2a]):::out
+    O2B([RF Out 2b]):::out
+    O2C([RF Out 2c]):::out
+    O2D([RF Out 2d]):::out
+    O3A([RF Out 3a]):::out
+    O3B([RF Out 3b]):::out
+    O3C([RF Out 3c]):::out
+    O3D([RF Out 3d]):::out
+    O4A([RF Out 4a]):::out
+    O4B([RF Out 4b]):::out
+    O4C([RF Out 4c]):::out
+    O4D([RF Out 4d]):::out
+    O5A([RF Out 5a]):::out
+    O5B([RF Out 5b]):::out
+    O5C([RF Out 5c]):::out
+    O5D([RF Out 5d]):::out
+    O6A([RF Out 6a]):::out
+    O6B([RF Out 6b]):::out
+    O6C([RF Out 6c]):::out
+    O6D([RF Out 6d]):::out
+
+    F1A --> O1A
+    F1B --> O1B
+    F1C --> O1C
+    F1D --> O1D
+    F2A --> O2A
+    F2B --> O2B
+    F2C --> O2C
+    F2D --> O2D
+    F3A --> O3A
+    F3B --> O3B
+    F3C --> O3C
+    F3D --> O3D
+    F4A --> O4A
+    F4B --> O4B
+    F4C --> O4C
+    F4D --> O4D
+    F5A --> O5A
+    F5B --> O5B
+    F5C --> O5C
+    F5D --> O5D
+    F6A --> O6A
+    F6B --> O6B
+    F6C --> O6C
+    F6D --> O6D
+
+    %% ================= POWER DOMAIN =================
+    subgraph PWR [Power Domain]
+      PMIC[PMIC +28V / +5V / +3.3V]:::pwr
+    end
+    PMIC -.-> B1
+    PMIC -.-> B2
+    PMIC -.-> B3
+    PMIC -.-> B4
+    PMIC -.-> B5
+    PMIC -.-> B6
+
+    %% ================= CONTROL DOMAIN =================
+    subgraph CTRL [Control]
+      REG[Registers + SPI/I2C]:::ctrl
+      GC[Gain Control]:::ctrl
+    end
+    REG -.-> N1
+    REG -.-> N2
+    REG -.-> N3
+    REG -.-> N4
+    REG -.-> N5
+    REG -.-> N6
+    GC -.-> N1
+    GC -.-> N2
+    GC -.-> N3
+    GC -.-> N4
+    GC -.-> N5
+    GC -.-> N6
+
+    classDef ant   fill:#1e293b,stroke:#00c6a7,stroke-width:2px,color:#e2e8f0
+    classDef conn  fill:#0f172a,stroke:#64748b,color:#94a3b8
+    classDef prot  fill:#1e293b,stroke:#3b82f6,color:#e2e8f0
+    classDef pre   fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#fbbf24
+    classDef bias  fill:#1e293b,stroke:#f59e0b,color:#e2e8f0
+    classDef lna   fill:#134e4a,stroke:#00c6a7,stroke-width:2px,color:#e2e8f0
+    classDef split fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#e2e8f0
+    classDef filt  fill:#1e293b,stroke:#00c6a7,color:#e2e8f0
+    classDef out   fill:#0f172a,stroke:#00c6a7,stroke-width:2px,color:#00c6a7
+    classDef pwr   fill:#1e293b,stroke:#f59e0b,color:#fbbf24
+    classDef ctrl  fill:#1e293b,stroke:#8b5cf6,color:#c4b5fd
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="item"><span class="swatch" style="background:#134e4a;border-color:#00c6a7"></span>LNA (per antenna)</div>
+    <div class="item"><span class="swatch" style="background:#1e293b;border-color:#3b82f6"></span>Limiter (ESD protection)</div>
+    <div class="item"><span class="swatch" style="background:#1e293b;border-color:#f59e0b;border-width:2px"></span>SAW Preselector (per antenna)</div>
+    <div class="item"><span class="swatch" style="background:#1e293b;border-color:#f59e0b"></span>Bias-T / PMIC rail</div>
+    <div class="item"><span class="swatch" style="background:#1e293b;border-color:#8b5cf6"></span>1:4 Splitter (per antenna)</div>
+    <div class="item"><span class="swatch" style="background:#1e293b;border-color:#00c6a7"></span>Band-pass filter</div>
+    <div class="item"><span class="swatch" style="background:#0f172a;border-color:#00c6a7"></span>RF output (24 total)</div>
+  </div>
+</main>
+
+<footer>
+  DATA PATTERNS · CODE KNIGHTS · GREAT AI HACK-A-THON 2026 · Silicon to Software (S2S) P1 · EW Front-End Topology (spatial-preserving)
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      darkMode: true,
+      background: '#1a2235',
+      primaryColor: '#1e293b',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#00c6a7',
+      lineColor: '#00c6a7',
+      secondaryColor: '#2a3a50',
+      tertiaryColor: '#0f172a',
+      clusterBkg: 'rgba(0,198,167,0.05)',
+      clusterBorder: 'rgba(0,198,167,0.4)',
+      fontFamily: 'JetBrains Mono, monospace',
+    },
+    flowchart: {
+      curve: 'basis',
+      htmlLabels: true,
+      nodeSpacing: 30,
+      rankSpacing: 50,
+    },
+  });
+</script>
+</body>
+</html>

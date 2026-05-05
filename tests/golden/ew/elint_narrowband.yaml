@@ -1,0 +1,34 @@
+# Golden scenario — EW, Narrow-band ELINT receiver (S-band 2-4 GHz)
+domain: ew
+id: elint_narrowband
+
+round1_answers:
+  freq_range: "2000-4000 MHz"
+  ew_type: "ELINT"
+  platform: "ground-fixed"
+  channels: 1
+  inst_bw_mhz: 40
+  sensitivity_dbm: -105
+  dynamic_range_db: 80
+  probability_intercept: "> 90%"
+  signal_type: ["CW", "pulsed", "frequency-hopped"]
+  temp_range: "military -40 to +71"
+  standards: [MIL-STD-461G, MIL-STD-810H, STANAG 4609]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 1.43
+  total_gain_db: 36.0
+  tolerance_db: 1.0
+
+bom:
+  - {name: "LNA",    gain_db: 20.0, nf_db: 1.0, iip3_dbm: 30.0, p1db_dbm: 18.0, kind: "LNA"}
+  - {name: "Filter", gain_db: -3.0, nf_db: 3.0, kind: "filter"}
+  - {name: "Mixer",  gain_db: -6.0, nf_db: 6.0, iip3_dbm: 15.0, p1db_dbm: 8.0,  kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 25.0, nf_db: 2.5, iip3_dbm: 25.0, p1db_dbm: 12.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-461G", "CE102"]
+  - ["MIL-STD-810H", "Method 516.8"]
+  - ["STANAG 4609", "Edition 4"]

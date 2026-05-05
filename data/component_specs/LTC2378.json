@@ -1,0 +1,17 @@
+{
+  "mpn": "LTC2378-20", "manufacturer": "Analog Devices", "family": "LTC237x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "20-bit, 1 MSPS, low-noise SAR ADC with no latency",
+  "datasheet_url": "https://www.analog.com/en/products/ltc2378-20.html",
+  "spi_max_clock_hz": 100000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "adc_resolution_bits": 20,
+  "adc_max_sample_rate_hz": 1000000,
+  "adc_interface": "spi",
+  "adc_n_channels": 1,
+  "fpga_ports": {"reset_n": false, "extra": ["CNV", "BUSY", "RDL_A", "RDL_B"]},
+  "notes": [
+    "FPGA drives CNV pulse to start conversion; BUSY returns conversion-complete",
+    "Two readout modes: single-ended via RDL or differential daisy-chain",
+    "100 MHz SCK supports two-stage pipelined readout"
+  ]
+}

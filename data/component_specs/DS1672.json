@@ -1,0 +1,17 @@
+{
+  "mpn": "DS1672", "manufacturer": "Maxim Integrated", "family": "DS167x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "I2C 32-bit binary counter real-time clock with battery backup",
+  "datasheet_url": "https://www.analog.com/en/products/ds1672.html",
+  "i2c_slave_addr_7bit": 104,
+  "i2c_addr_width_bits": 8,
+  "i2c_page_size_bytes": 5,
+  "i2c_max_clock_hz":   400000,
+  "fpga_ports": {"reset_n": false,
+                 "extra": ["X1", "X2", "VBAT"]},
+  "notes": [
+    "Fixed slave addr 0x68 (no strap pins)",
+    "5-byte register file: 4 counter bytes (LSB-first) + 1 trickle-charge control",
+    "Counter increments at 1 Hz from 32.768 kHz crystal between X1/X2"
+  ]
+}

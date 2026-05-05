@@ -1,0 +1,32 @@
+# Golden scenario — Communications, ISM-band LoRa IoT node (868/915 MHz)
+domain: communication
+id: ism_lora_iot
+
+round1_answers:
+  freq_range: "863-928 MHz"
+  comm_type: "LoRa LPWAN"
+  platform: "IoT node, battery-powered"
+  modulation: ["CSS (LoRa)", "FSK"]
+  channel_bw_khz: 125.0
+  tx_power_w: 0.1
+  sensitivity_dbm: -137
+  dynamic_range_db: 60
+  temp_range: "industrial -40 to +85"
+  standards: [FCC Part 15, IEEE 1413.1]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 3.23
+  total_gain_db: 24.0
+  tolerance_db: 1.0
+
+bom:
+  - {name: "LNA",    gain_db: 14.0, nf_db: 1.8, iip3_dbm: 12.0, p1db_dbm: 3.0,  kind: "LNA"}
+  - {name: "Filter", gain_db: -2.0, nf_db: 2.0, kind: "filter"}
+  - {name: "Mixer",  gain_db: -6.0, nf_db: 6.0, iip3_dbm: 10.0, p1db_dbm: 0.0,  kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 18.0, nf_db: 4.0, iip3_dbm: 12.0, p1db_dbm: 5.0,  kind: "amp"}
+
+expected_citations:
+  - ["FCC Part 15", "15.247"]
+  - ["IEEE 1413.1", "Section 6"]

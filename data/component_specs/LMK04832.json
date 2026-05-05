@@ -1,0 +1,18 @@
+{
+  "mpn": "LMK04832", "manufacturer": "Texas Instruments", "family": "LMK0483x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "JESD204B/C ultra-low-noise jitter cleaner with 14 outputs, 3.2 GHz",
+  "datasheet_url": "https://www.ti.com/product/LMK04832",
+  "spi_max_clock_hz": 50000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "pll_config_reg_count": 280,
+  "pll_config_bit_width": 24,
+  "pll_lock_time_us": 200,
+  "pll_min_output_freq_hz":     1000000,
+  "pll_max_output_freq_hz": 3200000000,
+  "fpga_ports": {"reset_n": true, "sync": true, "extra": ["CSB", "STATUS_LD1", "STATUS_LD2", "GPIO0..GPIO5"]},
+  "notes": [
+    "Successor to LMK04828 with improved jitter performance",
+    "Same 24-bit SPI protocol; identical bring-up sequence",
+    "Drives DEVCLK + SYSREF for ADC/DAC array"
+  ]
+}

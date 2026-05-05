@@ -1,0 +1,31 @@
+# Golden scenario — Satcom, X-band TT&C ground terminal (7.25-8.4 GHz)
+domain: satcom
+id: x_band_tt_c
+
+round1_answers:
+  freq_band: "X-band 7.25-8.4 GHz"
+  terminal_type: "ground fixed TT&C"
+  g_t_db_per_k: 18
+  channels: 1
+  eirp_dbw: 55
+  data_rate_mbps: 10
+  modulation: ["BPSK", "QPSK"]
+  temp_range: "military -40 to +71"
+  standards: [MIL-STD-188-164, MIL-STD-461G]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 1.574
+  total_gain_db: 36.5
+  tolerance_db: 0.5
+
+bom:
+  - {name: "LNA",    gain_db: 20.0, nf_db: 1.1, iip3_dbm: 25.0, kind: "LNA",    part_number: "HMC8411"}
+  - {name: "Filter", gain_db: -1.5, nf_db: 1.5, kind: "filter"}
+  - {name: "Mixer",  gain_db: -7.0, nf_db: 7.0, iip3_dbm: 18.0, kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 25.0, nf_db: 3.5, iip3_dbm: 20.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-188-164", "Section 5"]
+  - ["MIL-STD-461G", "RE102"]

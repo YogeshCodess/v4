@@ -1,0 +1,13 @@
+{
+  "mpn": "LTC5594", "manufacturer": "Analog Devices", "family": "LTC559x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "300 MHz - 9 GHz I/Q demodulator with wideband IF amplifier and integrated DC-offset cancellation",
+  "datasheet_url": "https://www.analog.com/en/products/ltc5594.html",
+  "spi_max_clock_hz": 10000000, "spi_mode": 0, "spi_data_width_bits": 16,
+  "fpga_ports": {"reset_n": false, "extra": ["CS", "ENBL", "BIAS_TUNE"]},
+  "notes": [
+    "16-bit SPI control for IF gain, DC-offset cal, sideband select",
+    "Direct conversion / zero-IF receiver front-end",
+    "Pairs typically with ADRF6510 baseband filter"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "mpn": "MX25L12835F", "manufacturer": "Macronix", "family": "MX25L",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "128 Mb (16 MB) Quad-SPI NOR Flash, 3.3V",
+  "datasheet_url": "https://www.macronix.com/en-us/products/NOR-Flash/Serial-NOR-Flash/Pages/spec.aspx?p=MX25L12835F",
+  "spi_max_clock_hz": 104000000, "spi_mode": 0, "spi_data_width_bits": 8,
+  "spi_dummy_cycles": 8,
+  "flash_capacity_bytes":   16777216,
+  "flash_page_size_bytes":  256,
+  "flash_sector_size_bytes": 4096,
+  "flash_opcodes": {
+    "read":          3,
+    "fast_read":     11,
+    "page_program":  2,
+    "sector_erase":  32,
+    "block_erase_32k": 82,
+    "block_erase_64k": 216,
+    "chip_erase":    199,
+    "write_enable":  6,
+    "write_disable": 4,
+    "read_status":   5,
+    "write_status":  1,
+    "read_id":       159,
+    "rems":          144
+  },
+  "fpga_ports": {"reset_n": true, "extra": ["WP", "HOLD"]},
+  "notes": [
+    "Common Macronix 16 MB flash - alternate to W25Q128JV / N25Q128",
+    "Identical command set to most JEDEC-compliant SPI NOR flash"
+  ]
+}

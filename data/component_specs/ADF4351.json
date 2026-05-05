@@ -1,0 +1,19 @@
+{
+  "mpn": "ADF4351", "manufacturer": "Analog Devices", "family": "ADF435x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "Wideband fractional-N PLL+VCO synthesizer, 35 MHz - 4.4 GHz",
+  "datasheet_url": "https://www.analog.com/en/products/adf4351.html",
+  "spi_max_clock_hz": 25000000, "spi_mode": 0, "spi_data_width_bits": 32,
+  "spi_dummy_cycles": 0,
+  "pll_config_reg_count": 6,
+  "pll_config_bit_width": 32,
+  "pll_lock_time_us": 100,
+  "pll_min_output_freq_hz":   35000000,
+  "pll_max_output_freq_hz": 4400000000,
+  "fpga_ports": {"reset_n": false, "sync": false, "extra": ["LE", "MUXOUT", "LD"]},
+  "notes": [
+    "32-bit serial words; 3 LSBs are the register address (R0-R5)",
+    "Program order on init: R5,R4,R3,R2,R1,R0",
+    "MUXOUT pin can return digital lock detect to FPGA"
+  ]
+}

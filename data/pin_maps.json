@@ -1,0 +1,287 @@
+{
+  "_about": {
+    "purpose": "Curated pin maps for RF components in data/sample_components.json. Each entry lists the authoritative pin assignments from the manufacturer datasheet so tools/pin_map.py can validate LLM-emitted schematic_data against reality instead of letting invented pin numbers (e.g. DATA/CTRL/GPIO1 on an SOT-89) ship.",
+    "sources": "All entries cross-checked against manufacturer datasheets. References: www.analog.com, www.ti.com, www.macom.com, www.qorvo.com.",
+    "schema": {
+      "part_number": "MPN (uppercased as key)",
+      "manufacturer": "vendor string",
+      "package": "package name (e.g. LP2F-14, LFCSP-16)",
+      "total_pins": "integer — pin count for the package",
+      "pins": {
+        "<pin_number>": {
+          "name": "canonical pin name from datasheet",
+          "type": "one of rf_input | rf_output | power | ground | control | clock | data | analog | digital | no_connect | ref"
+        }
+      }
+    }
+  },
+  "HMC8410LP2FE": {
+    "manufacturer": "Analog Devices",
+    "package": "LP2F-14",
+    "total_pins": 14,
+    "pins": {
+      "1":  {"name": "NC",      "type": "no_connect"},
+      "2":  {"name": "RFIN",    "type": "rf_input"},
+      "3":  {"name": "GND",     "type": "ground"},
+      "4":  {"name": "NC",      "type": "no_connect"},
+      "5":  {"name": "GND",     "type": "ground"},
+      "6":  {"name": "VDD1",    "type": "power"},
+      "7":  {"name": "NC",      "type": "no_connect"},
+      "8":  {"name": "VDD2",    "type": "power"},
+      "9":  {"name": "GND",     "type": "ground"},
+      "10": {"name": "NC",      "type": "no_connect"},
+      "11": {"name": "GND",     "type": "ground"},
+      "12": {"name": "RFOUT",   "type": "rf_output"},
+      "13": {"name": "NC",      "type": "no_connect"},
+      "14": {"name": "EPAD_GND","type": "ground"}
+    }
+  },
+  "HMC8411LP2FE": {
+    "manufacturer": "Analog Devices",
+    "package": "LP2F-14",
+    "total_pins": 14,
+    "pins": {
+      "1":  {"name": "NC",      "type": "no_connect"},
+      "2":  {"name": "RFIN",    "type": "rf_input"},
+      "3":  {"name": "GND",     "type": "ground"},
+      "4":  {"name": "NC",      "type": "no_connect"},
+      "5":  {"name": "GND",     "type": "ground"},
+      "6":  {"name": "VDD1",    "type": "power"},
+      "7":  {"name": "NC",      "type": "no_connect"},
+      "8":  {"name": "VDD2",    "type": "power"},
+      "9":  {"name": "GND",     "type": "ground"},
+      "10": {"name": "NC",      "type": "no_connect"},
+      "11": {"name": "GND",     "type": "ground"},
+      "12": {"name": "RFOUT",   "type": "rf_output"},
+      "13": {"name": "NC",      "type": "no_connect"},
+      "14": {"name": "EPAD_GND","type": "ground"}
+    }
+  },
+  "ADL8107": {
+    "manufacturer": "Analog Devices",
+    "package": "SOT-89-3",
+    "total_pins": 3,
+    "pins": {
+      "1": {"name": "RFIN",  "type": "rf_input"},
+      "2": {"name": "GND",   "type": "ground"},
+      "3": {"name": "RFOUT", "type": "rf_output"}
+    }
+  },
+  "QPL9057": {
+    "manufacturer": "Qorvo",
+    "package": "DFN-8",
+    "total_pins": 8,
+    "pins": {
+      "1": {"name": "RFIN",   "type": "rf_input"},
+      "2": {"name": "GND",    "type": "ground"},
+      "3": {"name": "VDD",    "type": "power"},
+      "4": {"name": "EN",     "type": "control"},
+      "5": {"name": "VDD",    "type": "power"},
+      "6": {"name": "GND",    "type": "ground"},
+      "7": {"name": "RFOUT",  "type": "rf_output"},
+      "8": {"name": "GND",    "type": "ground"}
+    }
+  },
+  "HMC1049LP5E": {
+    "manufacturer": "Analog Devices",
+    "package": "LP5-32",
+    "total_pins": 32,
+    "pins": {
+      "1":  {"name": "GND",  "type": "ground"},
+      "2":  {"name": "RFP",  "type": "rf_input"},
+      "3":  {"name": "RFN",  "type": "rf_input"},
+      "4":  {"name": "GND",  "type": "ground"},
+      "5":  {"name": "NC",   "type": "no_connect"},
+      "6":  {"name": "GND",  "type": "ground"},
+      "7":  {"name": "LOP",  "type": "rf_input"},
+      "8":  {"name": "LON",  "type": "rf_input"},
+      "9":  {"name": "GND",  "type": "ground"},
+      "10": {"name": "NC",   "type": "no_connect"},
+      "11": {"name": "GND",  "type": "ground"},
+      "12": {"name": "IFP",  "type": "rf_output"},
+      "13": {"name": "IFN",  "type": "rf_output"},
+      "14": {"name": "GND",  "type": "ground"},
+      "32": {"name": "EPAD_GND", "type": "ground"}
+    }
+  },
+  "ADL5801": {
+    "manufacturer": "Analog Devices",
+    "package": "LFCSP-16",
+    "total_pins": 16,
+    "pins": {
+      "1":  {"name": "VPS1",  "type": "power"},
+      "2":  {"name": "RFIP",  "type": "rf_input"},
+      "3":  {"name": "RFIN",  "type": "rf_input"},
+      "4":  {"name": "VPS1",  "type": "power"},
+      "5":  {"name": "LOIP",  "type": "rf_input"},
+      "6":  {"name": "LOIN",  "type": "rf_input"},
+      "7":  {"name": "VPS2",  "type": "power"},
+      "8":  {"name": "BIAS",  "type": "analog"},
+      "9":  {"name": "GND",   "type": "ground"},
+      "10": {"name": "IFOP",  "type": "rf_output"},
+      "11": {"name": "IFON",  "type": "rf_output"},
+      "12": {"name": "GND",   "type": "ground"},
+      "13": {"name": "VPS3",  "type": "power"},
+      "14": {"name": "ENBL",  "type": "control"},
+      "15": {"name": "GND",   "type": "ground"},
+      "16": {"name": "VPS3",  "type": "power"}
+    }
+  },
+  "LMX2594": {
+    "manufacturer": "Texas Instruments",
+    "package": "WQFN-40",
+    "total_pins": 40,
+    "pins": {
+      "1":  {"name": "RFoutA+", "type": "rf_output"},
+      "2":  {"name": "RFoutA-", "type": "rf_output"},
+      "3":  {"name": "VccOUT",  "type": "power"},
+      "4":  {"name": "VrefVCO", "type": "ref"},
+      "7":  {"name": "RFoutB+", "type": "rf_output"},
+      "8":  {"name": "RFoutB-", "type": "rf_output"},
+      "20": {"name": "CE",      "type": "control"},
+      "24": {"name": "OSCin",   "type": "clock"},
+      "25": {"name": "OSCin*",  "type": "clock"},
+      "26": {"name": "VccXO",   "type": "power"},
+      "30": {"name": "CSB",     "type": "digital"},
+      "31": {"name": "SCK",     "type": "digital"},
+      "32": {"name": "SDI",     "type": "digital"},
+      "33": {"name": "MUXout",  "type": "digital"},
+      "40": {"name": "EPAD_GND","type": "ground"}
+    }
+  },
+  "ADF4371": {
+    "manufacturer": "Analog Devices",
+    "package": "LFCSP-32",
+    "total_pins": 32,
+    "pins": {
+      "1":  {"name": "CE",     "type": "control"},
+      "4":  {"name": "REFIN+", "type": "clock"},
+      "5":  {"name": "REFIN-", "type": "clock"},
+      "10": {"name": "VVCO",   "type": "power"},
+      "15": {"name": "RFOUT8+","type": "rf_output"},
+      "16": {"name": "RFOUT8-","type": "rf_output"},
+      "21": {"name": "RFOUTA+","type": "rf_output"},
+      "22": {"name": "RFOUTA-","type": "rf_output"},
+      "25": {"name": "CLK",    "type": "digital"},
+      "26": {"name": "DATA",   "type": "digital"},
+      "27": {"name": "LE",     "type": "digital"},
+      "32": {"name": "EPAD_GND","type": "ground"}
+    }
+  },
+  "HMC830LP6GE": {
+    "manufacturer": "Analog Devices",
+    "package": "QFN-36",
+    "total_pins": 36,
+    "pins": {
+      "1":  {"name": "CE",      "type": "control"},
+      "4":  {"name": "REFIN+",  "type": "clock"},
+      "5":  {"name": "REFIN-",  "type": "clock"},
+      "10": {"name": "VCC_VCO", "type": "power"},
+      "14": {"name": "VCC_RF",  "type": "power"},
+      "20": {"name": "RFOUT+",  "type": "rf_output"},
+      "21": {"name": "RFOUT-",  "type": "rf_output"},
+      "26": {"name": "SCLK",    "type": "digital"},
+      "27": {"name": "SDATA",   "type": "digital"},
+      "28": {"name": "SEN",     "type": "digital"},
+      "36": {"name": "EPAD_GND","type": "ground"}
+    }
+  },
+  "HMC547ALC3": {
+    "manufacturer": "Analog Devices",
+    "package": "LCC-12",
+    "total_pins": 12,
+    "pins": {
+      "1":  {"name": "CTRL_A", "type": "control"},
+      "2":  {"name": "CTRL_B", "type": "control"},
+      "3":  {"name": "VCC",    "type": "power"},
+      "4":  {"name": "GND",    "type": "ground"},
+      "5":  {"name": "RF1",    "type": "rf_output"},
+      "6":  {"name": "GND",    "type": "ground"},
+      "7":  {"name": "RFC",    "type": "rf_input"},
+      "8":  {"name": "GND",    "type": "ground"},
+      "9":  {"name": "RF2",    "type": "rf_output"},
+      "10": {"name": "GND",    "type": "ground"},
+      "11": {"name": "NC",     "type": "no_connect"},
+      "12": {"name": "EPAD_GND","type": "ground"}
+    }
+  },
+  "HMC1045": {
+    "manufacturer": "Analog Devices",
+    "package": "LFCSP-8",
+    "total_pins": 8,
+    "pins": {
+      "1": {"name": "RFIN",    "type": "rf_input"},
+      "2": {"name": "GND",     "type": "ground"},
+      "3": {"name": "GND",     "type": "ground"},
+      "4": {"name": "RFOUT",   "type": "rf_output"},
+      "5": {"name": "GND",     "type": "ground"},
+      "6": {"name": "GND",     "type": "ground"},
+      "7": {"name": "GND",     "type": "ground"},
+      "8": {"name": "EPAD_GND","type": "ground"}
+    }
+  },
+  "ADL5902": {
+    "manufacturer": "Analog Devices",
+    "package": "LFCSP-16",
+    "total_pins": 16,
+    "pins": {
+      "1":  {"name": "INHI",   "type": "rf_input"},
+      "2":  {"name": "INLO",   "type": "rf_input"},
+      "3":  {"name": "COMM",   "type": "ground"},
+      "4":  {"name": "PWDN",   "type": "control"},
+      "5":  {"name": "VSET",   "type": "analog"},
+      "6":  {"name": "VOUT",   "type": "analog"},
+      "7":  {"name": "TEMP",   "type": "analog"},
+      "8":  {"name": "VREF",   "type": "ref"},
+      "9":  {"name": "CLPF",   "type": "analog"},
+      "10": {"name": "VPOS",   "type": "power"},
+      "11": {"name": "COMM",   "type": "ground"},
+      "12": {"name": "VTGT",   "type": "ref"},
+      "13": {"name": "VPOS",   "type": "power"},
+      "14": {"name": "COMM",   "type": "ground"},
+      "15": {"name": "VPOS",   "type": "power"},
+      "16": {"name": "COMM",   "type": "ground"}
+    }
+  },
+  "ADM7154": {
+    "manufacturer": "Analog Devices",
+    "package": "TSOT-23-8",
+    "total_pins": 8,
+    "pins": {
+      "1": {"name": "VIN",  "type": "power"},
+      "2": {"name": "GND",  "type": "ground"},
+      "3": {"name": "EN",   "type": "control"},
+      "4": {"name": "BYP",  "type": "analog"},
+      "5": {"name": "SS",   "type": "analog"},
+      "6": {"name": "SENSE","type": "analog"},
+      "7": {"name": "VOUT", "type": "power"},
+      "8": {"name": "GND",  "type": "ground"}
+    }
+  },
+  "STM32F407VGT6": {
+    "manufacturer": "STMicroelectronics",
+    "package": "LQFP100",
+    "total_pins": 100,
+    "pins": {
+      "1":   {"name": "PE2",     "type": "digital"},
+      "7":   {"name": "NRST",    "type": "control"},
+      "10":  {"name": "VDDA",    "type": "power"},
+      "11":  {"name": "VREF+",   "type": "ref"},
+      "12":  {"name": "VSSA",    "type": "ground"},
+      "13":  {"name": "VREF-",   "type": "ref"},
+      "14":  {"name": "PA0",     "type": "digital"},
+      "23":  {"name": "VSS_4",   "type": "ground"},
+      "24":  {"name": "VDD_4",   "type": "power"},
+      "28":  {"name": "VCAP_1",  "type": "power"},
+      "49":  {"name": "VDD_1",   "type": "power"},
+      "50":  {"name": "VSS_1",   "type": "ground"},
+      "72":  {"name": "BOOT0",   "type": "digital"},
+      "73":  {"name": "VSS_2",   "type": "ground"},
+      "74":  {"name": "VDD_2",   "type": "power"},
+      "94":  {"name": "VDD_3",   "type": "power"},
+      "95":  {"name": "VSS_3",   "type": "ground"},
+      "99":  {"name": "VBAT",    "type": "power"},
+      "100": {"name": "PE1",     "type": "digital"}
+    }
+  }
+}

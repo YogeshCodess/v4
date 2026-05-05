@@ -1,0 +1,18 @@
+{
+  "mpn": "AD9162", "manufacturer": "Analog Devices", "family": "AD916x",
+  "bus": "dac", "source": "curated", "confidence": 1.0,
+  "description": "16-bit, 12 GSPS RF DAC with JESD204B interface",
+  "datasheet_url": "https://www.analog.com/en/products/ad9162.html",
+  "spi_max_clock_hz": 50000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "dac_resolution_bits": 16,
+  "dac_max_update_rate_hz": 12000000000,
+  "dac_interface": "jesd204b",
+  "dac_n_channels": 1,
+  "fpga_ports": {"sysref": true, "devclk": true, "sync": true, "reset_n": true,
+                 "extra": ["SDIO", "SCLK", "CSB", "TXEN", "IRQ"]},
+  "notes": [
+    "JESD204B subclass-1; 12.5 Gbps per lane max",
+    "Built-in 8x interpolation + NCO for direct-RF synthesis",
+    "Requires AD9528/HMC7044 for DEVCLK + SYSREF generation"
+  ]
+}

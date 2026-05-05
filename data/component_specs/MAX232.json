@@ -1,0 +1,14 @@
+{
+  "mpn": "MAX232", "manufacturer": "Maxim Integrated", "family": "MAX232",
+  "bus": "uart", "source": "curated", "confidence": 1.0,
+  "description": "Dual RS-232 driver/receiver with on-chip charge pump, 5V supply",
+  "datasheet_url": "https://www.analog.com/en/products/max232.html",
+  "uart_max_baud_hz": 120000,
+  "uart_levels": "rs232",
+  "fpga_ports": {"reset_n": false, "extra": ["T1IN", "T2IN", "R1OUT", "R2OUT"]},
+  "notes": [
+    "TTL <-> RS-232 level translator only (no protocol logic)",
+    "Charge pump generates +/-10V from 5V; needs 4 external 1uF caps",
+    "Pair with FPGA UART core for full RS-232 link"
+  ]
+}

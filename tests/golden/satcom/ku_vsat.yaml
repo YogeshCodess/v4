@@ -1,0 +1,30 @@
+# Golden scenario — Satcom, Ku-band VSAT downlink (10.7-12.75 GHz)
+domain: satcom
+id: ku_vsat
+
+round1_answers:
+  freq_band: "Ku (10.7-12.75 GHz)"
+  terminal_type: "VSAT fixed earth station"
+  g_t_db_per_k: 20
+  orbit: "GEO"
+  eirp_dbw: 50
+  data_rate_mbps: 25
+  modulation: ["QPSK", "8PSK"]
+  temp_range: "industrial -40 to +85"
+  standards: [MIL-STD-188-164, MIL-STD-461G]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 0.80
+  total_gain_db: 62.0
+  tolerance_db: 1.0
+
+bom:
+  - {name: "LNB",    gain_db: 55.0, nf_db: 0.8, iip3_dbm: 5.0,  p1db_dbm: -5.0, kind: "LNA"}
+  - {name: "Filter", gain_db: -2.0, nf_db: 2.0, kind: "filter"}
+  - {name: "Mixer",  gain_db: -6.0, nf_db: 6.0, iip3_dbm: 10.0, p1db_dbm: 5.0,  kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 15.0, nf_db: 3.0, iip3_dbm: 18.0, p1db_dbm: 10.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-188-164", "Section 5"]

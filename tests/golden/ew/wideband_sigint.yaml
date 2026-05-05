@@ -1,0 +1,32 @@
+# Golden scenario — EW, Wideband SIGINT receiver (2-6 GHz)
+domain: ew
+id: wideband_sigint
+
+round1_answers:
+  freq_range: "2000-6000 MHz"
+  ew_type: "SIGINT"
+  platform: "ground-mobile"
+  channels: 2
+  inst_bw_mhz: 200
+  dynamic_range_db: 70
+  sensitivity_dbm: -90
+  probability_intercept: "> 90%"
+  signal_type: ["CW", "pulsed", "frequency-hopped"]
+  temp_range: "industrial -40 to +85"
+  standards: [MIL-STD-461G, STANAG 4586]
+
+architecture: direct_rf_sampling
+
+expected_cascade:
+  noise_figure_db: 0.93
+  total_gain_db: 33.0
+  tolerance_db: 0.5
+
+bom:
+  - {name: "LNA",    gain_db: 18.0, nf_db: 0.7, iip3_dbm: 33.0, p1db_dbm: 20.0, kind: "LNA",    part_number: "ZX60-P33ULN+"}
+  - {name: "Filter", gain_db: -2.0, nf_db: 2.0, kind: "filter"}
+  - {name: "Gain_Block", gain_db: 17.0, nf_db: 5.0, iip3_dbm: 25.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-461G", "RE102"]
+  - ["STANAG 4586", "Edition 4"]

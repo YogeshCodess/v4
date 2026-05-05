@@ -1,0 +1,35 @@
+# Golden scenario — Communication, UHF tactical manpack transceiver (225-400 MHz)
+domain: communication
+id: uhf_tactical
+
+round1_answers:
+  freq_band: "UHF 225-400 MHz"
+  radio_type: "manpack"
+  modulation: ["FM", "SINCGARS"]
+  channel_bw_khz: 25
+  channels: 1
+  sensitivity_dbm: -116
+  tx_power_w: 5
+  duplex: "half-duplex"
+  freq_hopping: "hop rate ≥ 100 hops/s, hopset 2320 ch"
+  crypto: "Type-1"
+  ref_accuracy_ppm: "1 ppm (TCXO)"
+  temp_range: "military -40 to +71"
+  standards: [MIL-STD-188-141, MIL-STD-461G, MIL-STD-810H]
+
+architecture: zero_if_sdr
+
+expected_cascade:
+  noise_figure_db: 0.56
+  total_gain_db: 52.0
+  tolerance_db: 0.5
+
+bom:
+  - {name: "LNA",        gain_db: 18.6, nf_db: 0.37, iip3_dbm: 36.0, p1db_dbm: 20.0, kind: "LNA", part_number: "MGA-633P8"}
+  - {name: "SAW_Filter", gain_db: -3.0, nf_db: 3.0, kind: "filter"}
+  - {name: "SDR_RX",     gain_db: 36.4, nf_db: 3.5, iip3_dbm: 15.0, p1db_dbm: 5.0, kind: "transceiver", part_number: "AD9361"}
+
+expected_citations:
+  - ["MIL-STD-188-141", "Appendix C"]
+  - ["MIL-STD-461G", "RE102"]
+  - ["MIL-STD-810H", "Method 514.8"]

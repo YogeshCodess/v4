@@ -1,0 +1,19 @@
+{
+  "mpn": "AD9625", "manufacturer": "Analog Devices", "family": "AD96xx",
+  "bus": "adc", "source": "curated", "confidence": 1.0,
+  "description": "12-bit, 2.5 GSPS JESD204B ADC",
+  "datasheet_url": "https://www.analog.com/en/products/ad9625.html",
+  "spi_max_clock_hz": 25000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "adc_resolution_bits": 12,
+  "adc_max_sample_rate_hz": 2500000000,
+  "adc_interface": "jesd204b",
+  "adc_jesd_lanes": 8,
+  "adc_n_channels": 1,
+  "fpga_ports": {"sysref": true, "devclk": true, "sync": true, "reset_n": true,
+                 "extra": ["SDIO", "SCLK", "CSB", "FD"]},
+  "notes": [
+    "JESD204B subclass-1; needs SYSREF pulse from clock chip + SYNC from FPGA",
+    "Up to 6.25 Gbps per lane; 8 lanes for full rate",
+    "Configure via SPI before bring-up"
+  ]
+}

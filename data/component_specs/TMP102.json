@@ -1,0 +1,17 @@
+{
+  "mpn": "TMP102", "manufacturer": "Texas Instruments", "family": "TMP10x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "Low-power, 12-bit digital temperature sensor with I2C SMBus interface",
+  "datasheet_url": "https://www.ti.com/product/TMP102",
+  "i2c_slave_addr_7bit": 72,
+  "i2c_addr_width_bits": 8,
+  "i2c_page_size_bytes": 2,
+  "i2c_max_clock_hz":   3400000,
+  "fpga_ports": {"reset_n": false, "interrupt": true,
+                 "extra": ["ALERT_N"]},
+  "notes": [
+    "Slave addr 0x48 + ADD0 strap pin (4 possible addresses)",
+    "4 registers via 8-bit pointer: 0=temp (16-bit, big-endian), 1=config, 2=T_low, 3=T_high",
+    "ALERT_N pin asserts when temp crosses thresholds; conv rate 0.25-8 Hz"
+  ]
+}

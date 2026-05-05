@@ -1,0 +1,22 @@
+{
+  "mpn": "Si5341", "manufacturer": "Silicon Labs", "family": "Si534x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "10-output any-frequency, any-output jitter-attenuating clock multiplier",
+  "datasheet_url": "https://www.silabs.com/clocks/clock-generators/si5341-40-d-clock-generators",
+  "i2c_slave_addr_7bit": 116,
+  "i2c_addr_width_bits": 16,
+  "i2c_max_clock_hz":   1000000,
+  "pll_config_reg_count": 600,
+  "pll_config_bit_width": 8,
+  "pll_lock_time_us": 200,
+  "pll_min_output_freq_hz":      100000,
+  "pll_max_output_freq_hz": 1500000000,
+  "fpga_ports": {"reset_n": true, "interrupt": true,
+                 "extra": ["INT_N", "OE", "OUT0..OUT9"]},
+  "notes": [
+    "I2C slave addr 0x74 (default; A0/A1 strap pins set lower 2 bits)",
+    "16-bit register addresses across multiple pages; uses page-select register at addr 0x01",
+    "Configurable from ClockBuilder Pro tool; output config table is ~600 register writes",
+    "Alternative to LMK048xx for non-JESD applications"
+  ]
+}

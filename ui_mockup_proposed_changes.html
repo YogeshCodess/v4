@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Silicon to Software (S2S) — Proposed UI Changes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#070b14; --panel:#1a2235; --panel2:#2a3a50; --panel3:#101826;
+    --teal:#00c6a7; --teal-dim:rgba(0,198,167,.15); --teal-border:rgba(0,198,167,.35); --teal-glow:rgba(0,198,167,.25);
+    --text:#e2e8f0; --text2:#94a3b8; --text3:#64748b; --text4:#475569;
+    --border:rgba(42,58,80,.8); --border2:rgba(42,58,80,.5);
+    --danger:#dc2626; --warning:#f59e0b; --warning-bg:rgba(245,158,11,.08); --warning-border:rgba(245,158,11,.35);
+    --blue:#3b82f6; --purple:#8b5cf6; --green:#16a34a;
+    --shadow:0 0 28px rgba(0,198,167,.25);
+    --ui:"DM Mono", ui-monospace, monospace;
+    --display:"Syne", ui-sans-serif, system-ui;
+    --code:"JetBrains Mono", ui-monospace, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--navy);color:var(--text);font-family:var(--ui);font-size:13px;line-height:1.55}
+  a{color:var(--teal);text-decoration:none}
+  .display{font-family:var(--display);letter-spacing:-.01em}
+  .mono{font-family:var(--code)}
+  .muted{color:var(--text2)}
+  .dim{color:var(--text3)}
+  .micro{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+
+  /* page frame */
+  .page{max-width:1280px;margin:0 auto;padding:28px 24px 96px}
+  .head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:28px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:34px;height:34px;border:1.5px solid var(--teal-border);border-radius:8px;display:grid;place-items:center;background:var(--teal-dim);box-shadow:var(--shadow);color:var(--teal);font-weight:700;font-family:var(--display);font-size:16px}
+  .title{font-family:var(--display);font-weight:700;font-size:22px;line-height:1.2}
+  .title span{color:var(--teal)}
+  .sub{font-size:10px;letter-spacing:.12em;color:var(--teal);text-transform:uppercase;margin-top:2px}
+  .approval{display:flex;gap:8px;align-items:center}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--border);border-radius:999px;background:var(--panel3);font-size:11px;color:var(--text2)}
+  .chip b{color:var(--text)}
+  .pill{padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:var(--panel3);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+  .pill.teal{color:var(--teal);border-color:var(--teal-border);background:var(--teal-dim)}
+  .pill.amber{color:var(--warning);border-color:var(--warning-border);background:var(--warning-bg)}
+  .pill.red{color:#fca5a5;border-color:rgba(220,38,38,.35);background:rgba(220,38,38,.08)}
+  .pill.blue{color:#93c5fd;border-color:rgba(59,130,246,.35);background:rgba(59,130,246,.08)}
+  .pill.purple{color:#c4b5fd;border-color:rgba(139,92,246,.35);background:rgba(139,92,246,.08)}
+  .pill.green{color:#86efac;border-color:rgba(22,163,74,.35);background:rgba(22,163,74,.08)}
+
+  /* tabs */
+  .tabs{display:flex;flex-wrap:wrap;gap:6px;padding:6px;border:1px solid var(--border);border-radius:10px;background:var(--panel3);margin-bottom:20px}
+  .tab{flex:1;min-width:160px;padding:10px 12px;border-radius:6px;cursor:pointer;background:transparent;border:1px solid transparent;color:var(--text2);font-family:var(--ui);font-size:11px;letter-spacing:.06em;text-transform:uppercase;text-align:left}
+  .tab b{display:block;font-size:11px;color:var(--text2);font-weight:500}
+  .tab small{display:block;font-size:9.5px;color:var(--text4);margin-top:2px;letter-spacing:.12em}
+  .tab:hover{background:var(--panel);color:var(--text)}
+  .tab.active{background:var(--teal-dim);border-color:var(--teal-border);color:var(--teal);box-shadow:0 0 0 1px var(--teal-border) inset}
+  .tab.active b{color:var(--teal)}
+  .tab.active small{color:var(--teal)}
+
+  /* proposal card */
+  .proposal{display:none}
+  .proposal.active{display:block}
+  .pcard{border:1px solid var(--border);border-radius:12px;background:linear-gradient(180deg, rgba(26,34,53,.75), rgba(16,24,38,.75));padding:22px;margin-bottom:20px}
+  .phead{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:14px}
+  .phead h2{font-family:var(--display);font-size:20px;font-weight:700;margin:0 0 4px}
+  .phead .ref{font-size:11px;letter-spacing:.1em;color:var(--text2);text-transform:uppercase}
+  .phead .why{color:var(--text2);margin-top:10px;max-width:720px}
+
+  /* mock shell — mimics the real app three-column layout */
+  .shell{border:1px solid var(--border);border-radius:12px;background:var(--panel3);overflow:hidden}
+  .shell-top{display:flex;align-items:center;gap:14px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--panel);font-size:12px}
+  .shell-top .dots{display:flex;gap:4px;margin-left:auto}
+  .shell-top .dot{width:6px;height:6px;border-radius:50%;background:var(--text4)}
+  .shell-top .dot.on{background:var(--teal);box-shadow:0 0 6px var(--teal-glow)}
+  .shell-cols{display:grid;grid-template-columns:220px 1fr 300px;min-height:520px}
+  .shell-cols.twocol{grid-template-columns:220px 1fr}
+  .scol{border-right:1px solid var(--border);padding:14px;background:var(--panel3)}
+  .scol:last-child{border-right:0}
+  .scol .heading{font-size:10px;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+  .phase{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:4px;border-radius:6px;border:1px solid transparent;font-size:12px;color:var(--text2)}
+  .phase .pno{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--text4);display:grid;place-items:center;font-size:11px;color:var(--text2);font-family:var(--code)}
+  .phase.done .pno{border-color:var(--teal);color:var(--teal);background:var(--teal-dim)}
+  .phase.active{background:var(--teal-dim);border-color:var(--teal-border);color:var(--teal)}
+  .phase.active .pno{border-color:var(--teal);color:var(--teal);background:#0a2a24}
+  .phase .ptitle{display:flex;flex-direction:column}
+  .phase .ptitle b{font-weight:500;color:inherit}
+  .phase .ptitle small{color:var(--text4);font-size:9px;letter-spacing:.1em;text-transform:uppercase}
+
+  .subtabs{display:flex;gap:4px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--panel3)}
+  .subtab{padding:7px 12px;font-size:11px;color:var(--text2);border-radius:4px;cursor:pointer;border:1px solid transparent;letter-spacing:.05em;text-transform:uppercase;font-family:var(--ui)}
+  .subtab:hover{background:var(--panel)}
+  .subtab.on{background:var(--panel);color:var(--text);border-color:var(--border)}
+  .subtab.on.trust{color:var(--warning);background:var(--warning-bg);border-color:var(--warning-border)}
+  .subtab .count{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:8px;background:var(--panel2);font-size:9px;color:var(--text2)}
+  .subtab.on.trust .count{background:var(--warning);color:#1a1205}
+
+  .main{padding:18px 20px;max-height:560px;overflow:auto}
+
+  /* Trust report */
+  .tr-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed var(--border)}
+  .tr-head .score{display:flex;align-items:baseline;gap:6px}
+  .tr-head .score b{font-family:var(--display);font-size:26px;color:var(--warning)}
+  .tr-head .score small{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+  .tr-legend{display:flex;gap:10px;margin-left:auto;font-size:11px;color:var(--text2)}
+  .tr-legend span{display:inline-flex;align-items:center;gap:5px}
+  .sev-dot{width:8px;height:8px;border-radius:2px;display:inline-block}
+  .sev-high{background:var(--danger)}
+  .sev-med{background:var(--warning)}
+  .sev-low{background:var(--teal)}
+
+  .issue{display:grid;grid-template-columns:8px 100px 1fr auto;gap:14px;padding:12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--panel);align-items:flex-start;cursor:pointer;transition:background .15s}
+  .issue:hover{background:var(--panel2)}
+  .issue .bar{align-self:stretch;border-radius:2px}
+  .issue .sev{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+  .issue.h .bar{background:var(--danger)}
+  .issue.h .sev{color:#fca5a5}
+  .issue.m .bar{background:var(--warning)}
+  .issue.m .sev{color:var(--warning)}
+  .issue.l .bar{background:var(--teal)}
+  .issue.l .sev{color:var(--teal)}
+  .issue .title{font-weight:500;color:var(--text);margin-bottom:3px;font-size:13px}
+  .issue .ex{color:var(--text2);font-size:11.5px;font-family:var(--code)}
+  .issue .jump{color:var(--teal);font-size:10px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+
+  /* Confidence tinted sections */
+  .doc-section{padding:14px 16px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px;background:var(--panel)}
+  .doc-section h4{margin:0 0 8px;font-family:var(--display);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+  .doc-section p{margin:0 0 6px;color:var(--text2);font-size:12px;line-height:1.6}
+  .doc-section.low{background:var(--warning-bg);border-color:var(--warning-border)}
+  .doc-section.low h4{color:var(--warning)}
+  .doc-section .conf{font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:999px;border:1px solid var(--border);background:var(--panel3);color:var(--text2);cursor:help;position:relative}
+  .doc-section.low .conf{color:var(--warning);border-color:var(--warning-border);background:rgba(245,158,11,.12)}
+  .doc-section .conf:hover::after{content:attr(data-rationale);position:absolute;top:calc(100% + 6px);right:0;width:260px;padding:8px 10px;background:var(--panel3);border:1px solid var(--border);border-radius:6px;font-size:11px;text-transform:none;letter-spacing:0;color:var(--text);z-index:10;white-space:normal;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+
+  /* BOM */
+  table.bom{width:100%;border-collapse:collapse;font-size:12px}
+  table.bom th{text-align:left;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:8px 10px;border-bottom:1px solid var(--border);font-weight:500}
+  table.bom td{padding:10px;border-bottom:1px solid var(--border2);font-family:var(--code);vertical-align:middle}
+  table.bom td.name{font-family:var(--ui);color:var(--text)}
+  table.bom tr:hover{background:var(--panel)}
+  .vbadge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:4px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-family:var(--ui)}
+  .vbadge.ok{color:#86efac;background:rgba(22,163,74,.12);border:1px solid rgba(22,163,74,.35)}
+  .vbadge.warn{color:var(--warning);background:var(--warning-bg);border:1px solid var(--warning-border)}
+  .vbadge.unk{color:var(--text3);background:var(--panel);border:1px solid var(--border)}
+
+  /* judge mode */
+  .judge-wrap{display:grid;grid-template-columns:1fr 320px;gap:18px;min-height:540px}
+  .jmain{padding:24px;display:flex;flex-direction:column;justify-content:center;gap:22px;background:radial-gradient(900px 500px at 30% 40%, rgba(0,198,167,.08), transparent 70%)}
+  .j-logo{width:56px;height:56px;border:2px solid var(--teal-border);border-radius:12px;display:grid;place-items:center;background:var(--teal-dim);box-shadow:var(--shadow);color:var(--teal);font-family:var(--display);font-weight:700;font-size:24px}
+  .jmain h1{font-family:var(--display);font-size:28px;font-weight:800;margin:0}
+  .jmain h1 em{color:var(--teal);font-style:normal}
+  .j-tag{font-size:11px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase}
+  .j-specs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+  .jspec{padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--panel);cursor:pointer;transition:all .15s}
+  .jspec:hover{border-color:var(--teal-border);background:var(--panel2);box-shadow:0 0 0 1px var(--teal-border) inset}
+  .jspec .sname{font-family:var(--display);font-weight:600;font-size:13px;color:var(--text);margin-bottom:3px}
+  .jspec .scode{font-family:var(--code);font-size:10px;color:var(--text3);letter-spacing:.08em}
+  .jspec .sdesc{font-size:11px;color:var(--text2);margin-top:8px;line-height:1.5}
+  .jfree{padding:14px;border:1px dashed var(--border);border-radius:10px;background:transparent;color:var(--text2);font-size:12px;text-align:center}
+  .jfree b{color:var(--teal)}
+
+  .admin{border-left:1px solid var(--border);padding:14px;background:var(--panel3);overflow:auto;max-height:540px}
+  .admin .heading{font-family:var(--display);font-size:12px;font-weight:600;letter-spacing:.02em;margin-bottom:10px;color:var(--text);display:flex;align-items:center;justify-content:space-between}
+  .admin .heading small{font-size:9px;color:var(--teal);letter-spacing:.1em;text-transform:uppercase}
+  .ev{border:1px solid var(--border);border-radius:6px;margin-bottom:6px;padding:8px 10px;background:var(--panel);font-size:11px;font-family:var(--code)}
+  .ev .evt{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:3px}
+  .ev .line{color:var(--text)}
+  .ev .nums{display:flex;gap:10px;margin-top:5px;color:var(--text2);font-size:10px}
+  .ev .nums b{color:var(--text)}
+
+  /* cost bar */
+  .costbar{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--panel);margin:10px 0}
+  .costbar .kpi{display:flex;flex-direction:column;gap:3px}
+  .costbar .kpi small{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
+  .costbar .kpi b{font-family:var(--code);font-size:16px;color:var(--text)}
+  .costbar .kpi b.teal{color:var(--teal)}
+  .costbar .kpi b.amber{color:var(--warning)}
+  .spark{height:28px;margin-top:4px}
+
+  /* side by side compare */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  .pane{padding:14px 16px;background:var(--panel)}
+  .pane+.pane{border-left:1px solid var(--border)}
+  .pane h5{margin:0 0 10px;font-family:var(--display);font-size:12px;display:flex;align-items:center;justify-content:space-between}
+  .pane h5 .tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border-radius:3px}
+  .pane.base h5 .tag{color:var(--text3);background:var(--panel3);border:1px solid var(--border)}
+  .pane.ours h5 .tag{color:var(--teal);background:var(--teal-dim);border:1px solid var(--teal-border)}
+  .diffrow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--border2);font-family:var(--code);font-size:11px}
+  .diffrow:last-child{border:0}
+  .diffrow .k{color:var(--text3)}
+  .diffrow.bad .v{color:#fca5a5}
+  .diffrow.good .v{color:#86efac}
+  .cmp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .cmp-stats{display:flex;gap:14px;font-size:11px;color:var(--text2)}
+  .cmp-stats b{color:var(--text);font-family:var(--code)}
+
+  /* details card panel — generic panels */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .panel{border:1px solid var(--border);border-radius:8px;padding:12px 14px;background:var(--panel)}
+
+  /* footer approval bar */
+  .foot{position:sticky;bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 16px;border:1px solid var(--teal-border);background:rgba(7,11,20,.9);backdrop-filter:blur(14px);border-radius:12px;box-shadow:var(--shadow);z-index:20;margin-top:24px}
+  .foot .left{display:flex;align-items:center;gap:12px}
+  .foot .left .big{font-family:var(--display);font-size:14px;font-weight:600}
+  .foot .left .note{font-size:11px;color:var(--text2)}
+  .btns{display:flex;gap:8px}
+  .btn{padding:9px 16px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:var(--text);font-family:var(--ui);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+  .btn:hover{border-color:var(--text3)}
+  .btn.primary{background:var(--teal);border-color:var(--teal);color:#04201b;font-weight:600;box-shadow:var(--shadow)}
+  .btn.primary:hover{background:#00d9b6}
+  .btn.ghost{background:transparent}
+
+  /* summary table */
+  .summary{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:18px}
+  .summary table{width:100%;border-collapse:collapse}
+  .summary th{text-align:left;padding:11px 14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);background:var(--panel3)}
+  .summary td{padding:11px 14px;border-bottom:1px solid var(--border2);font-size:12px;vertical-align:top}
+  .summary tr:last-child td{border:0}
+  .summary td.id{font-family:var(--code);color:var(--teal);width:70px}
+  .summary td.eff{white-space:nowrap;color:var(--text2);width:110px}
+
+  @media (max-width:1000px){
+    .shell-cols{grid-template-columns:1fr}
+    .scol{border-right:0;border-bottom:1px solid var(--border)}
+    .judge-wrap{grid-template-columns:1fr}
+    .compare{grid-template-columns:1fr}
+    .pane+.pane{border-left:0;border-top:1px solid var(--border)}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="head">
+    <div class="brand">
+      <div class="logo">HP</div>
+      <div>
+        <div class="title">Hardware <span>Pipeline</span> — Proposed UI Changes</div>
+        <div class="sub">Data Patterns · Code Knights · Pre-Implementation Review</div>
+      </div>
+    </div>
+    <div class="approval">
+      <span class="chip"><b>6</b> proposals</span>
+      <span class="chip"><b>v5</b> design system</span>
+      <span class="chip mono">IMPLEMENTATION_PLAN.md</span>
+    </div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-p="1"><b>1. Trust Report tab</b><small>B2.1 · AUDIT</small></button>
+    <button class="tab" data-p="2"><b>2. Confidence tint</b><small>B2.3 · DOCS</small></button>
+    <button class="tab" data-p="3"><b>3. Datasheet badge</b><small>A2.2 · BOM</small></button>
+    <button class="tab" data-p="4"><b>4. Judge mode</b><small>A2.3 / A3.1</small></button>
+    <button class="tab" data-p="5"><b>5. Cost panel</b><small>B4.2 · LIVE</small></button>
+    <button class="tab" data-p="6"><b>6. Side-by-side</b><small>A3.2 · COMPARE</small></button>
+  </div>
+
+  <!-- ================= 1. TRUST REPORT ================= -->
+  <div class="proposal active" data-p="1">
+    <div class="pcard">
+      <div class="phead">
+        <div>
+          <h2>Trust Report — red-team audit surface for every AI phase</h2>
+          <div class="ref">Plan reference · B2.1 · new sub-tab in center column · data already emitted by <span class="mono">agents/red_team_audit.py</span></div>
+          <p class="why">Every AI phase already runs through the red-team audit agent and produces a severity-tagged <span class="mono">AuditReport</span>. Today that data dies in the database. This tab exposes it — clickable issues that jump to the exact spot in the output, so a judge can poke any claim and watch the system defend or concede.</p>
+        </div>
+        <span class="pill amber">MUST-ADD · Week 2</span>
+      </div>
+
+      <div class="shell">
+        <div class="shell-top">
+          <span class="pill teal">P02 · HRS Document</span>
+          <span class="muted">X-band Fire-Control Airborne Receiver</span>
+          <span class="mono dim">PROD-A4F2</span>
+          <div class="dots">
+            <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+        <div class="shell-cols">
+          <div class="scol">
+            <div class="heading">Phases</div>
+            <div class="phase done"><div class="pno">✓</div><div class="ptitle"><b>Design & Reqs</b><small>P01 · AUTO</small></div></div>
+            <div class="phase active"><div class="pno">2</div><div class="ptitle"><b>HRS Document</b><small>P02 · AUTO</small></div></div>
+            <div class="phase"><div class="pno">3</div><div class="ptitle"><b>Compliance</b><small>P03 · AUTO</small></div></div>
+            <div class="phase"><div class="pno">4</div><div class="ptitle"><b>Netlist</b><small>P04 · AUTO</small></div></div>
+            <div class="phase"><div class="pno">5</div><div class="ptitle"><b>PCB Layout</b><small>P05 · MANUAL</small></div></div>
+          </div>
+
+          <div class="scol" style="padding:0">
+            <div class="subtabs">
+              <div class="subtab">◈ Details</div>
+              <div class="subtab">◎ Metrics</div>
+              <div class="subtab">📄 Documents</div>
+              <div class="subtab on trust">⚠ Trust Report <span class="count">3</span></div>
+            </div>
+            <div class="main">
+              <div class="tr-head">
+                <div class="score">
+                  <b>B+</b><small>TRUST · 83 / 100</small>
+                </div>
+                <div class="tr-legend">
+                  <span><span class="sev-dot sev-high"></span>High · 1</span>
+                  <span><span class="sev-dot sev-med"></span>Medium · 2</span>
+                  <span><span class="sev-dot sev-low"></span>Low · 0</span>
+                </div>
+              </div>
+
+              <div class="issue h">
+                <div class="bar"></div>
+                <div class="sev">HIGH · CASCADE</div>
+                <div>
+                  <div class="title">System NF claim (2.4 dB) disagrees with Friis cascade (3.1 dB)</div>
+                  <div class="ex">LNA NF 1.5 dB + G 15 dB → mixer NF 8 dB · Friis = 1.5 + (7.98−1)/31.6 = 1.72 dB… downstream stages push it to 3.1 dB</div>
+                </div>
+                <div class="jump">Jump to §3.2 →</div>
+              </div>
+
+              <div class="issue m">
+                <div class="bar"></div>
+                <div class="sev">MED · CITATION</div>
+                <div>
+                  <div class="title">MIL-STD-461G clause “CE102” referenced but not found in standards lookup</div>
+                  <div class="ex">Closest match: <span style="color:var(--teal)">CE101</span> (30 Hz – 10 kHz conducted emissions, power leads) · did the agent mean CE101?</div>
+                </div>
+                <div class="jump">Jump to §7.1 →</div>
+              </div>
+
+              <div class="issue m">
+                <div class="bar"></div>
+                <div class="sev">MED · DATASHEET</div>
+                <div>
+                  <div class="title">Datasheet URL for <span style="color:var(--teal)">ADI HMC1099LP5E</span> did not resolve (HTTP 404)</div>
+                  <div class="ex">Last verified 4 days ago · fallback URL available on analog.com/en/products/hmc1099.html</div>
+                </div>
+                <div class="jump">Re-verify →</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="scol">
+            <div class="heading">Execution Flow</div>
+            <div style="font-size:11px;color:var(--text2);line-height:1.6">
+              <div style="margin-bottom:6px"><span class="pill green">✓</span> Load requirements</div>
+              <div style="margin-bottom:6px"><span class="pill green">✓</span> Select domain template</div>
+              <div style="margin-bottom:6px"><span class="pill green">✓</span> Calculate power budget</div>
+              <div style="margin-bottom:6px"><span class="pill green">✓</span> Generate interfaces</div>
+              <div style="margin-bottom:6px"><span class="pill green">✓</span> Write specification</div>
+              <div style="margin-bottom:6px"><span class="pill teal">▶</span> Red-team audit <span class="mono dim">1.2s</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 2. CONFIDENCE TINT ================= -->
+  <div class="proposal" data-p="2">
+    <div class="pcard">
+      <div class="phead">
+        <div>
+          <h2>Confidence tint per section</h2>
+          <div class="ref">Plan reference · B2.3 · DocumentsView section-level renderer</div>
+          <p class="why">Agents already emit <span class="mono">{content, confidence, confidence_rationale}</span> per section. Instead of burying that in a single aggregate card, render each section with an amber background when confidence &lt; 0.7, plus a hover tooltip that explains why the agent was unsure. One glance tells a reviewer where to focus.</p>
+        </div>
+        <span class="pill amber">MUST-ADD · Week 2</span>
+      </div>
+
+      <div class="shell">
+        <div class="shell-top">
+          <span class="pill teal">P02 · HRS Document</span>
+          <span class="muted">Airborne Radar Warning Receiver (2–18 GHz)</span>
+          <span class="mono dim">docs/hrs_v1.md</span>
+        </div>
+        <div class="main">
+
+          <div class="doc-section">
+            <h4>§2.1 Frequency band & tuning
+              <span class="conf" data-rationale="All values explicitly provided by user in Round 1 (band: 2–18 GHz, step 1 MHz). 100% traceable to requirements lock."><b style="color:var(--teal)">●</b> 98%</span>
+            </h4>
+            <p>Instantaneous bandwidth: 500 MHz. Tuning range: 2.0–18.0 GHz in 1 MHz steps. Reference oscillator: OCXO, ±0.05 ppm over −40 to +85 °C.</p>
+          </div>
+
+          <div class="doc-section">
+            <h4>§3.2 System noise figure budget
+              <span class="conf" data-rationale="Derived from Friis cascade. Verified by cascade_validator (pass). Source: LNA ADI HMC8411 datasheet + mixer HMC1048."><b style="color:var(--teal)">●</b> 92%</span>
+            </h4>
+            <p>System NF target: ≤3.0 dB at mid-band. LNA gain 18 dB, NF 1.4 dB. Downstream NF contribution from mixer + IF chain: 1.6 dB (Friis-referred). Total: 2.8 dB — 200 mW margin against degradation.</p>
+          </div>
+
+          <div class="doc-section low">
+            <h4>§4.4 EMI / EMC compliance envelope
+              <span class="conf" data-rationale="Requirements Round 1 flagged 'compliance TBD'. Agent inferred MIL-STD-461G CE102/RE102 from application = airborne. Confirm with program standards before signoff.">⚠ 58%</span>
+            </h4>
+            <p>Based on airborne platform class, MIL-STD-461G CE102/RE102 applicability is <em>inferred</em>. User has not confirmed radiated emission limit at 2–18 GHz. RS103 (field intensity 200 V/m) assumed for airborne fire-control adjacency. <b style="color:var(--warning)">Requires program office confirmation.</b></p>
+          </div>
+
+          <div class="doc-section low">
+            <h4>§5.1 Rad-tolerance requirement
+              <span class="conf" data-rationale="No dose/fluence spec provided. Placeholder of 100 krad(Si) inserted per typical airborne profile. Must be replaced with program-specific number before PCB.">⚠ 42%</span>
+            </h4>
+            <p>Placeholder: 100 krad(Si) TID, SEE threshold not specified. Components pre-screened against <em>expected</em> total dose, but neutron fluence and SEL cross-section bounds are not yet captured. Flag for Round 2 elicitation.</p>
+          </div>
+
+          <div class="doc-section">
+            <h4>§6.2 Power supply & thermal
+              <span class="conf" data-rationale="All rails explicitly specified. Thermal budget computed from component max power at Tj = 100 °C."><b style="color:var(--teal)">●</b> 88%</span>
+            </h4>
+            <p>Supply rails: +5 V @ 800 mA, +3.3 V @ 1.2 A, −5 V @ 200 mA. Steady-state dissipation: 7.4 W. Junction margin at +85 °C ambient: 12 °C minimum across all active parts.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 3. DATASHEET BADGE ================= -->
+  <div class="proposal" data-p="3">
+    <div class="pcard">
+      <div class="phead">
+        <div>
+          <h2>Datasheet verified badge in BOM table</h2>
+          <div class="ref">Plan reference · A2.2 · column addition in DocumentsView BOM · flag already in <span class="mono">components.json</span></div>
+          <p class="why"><span class="mono">scripts/verify_datasheets.py</span> stamps a <span class="mono">datasheet_verified</span> boolean onto every part entry. The BOM table doesn't render it yet. One column, three states (verified / unreachable / not-checked), big credibility payoff: judges can instantly see which parts have a live URL and which are fabricated.</p>
+        </div>
+        <span class="pill amber">MUST-ADD · Week 2</span>
+      </div>
+
+      <div class="shell">
+        <div class="shell-top">
+          <span class="pill teal">P01 · Design & Requirements</span>
+          <span class="muted">Bill of Materials · 14 parts</span>
+          <span class="mono dim">last verified 2026-04-18 09:14 UTC</span>
+          <div class="dots">
+            <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+        <div class="main">
+          <table class="bom">
+            <thead>
+              <tr>
+                <th>Part number</th>
+                <th>Mfr</th>
+                <th>Function</th>
+                <th>Freq (GHz)</th>
+                <th>NF (dB)</th>
+                <th>Screening</th>
+                <th>Datasheet</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="name">HMC8411</td><td>Analog Devices</td><td>LNA, 0.01–10 GHz</td><td>0.01–10</td><td>1.4</td><td>Industrial</td><td><span class="vbadge ok">✓ Verified</span></td></tr>
+              <tr><td class="name">HMC1048</td><td>Analog Devices</td><td>Mixer, 2–18 GHz</td><td>2–18</td><td>7.9</td><td>Industrial</td><td><span class="vbadge ok">✓ Verified</span></td></tr>
+              <tr><td class="name">HMC624ALP4E</td><td>Analog Devices</td><td>6-bit DSA, DC–6 GHz</td><td>0–6</td><td>—</td><td>Industrial</td><td><span class="vbadge ok">✓ Verified</span></td></tr>
+              <tr><td class="name">HMC1099LP5E</td><td>Analog Devices</td><td>GaN PA, 0.01–3 GHz</td><td>0.01–3</td><td>—</td><td>Industrial</td><td><span class="vbadge warn">⚠ 404 · re-verify</span></td></tr>
+              <tr><td class="name">TGS2304</td><td>Qorvo</td><td>SP4T switch, DC–6 GHz</td><td>0–6</td><td>—</td><td>MIL-PRF</td><td><span class="vbadge ok">✓ Verified</span></td></tr>
+              <tr><td class="name">ADL5801</td><td>Analog Devices</td><td>Mixer, 10 MHz–6 GHz</td><td>0.01–6</td><td>11.8</td><td>Industrial</td><td><span class="vbadge ok">✓ Verified</span></td></tr>
+              <tr><td class="name">MAX2870</td><td>Analog Devices</td><td>Synth, 23.5 MHz–6 GHz</td><td>0.024–6</td><td>—</td><td>Industrial</td><td><span class="vbadge unk">— not checked</span></td></tr>
+              <tr><td class="name">ADF4153</td><td>Analog Devices</td><td>Fractional-N synth</td><td>—</td><td>—</td><td>Industrial</td><td><span class="vbadge ok">✓ Verified</span></td></tr>
+              <tr><td class="name">AD9361</td><td>Analog Devices</td><td>RF transceiver, 70 MHz–6 GHz</td><td>0.07–6</td><td>2.5</td><td>Industrial</td><td><span class="vbadge ok">✓ Verified</span></td></tr>
+              <tr><td class="name">LTM4644</td><td>Analog Devices</td><td>µModule regulator, 4A × 4</td><td>—</td><td>—</td><td>Industrial</td><td><span class="vbadge ok">✓ Verified</span></td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:12px;display:flex;gap:10px;font-size:11px;color:var(--text2);align-items:center">
+            <span class="vbadge ok">✓ Verified</span> <span style="color:var(--text3)">URL resolved within 24 h</span>
+            <span class="vbadge warn" style="margin-left:16px">⚠ 404</span> <span style="color:var(--text3)">URL unreachable — fallback suggested</span>
+            <span class="vbadge unk" style="margin-left:16px">— not checked</span> <span style="color:var(--text3)">excluded from latest verification pass</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 4. JUDGE MODE ================= -->
+  <div class="proposal" data-p="4">
+    <div class="pcard">
+      <div class="phead">
+        <div>
+          <h2>Judge mode <span class="mono" style="color:var(--teal)">/judge</span> — wiped-state demo route + admin drawer</h2>
+          <div class="ref">Plan reference · A2.3 / A3.1 · new landing route + collapsible admin drawer on pipeline view</div>
+          <p class="why">Dedicated judge landing: blank-slate boot, three pre-written reference specs (radar / EW / satcom) plus free-form input, targeting &lt;30 s boot-to-run. On the pipeline view, a collapsible admin drawer streams current prompt, tool calls, token count, USD, latency — the production-readiness signal AI judges expect. Without this you'll be tabbing through Swagger live on stage.</p>
+        </div>
+        <span class="pill amber">MUST-ADD · Week 3</span>
+      </div>
+
+      <div class="shell">
+        <div class="shell-top">
+          <span class="pill teal">JUDGE MODE · CONTEXT WIPED</span>
+          <span class="muted">Boot: 2.1s · 3 sample specs loaded · admin drawer open</span>
+          <span class="mono dim">/judge</span>
+        </div>
+        <div class="judge-wrap">
+          <div class="jmain">
+            <div class="j-logo">HP</div>
+            <h1>Hardware <em>Pipeline</em></h1>
+            <div class="j-tag">Pick a reference spec, or type your own. Full 8-phase run · target &lt; 30 min.</div>
+
+            <div class="j-specs">
+              <div class="jspec">
+                <div class="sname">Radar — X-band fire-control</div>
+                <div class="scode">REF-01 · 8.5–10.5 GHz · NF &lt; 3 dB</div>
+                <div class="sdesc">Airborne monopulse tracking receiver. MIL-STD-461G, pulse handling 100 ns–10 µs, coherent processing.</div>
+              </div>
+              <div class="jspec">
+                <div class="sname">EW — wideband SIGINT</div>
+                <div class="scode">REF-02 · 2–3000 MHz · 500 MHz BW</div>
+                <div class="sdesc">Airborne ESM, signal ID &amp; DF. TEMPEST, co-site 10 dBm blocker, POI &gt; 95%.</div>
+              </div>
+              <div class="jspec">
+                <div class="sname">Satcom — Ku downlink</div>
+                <div class="scode">REF-03 · 10.7–12.75 GHz · G/T ≥ 15 dB/K</div>
+                <div class="sdesc">Ground terminal, DVB-S2/S2X, tracking + rain-fade margin 6 dB.</div>
+              </div>
+            </div>
+
+            <div class="jfree">
+              <b>— or —</b> type a free-form spec · <span class="mono">enter</span> to begin
+            </div>
+          </div>
+
+          <div class="admin">
+            <div class="heading">Admin drawer <small>LIVE · P01</small></div>
+            <div class="ev">
+              <div class="evt">SYSTEM PROMPT</div>
+              <div class="line muted" style="line-height:1.5">You are a defense RF engineer following the 4-round elicitation spec. Round 1: ask 16 Tier-1 RF questions. Do not assume; if not stated, ask.</div>
+              <div class="nums"><span>tokens <b>2,147</b></span><span>model <b>sonnet-4.6</b></span></div>
+            </div>
+            <div class="ev">
+              <div class="evt">TOOL CALL · validate_cascade</div>
+              <div class="line">in: bom=[HMC8411, HMC1048], Ts=290K</div>
+              <div class="line" style="color:var(--teal)">out: nf=1.72 dB · gain=33 dB · ok</div>
+              <div class="nums"><span>latency <b>142 ms</b></span><span>status <b style="color:var(--teal)">OK</b></span></div>
+            </div>
+            <div class="ev">
+              <div class="evt">LLM CALL · round_1_elicit</div>
+              <div class="nums"><span>in <b>3,210 tok</b></span><span>out <b>812 tok</b></span></div>
+              <div class="nums"><span>cost <b>$0.042</b></span><span>wall <b>2.8 s</b></span></div>
+            </div>
+            <div class="ev">
+              <div class="evt">TOOL CALL · red_team_audit</div>
+              <div class="line">severity <span style="color:var(--warning)">medium</span> · 1 of 18 checks</div>
+              <div class="nums"><span>latency <b>88 ms</b></span></div>
+            </div>
+            <div class="ev">
+              <div class="evt">DB WRITE · pipeline_runs</div>
+              <div class="line" style="color:var(--teal)">run_id=r_2f91a · replayable</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 5. COST PANEL ================= -->
+  <div class="proposal" data-p="5">
+    <div class="pcard">
+      <div class="phead">
+        <div>
+          <h2>Cost / performance live panel</h2>
+          <div class="ref">Plan reference · B4.2 · persistent bar at top of pipeline view · data from <span class="mono">llm_calls</span> schema</div>
+          <p class="why">Every LLM call is already logged with tokens, cost, latency. Surface that live as a strip of KPIs at the top of the pipeline view so anyone watching the demo can see production economics in real time. Also addresses CEO/COO question #3 (“cost per run?”) without a slide flip.</p>
+        </div>
+        <span class="pill blue">SHOULD-ADD · Week 4</span>
+      </div>
+
+      <div class="shell">
+        <div class="shell-top">
+          <span class="pill teal">LIVE · 8-phase run</span>
+          <span class="muted">X-band airborne receiver · phase 6 of 10</span>
+          <span class="mono dim">run_id r_2f91a</span>
+          <div class="dots">
+            <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+
+        <div style="padding:16px">
+          <div class="costbar">
+            <div class="kpi">
+              <small>Tokens · this run</small>
+              <b>142,310</b>
+              <svg class="spark" viewBox="0 0 120 30" preserveAspectRatio="none"><polyline fill="none" stroke="#00c6a7" stroke-width="1.5" points="0,24 12,22 24,20 36,16 48,15 60,12 72,9 84,10 96,7 108,4 120,3"/></svg>
+            </div>
+            <div class="kpi">
+              <small>USD · this run</small>
+              <b class="teal">$0.87</b>
+              <svg class="spark" viewBox="0 0 120 30" preserveAspectRatio="none"><polyline fill="none" stroke="#00c6a7" stroke-width="1.5" points="0,26 12,24 24,22 36,18 48,16 60,13 72,10 84,11 96,8 108,5 120,3"/></svg>
+            </div>
+            <div class="kpi">
+              <small>Wall clock</small>
+              <b>04:12</b>
+              <svg class="spark" viewBox="0 0 120 30" preserveAspectRatio="none"><polyline fill="none" stroke="#94a3b8" stroke-width="1.5" points="0,28 24,22 48,16 72,11 96,7 120,4"/></svg>
+            </div>
+            <div class="kpi">
+              <small>Cache hit rate</small>
+              <b>78%</b>
+              <svg class="spark" viewBox="0 0 120 30" preserveAspectRatio="none"><polyline fill="none" stroke="#3b82f6" stroke-width="1.5" points="0,18 20,15 40,13 60,11 80,9 100,8 120,7"/></svg>
+            </div>
+            <div class="kpi">
+              <small>vs engineer hours</small>
+              <b class="amber">−98.7%</b>
+              <svg class="spark" viewBox="0 0 120 30" preserveAspectRatio="none"><polyline fill="none" stroke="#f59e0b" stroke-width="1.5" points="0,4 24,7 48,10 72,14 96,20 120,26"/></svg>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="panel">
+              <div class="micro" style="margin-bottom:8px">Per-phase cost breakdown</div>
+              <div style="display:flex;flex-direction:column;gap:6px;font-family:var(--code);font-size:11px">
+                <div style="display:flex;justify-content:space-between"><span>P01 · Design &amp; Reqs</span><span style="color:var(--text)">$0.24 · 48,200 tok · 1m 32s</span></div>
+                <div style="display:flex;justify-content:space-between"><span>P02 · HRS</span><span style="color:var(--text)">$0.18 · 31,500 tok · 54s</span></div>
+                <div style="display:flex;justify-content:space-between"><span>P03 · Compliance</span><span style="color:var(--text)">$0.14 · 24,900 tok · 41s</span></div>
+                <div style="display:flex;justify-content:space-between"><span>P04 · Netlist</span><span style="color:var(--text)">$0.19 · 28,300 tok · 48s</span></div>
+                <div style="display:flex;justify-content:space-between;color:var(--teal)"><span>P06 · GLR <span class="mono">(running)</span></span><span>$0.12 · 9,410 tok · 17s…</span></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="micro" style="margin-bottom:8px">Projected totals at completion</div>
+              <div style="display:flex;flex-direction:column;gap:6px;font-family:var(--code);font-size:11px">
+                <div style="display:flex;justify-content:space-between"><span>Projected USD</span><span style="color:var(--teal)">$1.42 ± 0.08</span></div>
+                <div style="display:flex;justify-content:space-between"><span>Projected tokens</span><span style="color:var(--text)">218,400</span></div>
+                <div style="display:flex;justify-content:space-between"><span>Projected wall clock</span><span style="color:var(--text)">06:55</span></div>
+                <div style="display:flex;justify-content:space-between"><span>API cap remaining</span><span style="color:var(--warning)">$417 / $500</span></div>
+                <div style="display:flex;justify-content:space-between"><span>Baseline raw-GPT cost</span><span style="color:var(--text3)">$4.30 (3.0× more)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 6. SIDE-BY-SIDE ================= -->
+  <div class="proposal" data-p="6">
+    <div class="pcard">
+      <div class="phead">
+        <div>
+          <h2>Side-by-side comparison — baseline vs scaffolded system</h2>
+          <div class="ref">Plan reference · A3.2 · two-pane diff viewer · fed by B3.1 eval data</div>
+          <p class="why">The headline pitch number is the hallucination-rate delta between raw GPT-4 and the scaffolded system. Judges want to see it, not be told about it. This view drops both outputs next to each other, highlights divergences in red/green, and includes the rubric score per dimension. Renders the eval story in under ten seconds.</p>
+        </div>
+        <span class="pill blue">SHOULD-ADD · Week 3</span>
+      </div>
+
+      <div class="shell">
+        <div class="shell-top">
+          <span class="pill teal">P01 · Design &amp; Requirements</span>
+          <span class="muted">Spec REF-01 · X-band fire-control airborne receiver</span>
+          <span class="mono dim">eval run 2026-04-17</span>
+        </div>
+        <div class="main">
+          <div class="cmp-head">
+            <div>
+              <div class="micro">Rubric score (of 25)</div>
+              <div style="font-family:var(--display);font-size:18px;margin-top:2px"><span style="color:var(--text3)">Baseline 11</span> · <span style="color:var(--teal)">Scaffolded 23</span></div>
+            </div>
+            <div class="cmp-stats">
+              <span>Hallucinations <b style="color:#fca5a5">7</b> / <b style="color:#86efac">0</b></span>
+              <span>Fake parts <b style="color:#fca5a5">3</b> / <b style="color:#86efac">0</b></span>
+              <span>Cascade errors <b style="color:#fca5a5">2</b> / <b style="color:#86efac">0</b></span>
+              <span>Unresolved citations <b style="color:#fca5a5">4</b> / <b style="color:#86efac">1</b></span>
+            </div>
+          </div>
+
+          <div class="compare">
+            <div class="pane base">
+              <h5>Raw GPT-4 (baseline) <span class="tag">no scaffolding</span></h5>
+              <div class="diffrow bad"><span class="k">System NF</span><span class="v">2.4 dB (asserted, no derivation)</span></div>
+              <div class="diffrow bad"><span class="k">LNA part</span><span class="v">“ADI HMC-ULTRALOW-01”</span></div>
+              <div class="diffrow bad"><span class="k">Datasheet URL</span><span class="v">analog.com/hmc-ultralow-01 · 404</span></div>
+              <div class="diffrow bad"><span class="k">Compliance clause</span><span class="v">MIL-STD-461G CE102 (not a valid clause)</span></div>
+              <div class="diffrow bad"><span class="k">Pulse handling</span><span class="v">“suitable for typical radar pulses”</span></div>
+              <div class="diffrow"><span class="k">IIP3</span><span class="v">not mentioned</span></div>
+              <div class="diffrow"><span class="k">Confidence</span><span class="v">claimed 95%, no rationale</span></div>
+            </div>
+            <div class="pane ours">
+              <h5>Scaffolded (elicit → validate → audit → lock) <span class="tag">● LIVE</span></h5>
+              <div class="diffrow good"><span class="k">System NF</span><span class="v">2.8 dB (Friis-derived, validator OK)</span></div>
+              <div class="diffrow good"><span class="k">LNA part</span><span class="v">ADI HMC8411 (in DB, screening ind.)</span></div>
+              <div class="diffrow good"><span class="k">Datasheet URL</span><span class="v">analog.com/en/products/hmc8411 · ✓ verified</span></div>
+              <div class="diffrow good"><span class="k">Compliance clause</span><span class="v">MIL-STD-461G CE101 (resolved in lookup)</span></div>
+              <div class="diffrow good"><span class="k">Pulse handling</span><span class="v">PW 100 ns–10 µs, duty ≤ 25%, validated</span></div>
+              <div class="diffrow good"><span class="k">IIP3</span><span class="v">+19 dBm input-referred (cascade)</span></div>
+              <div class="diffrow good"><span class="k">Confidence</span><span class="v">88% · traceable to 11 sources</span></div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;font-size:11px;color:var(--text2);display:flex;gap:12px;align-items:center">
+            <span class="pill green">+12 rubric points</span>
+            <span class="pill green">−100% hallucinations</span>
+            <span style="color:var(--text3)">Measured over 28 reference designs across radar / EW / satcom / comms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SUMMARY TABLE ================= -->
+  <div class="summary">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Proposal</th><th>Plan ref</th><th>Priority</th><th>Target week</th><th>Effort</th><th>Touches</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="id">1</td><td>Trust Report tab</td><td>B2.1</td><td><span class="pill amber">MUST</span></td><td>Week 2</td><td class="eff">1–1.5d frontend</td><td><span class="mono">App.tsx</span>, new <span class="mono">views/TrustReportView.tsx</span>, <span class="mono">api.ts</span></td></tr>
+        <tr><td class="id">2</td><td>Confidence tint per section</td><td>B2.3</td><td><span class="pill amber">MUST</span></td><td>Week 2</td><td class="eff">1d frontend + backend</td><td><span class="mono">DocumentsView.tsx</span>, per-section renderer, agent output schema</td></tr>
+        <tr><td class="id">3</td><td>Datasheet verified badge in BOM</td><td>A2.2</td><td><span class="pill amber">MUST</span></td><td>Week 2</td><td class="eff">0.5d frontend</td><td><span class="mono">DocumentsView.tsx</span> BOM table</td></tr>
+        <tr><td class="id">4</td><td>Judge mode + admin drawer</td><td>A2.3 / A3.1</td><td><span class="pill amber">MUST</span></td><td>Week 3</td><td class="eff">3d across stack</td><td>new <span class="mono">/judge</span> route, <span class="mono">AdminDrawer.tsx</span>, SSE endpoint</td></tr>
+        <tr><td class="id">5</td><td>Cost / performance panel</td><td>B4.2</td><td><span class="pill blue">SHOULD</span></td><td>Week 4</td><td class="eff">1d frontend</td><td>new <span class="mono">CostBar.tsx</span>, polls <span class="mono">/api/v1/admin/llm-calls</span></td></tr>
+        <tr><td class="id">6</td><td>Side-by-side comparison</td><td>A3.2</td><td><span class="pill blue">SHOULD</span></td><td>Week 3</td><td class="eff">1.5d frontend + eval</td><td>new <span class="mono">views/CompareView.tsx</span>, needs B3.1 eval output</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ================= APPROVAL BAR ================= -->
+  <div class="foot">
+    <div class="left">
+      <div>
+        <div class="big">Approve proposals to implement in the React app?</div>
+        <div class="note">You can approve all 6, or tell me which subset. I'll then edit <span class="mono">hardware-pipeline-v5-react/src/</span> and re-bundle.</div>
+      </div>
+    </div>
+    <div class="btns">
+      <button class="btn ghost" onclick="alert('Send me the list of changes you want adjusted — no code will be touched until you confirm.')">Request changes</button>
+      <button class="btn" onclick="alert('Reply with: implement 1,2,3 (or all) and I will apply the edits.')">Approve subset</button>
+      <button class="btn primary" onclick="alert('Reply \'approved — implement all\' and I will commit the changes.')">Approve all &amp; implement →</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // simple tab switcher
+  const tabs = document.querySelectorAll('.tab');
+  const props = document.querySelectorAll('.proposal');
+  tabs.forEach(t => t.addEventListener('click', () => {
+    const p = t.getAttribute('data-p');
+    tabs.forEach(x => x.classList.remove('active'));
+    props.forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelector('.proposal[data-p="' + p + '"]').classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }));
+</script>
+</body>
+</html>

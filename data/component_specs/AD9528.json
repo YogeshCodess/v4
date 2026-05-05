@@ -1,0 +1,19 @@
+{
+  "mpn": "AD9528", "manufacturer": "Analog Devices", "family": "AD952x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "JESD204B clock generator, 14 outputs, dual-loop PLL, integrated VCO",
+  "datasheet_url": "https://www.analog.com/en/products/ad9528.html",
+  "spi_max_clock_hz": 50000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "spi_dummy_cycles": 0,
+  "pll_config_reg_count": 200,
+  "pll_config_bit_width": 24,
+  "pll_lock_time_us": 250,
+  "pll_min_output_freq_hz":     1000000,
+  "pll_max_output_freq_hz": 4025000000,
+  "fpga_ports": {"reset_n": true, "sync": true, "extra": ["CSB", "STATUS0", "STATUS1"]},
+  "notes": [
+    "16-bit register addresses; 24-bit total SPI word (R/W + 15-bit addr + 8-bit data)",
+    "Two PLLs in series: PLL1 (jitter cleanup) -> PLL2 (frequency synthesis)",
+    "Drives both DEVCLK and SYSREF for AD9082/AD9208/AD9162 family"
+  ]
+}

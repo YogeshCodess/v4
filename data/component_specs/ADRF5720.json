@@ -1,0 +1,13 @@
+{
+  "mpn": "ADRF5720", "manufacturer": "Analog Devices", "family": "ADRF572x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "9 kHz - 40 GHz, 7-bit silicon digital step attenuator (DSA), 31.5 dB range, 0.5 dB step",
+  "datasheet_url": "https://www.analog.com/en/products/adrf5720.html",
+  "spi_max_clock_hz": 25000000, "spi_mode": 0, "spi_data_width_bits": 8,
+  "fpga_ports": {"reset_n": false, "sync": false, "extra": ["LE", "D0..D6", "SI", "CLK"]},
+  "notes": [
+    "Dual interface: parallel (D0-D6) OR serial (SI/CLK/LE)",
+    "Serial mode: 8-bit shift register, LSB first, latch on LE rising",
+    "Step size 0.5 dB; full scale 31.5 dB"
+  ]
+}

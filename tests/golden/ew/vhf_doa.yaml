@@ -1,0 +1,32 @@
+# Golden scenario — EW, VHF direction-finding (30-300 MHz) ground-based
+domain: ew
+id: vhf_doa
+
+round1_answers:
+  freq_range: "30-300 MHz"
+  ew_type: "DOA"
+  platform: "ground-fixed"
+  channels: 4
+  dynamic_range_db: 80
+  sensitivity_dbm: -100
+  aoa_accuracy_deg: 5
+  signal_type: ["CW", "pulsed"]
+  temp_range: "industrial -40 to +85"
+  standards: [MIL-STD-461G, MIL-STD-188-200]
+
+architecture: direct_rf_sampling
+
+expected_cascade:
+  noise_figure_db: 2.152
+  total_gain_db: 24.0
+  tolerance_db: 0.5
+
+bom:
+  - {name: "LNA",     gain_db: 18.0, nf_db: 1.0, iip3_dbm: 30.0, kind: "LNA", part_number: "TQP3M9008"}
+  - {name: "Filter",  gain_db: -3.0, nf_db: 3.0, kind: "filter"}
+  - {name: "Mixer",   gain_db: -6.0, nf_db: 6.0, iip3_dbm: 20.0, kind: "mixer"}
+  - {name: "ADC_Buf", gain_db: 15.0, nf_db: 5.0, iip3_dbm: 28.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-461G", "CS104"]
+  - ["MIL-STD-188-200", "Section 5"]

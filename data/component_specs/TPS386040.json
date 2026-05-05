@@ -1,0 +1,13 @@
+{
+  "mpn": "TPS386040", "manufacturer": "Texas Instruments", "family": "TPS386x",
+  "bus": "gpio", "source": "curated", "confidence": 1.0,
+  "description": "Quad-supply voltage supervisor with programmable delay, manual-reset input",
+  "datasheet_url": "https://www.ti.com/product/TPS386040",
+  "fpga_ports": {"reset_n": false, "interrupt": true,
+                 "extra": ["VS1..VS4", "RESET_N", "MR_N", "CT"]},
+  "notes": [
+    "Watches up to 4 supply rails; asserts RESET_N when any goes out of spec",
+    "Delay programmable via external cap on CT pin (1 ms - 10 s)",
+    "MR_N pin lets FPGA force a reset assertion (manual-reset input)"
+  ]
+}

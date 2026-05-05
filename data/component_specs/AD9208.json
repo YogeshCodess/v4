@@ -1,0 +1,19 @@
+{
+  "mpn": "AD9208", "manufacturer": "Analog Devices", "family": "AD92xx",
+  "bus": "adc", "source": "curated", "confidence": 1.0,
+  "description": "14-bit, 3 GSPS dual-channel JESD204B ADC",
+  "datasheet_url": "https://www.analog.com/en/products/ad9208.html",
+  "spi_max_clock_hz": 25000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "adc_resolution_bits": 14,
+  "adc_max_sample_rate_hz": 3000000000,
+  "adc_interface": "jesd204b",
+  "adc_jesd_lanes": 8,
+  "adc_n_channels": 2,
+  "fpga_ports": {"sysref": true, "devclk": true, "sync": true, "reset_n": true,
+                 "extra": ["SDIO", "SCLK", "CSB", "FD_A", "FD_B"]},
+  "notes": [
+    "JESD204B subclass-1; 16 Gbps per lane max",
+    "Dual-channel, on-chip DDC for IF subsampling",
+    "SPI 24-bit: 1 R/W + 15-bit addr + 8-bit data"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "mpn": "AD9914", "manufacturer": "Analog Devices", "family": "AD991x",
+  "bus": "dac", "source": "curated", "confidence": 1.0,
+  "description": "3.5 GSPS direct digital synthesizer (DDS), 12-bit DAC",
+  "datasheet_url": "https://www.analog.com/en/products/ad9914.html",
+  "spi_max_clock_hz": 70000000, "spi_mode": 0, "spi_data_width_bits": 32,
+  "dac_resolution_bits": 12,
+  "dac_max_update_rate_hz": 3500000000,
+  "dac_interface": "parallel",
+  "dac_n_channels": 1,
+  "fpga_ports": {"reset_n": true, "sync": true,
+                 "extra": ["IO_UPDATE", "PROFILE0..PROFILE2", "DRCTL", "DRHOLD", "OSK", "PS0..PS2"]},
+  "notes": [
+    "32-bit serial control; 8-bit register addresses, 8/16/32-bit data registers",
+    "IO_UPDATE strobe latches new tuning words atomically",
+    "PROFILE pins select 1-of-8 preprogrammed frequency profiles for fast hop"
+  ]
+}

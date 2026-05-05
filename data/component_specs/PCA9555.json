@@ -1,0 +1,17 @@
+{
+  "mpn": "PCA9555", "manufacturer": "NXP", "family": "PCA955x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "16-bit I2C-bus GPIO expander with interrupt output",
+  "datasheet_url": "https://www.nxp.com/products/PCA9555",
+  "i2c_slave_addr_7bit": 32,
+  "i2c_addr_width_bits": 8,
+  "i2c_page_size_bytes": 8,
+  "i2c_max_clock_hz":   400000,
+  "fpga_ports": {"reset_n": true, "interrupt": true,
+                 "extra": ["INT_N", "P0_0..P0_7", "P1_0..P1_7"]},
+  "notes": [
+    "Slave addr 0x20 (A0=A1=A2=0); strap pins set lower 3 bits",
+    "8-bit register address: 0=Input p0, 1=Input p1, 2=Output p0, 3=Output p1, 4-5=Polarity, 6-7=Config",
+    "INT_N goes low on any input change; cleared by reading input register"
+  ]
+}

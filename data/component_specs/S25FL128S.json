@@ -1,0 +1,26 @@
+{
+  "mpn": "S25FL128S", "manufacturer": "Cypress", "family": "S25FL",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "128 Mb (16 MB) MirrorBit NOR Flash, Quad-SPI",
+  "datasheet_url": "https://www.infineon.com/cms/en/product/memories/nor-flash/serial-spi-quad-spi-nor-flash/s25fl128s/",
+  "spi_max_clock_hz": 108000000, "spi_mode": 0, "spi_data_width_bits": 8,
+  "spi_dummy_cycles": 8,
+  "flash_capacity_bytes":   16777216,
+  "flash_page_size_bytes":  256,
+  "flash_sector_size_bytes": 65536,
+  "flash_opcodes": {
+    "read":          3,
+    "fast_read":     11,
+    "page_program":  2,
+    "sector_erase":  216,
+    "subsector_erase": 32,
+    "chip_erase":    96,
+    "write_enable":  6,
+    "write_disable": 4,
+    "read_status":   5,
+    "write_status":  1,
+    "read_id":       159
+  },
+  "fpga_ports": {"reset_n": false, "extra": ["WP", "HOLD"]},
+  "notes": ["64KB main sectors (or 4KB hybrid in lower address)"]
+}

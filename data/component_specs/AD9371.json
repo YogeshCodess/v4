@@ -1,0 +1,22 @@
+{
+  "mpn": "AD9371", "manufacturer": "Analog Devices", "family": "AD937x",
+  "bus": "adc", "source": "curated", "confidence": 1.0,
+  "description": "Integrated dual RF transceiver, 300 MHz - 6 GHz, 100 MHz BW",
+  "datasheet_url": "https://www.analog.com/en/products/ad9371.html",
+  "spi_max_clock_hz": 25000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "adc_resolution_bits": 16,
+  "adc_max_sample_rate_hz": 122880000,
+  "adc_interface": "jesd204b",
+  "adc_jesd_lanes": 4,
+  "adc_n_channels": 2,
+  "dac_resolution_bits": 14,
+  "dac_max_update_rate_hz": 245760000,
+  "dac_interface": "jesd204b",
+  "dac_n_channels": 2,
+  "fpga_ports": {"sysref": true, "devclk": true, "sync": true, "reset_n": true,
+                 "extra": ["GP_INT", "GPIO0..GPIO17", "TX1_ENABLE", "TX2_ENABLE"]},
+  "notes": [
+    "JESD204B subclass-1; ARM Cortex-M3 inside; boot via SPI",
+    "Predecessor to ADRV9009 with narrower BW; same software stack"
+  ]
+}

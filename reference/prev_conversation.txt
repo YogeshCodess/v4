@@ -1,0 +1,148 @@
+---
+## Landing Page 
+As shared from reference exactly same
+## Layout
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  TOPBAR  56px fixed                                                  │
+│  ⚡ Silicon to Software (S2S)  |  tabs: OVERVIEW NEW-PROJECT CHAT PIPELINE  │
+│                         DOCUMENTS COMPONENTS NETLIST CODE DASHBOARD  │
+│                                              |  ● Rf_design  ENGINE ●│
+├─────────────────┬───────────────────────────────────┬───────────────┤
+│                 │                             													|		Flow		|
+│  LEFT PANEL     │  PIPELINE card(ex : as shown in hardware-pipeline-v5-react.html)          		|				|
+│  248px fixed    │  flex-1 scrollable          													|				|
+│                 │                             													|				|
+│  Project card   │  Per-PIPELINE view:              													|				|
+│  (name, type,   │  					    														|				|
+│   progress)     │  • Design Chat — P1 chat														|			
+│                 │  • Details          															|			
+│  ─────────────  │  • Metrics		        														|				│
+│  PIPELINE       │  • DOCUMENTS      																		|				
+│  STAGES         │          																		|				
+│                 │          																		|				│
+│  P1 ✓ Complete  │          																		|				
+│  P2 ✓ Complete  │          																		|				
+│  P3 ✓ Complete  │                             													|				|
+│  P4 ● Running   │                             													|				|
+│  P5 ⏳ Lock  │                                													|				|
+│  P6 ⏳ Pending  │                             													|				|
+│  P7 ⏳ Lock  │                                													|				|
+│  P8 ⏳ Pending  │                             													|				|
+│                 │                             													|				|
+└─────────────────┴───────────────────────────────────┴──────────────												─┘
+```
+---
+## Views / Pages
+| Tab | View | Key Content |
+|-----|------|-------------|
+| DESIGN CHAT | as alredy exist in git tag "gold theme". 
+| DOCUMENTS | Doc viewer | (as applicable)List of generated .md/.docx/ Mermaid diagram + JSON viewer with node/edge counts/ Component recommendations table with part numbers, specs, availability files per phase, inline markdown renderer |
+| DETAILS  contains:
+```
+[🤖/👤]  P{n} · {Name}                              [STATUS BADGE]
+         {description}
+INPUTS   ──────────────────────────────────────────
+  • item1
+  • item2
+OUTPUTS  ──────────────────────────────────────────
+  • item1
+  • item2
+TOOLS    ──────────────────────────────────────────
+  • tool1 · tool2
+METRICS
+  TIME SAVED        ERROR REDUCTION    CONFIDENCE %    ANNUAL COST IMPACT
+  {value}           {value}            {value}         {value}
+SUB-STEPS (expandable)
+  ① step name .............. Xmin
+  ② step name .............. Xmin
+[▶ Run P{n}]  OR  [Completed externally in Altium/Vivado]
+[APPROVE & PROCEED →]
+```
+### Phase Reference Data
+| ID  | Name                  | Type    | Description |
+|-----|-----------------------|---------|-------------|
+| P1  | Design & Requirements | 🤖 AI   | Block diagram + requirements capture via chat |
+| P2  | HRS Document          | 🤖 AI   | IEEE 29148 Hardware Requirements Specification |
+| P3  | Compliance Check      | 🤖 AI   | RoHS/REACH/FCC/MIL-STD rules engine |
+| P4  | Netlist Generation    | 🤖 AI   | Component connectivity graph with DRC |
+| P5  | PCB Layout            | 👤 Eng  | Altium/KiCad/OrCAD — manual, external tool |
+| P6  | GLR Specification     | 🤖 AI   | Glue Logic Requirements for FPGA/CPLD |
+| P7  | FPGA Design           | 👤 Eng  | Vivado/Quartus — manual, external tool |
+| P8a | SRS Document          | 🤖 AI   | Software Requirements Specification |
+| P8b | SDD Document          | 🤖 AI   | Software Design Document |
+| P8c | Code Review           | 🤖 AI   | MISRA-C + Clang-Tidy static analysis |
+---
+## Interactive Components
+### Create Project Modal
+- Trigger: `+ CREATE PROJECT` button in topbar or overview
+- Fields: PROJECT NAME (placeholder: "e.g. BLDC Motor Driver v2"), PRODUCT ID ("e.g. DPL-HW-2026-001"), DESCRIPTION (textarea), Design Type (select: RF / Digital)
+- Actions: `Cancel` | `CREATE & START →`
+- On submit: POST `/api/projects` → redirect to pipeline view
+### Load Project
+- Trigger: `LOAD PROJECT` button
+- Shows list of existing projects from GET `/api/projects`
+- On select: loads project into sidebar + all views
+### Phase Actions
+- `▶ Run P{n}` — POST `/api/projects/{id}/run` with phase param
+- `APPROVE & PROCEED →` — POST `/api/projects/{id}/approve/{phase}`
+- Running state: spinner + "Running…" badge
+### Streaming Chat (P1)
+- POST `/api/projects/{id}/chat` with message
+- Display streamed response with `█` animated blink cursor
+- Auto-scroll to bottom on new tokens
+---
+
+
+lets discuss
+
+
+Good, I can see what you're describing. Let me make sure I understand the changes correctly before we touch any code — a few things I want to clarify:
+
+1. The right panel says "Flow"
+Currently it shows compliance rings, quality scores, and an activity log. What do you want "Flow" to show? A pipeline flow diagram? A live execution trace? A data flow visualization? This is the biggest open question for me.
+2. Tab structure — are you collapsing the nav?
+The topbar still lists all 9 tabs, but the Views table only defines 3 things: Design Chat, Documents, and Details. What happens to the current standalone tabs — Components, Netlist, Code Review, Dashboard? Are they being removed, or folded into Documents/Details?
+3. The main PIPELINE view — is it per-phase?
+Your layout shows the center panel with sub-sections: Design Chat, Details, Metrics, Documents. Is the idea that when you click a phase in the left sidebar (e.g. P3), the center area switches to show that phase's chat / details / metrics / documents all in one place — like an in-place drill-down rather than switching top-level tabs?
+4. Two things in the spec still have old values
+
+Create Project Modal still includes PRODUCT ID field — backend rejects this
+Interactive Components still uses old API paths (/api/projects without /v1/)
+Do you want these corrected in the spec, or are you planning to update the backend to match?
+
+5. Design Chat
+You said "as already exists in git tag gold theme" — does that mean you want the chat UI to look and behave exactly like the Streamlit version, or just that the functionality should be the same?
+
+Once you answer these I can update the CLAUDE.md layout section accurately and then we can start building.as already mentioned in hardware-pipeline-v5.html (Step-by-Step Execution Flow)fold into Documents as applicableyesyou decidefunctionality and its UI but color should match existing adapt to iti have a question did u really analyze hardware-pipeline-v5.html sequence and its execution how it is displayed?Thought processThought processHonestly, no — I haven't read it in this session, and I shouldn't pretend otherwise. That file was referenced in the previous session but I don't have its contents. Let me read it now properly before we go any further.Ran 9 commands, read 2 files, found filesRan 9 commands, read 2 files, found filesNow let me read the pipeline render to understand the sub-steps/execution flow pattern:Read a fileRead a fileYes, please share it! That's exactly what I need — I can read the file directly once you upload it here.Ran 17 commands, read 2 files, searched codeRan 17 commands, read 2 files, searched codeNow I've read it properly. Here's what I actually found — and it's quite different from what's built:
+
+The v5 HTML has NO top navigation bar. The whole app is:
+
+A landing page when no project is loaded
+A 2-column layout once inside a project: 248px left sidebar + flex-1 main content
+
+The "Flow" right panel you're describing doesn't exist in the v5 HTML at all. In the v5 HTML, "Flow" (Step-by-Step Execution Flow) is the default sub-tab of the main content area when you click a phase. It lives in the center.
+So what you're actually proposing is a hybrid of v5 and the current 3-column layout:
+
+Left panel: phase list (like v5)
+Center: phase detail with sub-tabs — Chat (P1 only), Details, Metrics, Documents
+Right panel: the Step-by-Step Execution Flow, promoted from a center sub-tab to a permanent right column
+
+Is that correct? Flow is always visible on the right while you switch through Chat/Details/Metrics/Documents in the center?
+
+The other things I now clearly understand from reading the v5 HTML:
+The v5 also has a mini sticky topbar inside the pipeline view showing: project name, product ID chip, and n / 8 phase progress dots (colored per phase). Not a full nav — just a status strip.
+The phases each have their own color (P1 teal, P2 blue, P3 amber, P4 purple, etc.) — the sub-steps and all the accents in the flow panel use that phase's color, not a global teal.
+
+My remaining questions before I update the spec:
+
+Does the full 9-tab topbar stay, or does it get simplified to match v5's minimal sticky bar with just the project name + progress dots?
+The v5 HTML has productId in Create Project. You said "you decide" on the API mismatch — I'll remove it from the UI entirely since the backend rejects it.
+The v5 landing page has a grid/checkerboard background, glowing orbs, and + Create New Project and Load Existing buttons. Do you want the Overview/landing to match the v5 exactly?
+1. match v5's
+
+2. ok
+
+3. landing match exactlt v5
+
+any doubts lets discuss first plan

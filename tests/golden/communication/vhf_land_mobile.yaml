@@ -1,0 +1,33 @@
+# Golden scenario — Communications, VHF land-mobile FM narrow-band (136-174 MHz)
+domain: communication
+id: vhf_land_mobile
+
+round1_answers:
+  freq_range: "136-174 MHz"
+  comm_type: "VHF land-mobile FM / P25"
+  platform: "vehicular + handheld"
+  modulation: ["FM", "P25 Phase 1 C4FM"]
+  channel_bw_khz: 12.5
+  tx_power_w: 5
+  sensitivity_dbm: -118
+  dynamic_range_db: 80
+  temp_range: "military -30 to +60"
+  standards: [MIL-STD-188-200, MIL-STD-461G, MIL-STD-810H]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 3.42
+  total_gain_db: 27.0
+  tolerance_db: 1.0
+
+bom:
+  - {name: "LNA",    gain_db: 16.0, nf_db: 2.5, iip3_dbm: 22.0, p1db_dbm: 12.0, kind: "LNA"}
+  - {name: "Filter", gain_db: -2.0, nf_db: 2.0, kind: "filter"}
+  - {name: "Mixer",  gain_db: -7.0, nf_db: 7.0, iip3_dbm: 15.0, p1db_dbm: 8.0,  kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 20.0, nf_db: 3.5, iip3_dbm: 20.0, p1db_dbm: 10.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-188-200", "Section 5"]
+  - ["MIL-STD-461G", "CE102"]
+  - ["MIL-STD-810H", "Method 514.8"]

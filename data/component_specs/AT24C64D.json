@@ -1,0 +1,13 @@
+{
+  "mpn": "AT24C64D", "manufacturer": "Microchip", "family": "AT24",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "64kb (8 KB) I2C EEPROM, 1.7-5.5V",
+  "datasheet_url": "https://www.microchip.com/en-us/product/AT24C64D",
+  "i2c_slave_addr_7bit": 80,
+  "i2c_addr_width_bits": 16,
+  "i2c_page_size_bytes": 32,
+  "i2c_max_clock_hz":   1000000,
+  "i2c_write_cycle_ms": 5,
+  "fpga_ports": {"write_protect": true},
+  "notes": ["A0-A2 strap pins set lower 3 bits of slave addr"]
+}

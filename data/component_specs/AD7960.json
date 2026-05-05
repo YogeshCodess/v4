@@ -1,0 +1,17 @@
+{
+  "mpn": "AD7960", "manufacturer": "Analog Devices", "family": "AD796x",
+  "bus": "adc", "source": "curated", "confidence": 1.0,
+  "description": "18-bit, 5 MSPS PulSAR differential SAR ADC, LVDS output",
+  "datasheet_url": "https://www.analog.com/en/products/ad7960.html",
+  "spi_max_clock_hz": 5000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "adc_resolution_bits": 18,
+  "adc_max_sample_rate_hz": 5000000,
+  "adc_interface": "lvds",
+  "adc_n_channels": 1,
+  "fpga_ports": {"reset_n": true, "extra": ["CNV", "CLK_P", "CLK_N", "D_P", "D_N", "DCO_P", "DCO_N"]},
+  "notes": [
+    "LVDS data interface: D+/D- + clock-out DCO+/DCO- + convert-start CNV",
+    "FPGA must drive CNV and CLK; DCO returns serialized data",
+    "Used for high-resolution precision analog measurement"
+  ]
+}

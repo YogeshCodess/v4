@@ -1,0 +1,14 @@
+{
+  "mpn": "FT232H", "manufacturer": "FTDI", "family": "FT232",
+  "bus": "uart", "source": "curated", "confidence": 1.0,
+  "description": "Single-channel USB 2.0 Hi-Speed to UART/MPSSE bridge, 12 Mbaud",
+  "datasheet_url": "https://ftdichip.com/products/ft232hl/",
+  "uart_max_baud_hz": 12000000,
+  "uart_levels": "ttl",
+  "fpga_ports": {"reset_n": true, "extra": ["RXD", "TXD", "RTS", "CTS", "DTR", "DSR", "DCD", "RI"]},
+  "notes": [
+    "Asynchronous UART up to 12 Mbaud (synchronous bit-bang up to 30 Mbaud)",
+    "MPSSE engine can also do JTAG/SPI/I2C from host driver",
+    "FPGA side just needs RXD/TXD + optional flow control"
+  ]
+}

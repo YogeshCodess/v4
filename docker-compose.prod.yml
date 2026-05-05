@@ -1,0 +1,83 @@
+version: '3.8'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Silicon to Software (S2S) — Production Docker Compose (with Nginx + SSL)
+#
+# Usage:
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Prerequisites:
+#   1. Set your domain in nginx/nginx.conf (replace YOUR_DOMAIN_HERE)
+#   2. Place SSL certs at ./nginx/ssl/fullchain.pem and ./nginx/ssl/privkey.pem
+#      (use certbot: certbot certonly --standalone -d your-domain.com)
+#   3. cp .env.example .env  and fill in API keys
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: hardware_pipeline
+      POSTGRES_USER: hardware_pipeline
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hardware_pipeline"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    # Not exposed externally in prod — only accessible within Docker network
+
+  app:
+    build: .
+    environment:
+      - DATABASE_URL=postgresql://hardware_pipeline:${POSTGRES_PASSWORD}@db:5432/hardware_pipeline
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GLM_API_KEY=${GLM_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - PRIMARY_MODEL=${PRIMARY_MODEL:-claude-opus-4-6}
+      - FAST_MODEL=${FAST_MODEL:-claude-haiku-4-5-20251001}
+      - FALLBACK_MODEL=${FALLBACK_MODEL:-ollama/qwen2.5-coder:32b}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://localhost:11434}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - GITHUB_REPO=${GITHUB_REPO:-}
+      - GIT_ENABLED=${GIT_ENABLED:-false}
+      - DIGIKEY_CLIENT_ID=${DIGIKEY_CLIENT_ID:-}
+      - DIGIKEY_CLIENT_SECRET=${DIGIKEY_CLIENT_SECRET:-}
+      - MOUSER_API_KEY=${MOUSER_API_KEY:-}
+      - APP_ENV=production
+      - LOG_LEVEL=INFO
+      - DEBUG=false
+      - CHROMA_PERSIST_DIR=/app/chroma_data
+      - ANONYMIZED_TELEMETRY=False
+      - CHROMA_ANONYMIZED_TELEMETRY=False
+    volumes:
+      - ./output:/app/output
+      - ./chroma_data:/app/chroma_data
+      - ./logs:/app/logs
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    command: ["sh", "start-prod.sh"]
+    # Not exposed directly — Nginx is the only public entry point
+
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro          # SSL certs
+      - ./nginx/certbot:/var/www/certbot:ro    # Let's Encrypt challenge files
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

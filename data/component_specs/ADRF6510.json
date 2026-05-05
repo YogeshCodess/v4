@@ -1,0 +1,13 @@
+{
+  "mpn": "ADRF6510", "manufacturer": "Analog Devices", "family": "ADRF651x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "Programmable VGA + 1 MHz - 30 MHz tunable low-pass filter, dual-channel I/Q baseband",
+  "datasheet_url": "https://www.analog.com/en/products/adrf6510.html",
+  "spi_max_clock_hz": 25000000, "spi_mode": 0, "spi_data_width_bits": 16,
+  "fpga_ports": {"reset_n": false, "extra": ["CS", "VGA_GAIN_A", "VGA_GAIN_B", "FILT_BW"]},
+  "notes": [
+    "Dual baseband channel for I/Q paths after a quadrature downconverter",
+    "Filter corner frequency programmable via SPI; gain has analog-control option too",
+    "Common Rx baseband for ADMV1014 / ADL5380 etc."
+  ]
+}

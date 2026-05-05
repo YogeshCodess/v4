@@ -1,0 +1,19 @@
+{
+  "mpn": "HMC7044", "manufacturer": "Analog Devices", "family": "HMC704x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "3.2 GHz, 14-output JESD204B clock distribution + jitter cleaner",
+  "datasheet_url": "https://www.analog.com/en/products/hmc7044.html",
+  "spi_max_clock_hz": 50000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "spi_dummy_cycles": 0,
+  "pll_config_reg_count": 155,
+  "pll_config_bit_width": 24,
+  "pll_lock_time_us": 200,
+  "pll_min_output_freq_hz":     400000,
+  "pll_max_output_freq_hz": 3200000000,
+  "fpga_ports": {"reset_n": true, "sync": true, "extra": ["SLEN", "GPIO1..GPIO4", "PULSE_GEN_REQ"]},
+  "notes": [
+    "24-bit SPI: 1 R/W + 15-bit addr + 8-bit data",
+    "Provides DEVCLK + SYSREF for downstream JESD204B converters",
+    "SYNC pin from FPGA aligns SYSREF for deterministic latency"
+  ]
+}

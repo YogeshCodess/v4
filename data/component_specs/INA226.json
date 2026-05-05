@@ -1,0 +1,17 @@
+{
+  "mpn": "INA226", "manufacturer": "Texas Instruments", "family": "INA22x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "High-side / low-side bidirectional I2C current/power monitor with alert",
+  "datasheet_url": "https://www.ti.com/product/INA226",
+  "i2c_slave_addr_7bit": 64,
+  "i2c_addr_width_bits": 8,
+  "i2c_page_size_bytes": 2,
+  "i2c_max_clock_hz":   2940000,
+  "fpga_ports": {"reset_n": false, "interrupt": true,
+                 "extra": ["ALERT_N"]},
+  "notes": [
+    "Slave addr 0x40 + (A1,A0) strap pins (16 possible addresses)",
+    "16-bit register file accessed via 8-bit address pointer (0-7): config, shunt-V, bus-V, power, current, calibration, mask/enable, alert-limit",
+    "Reads are 16-bit big-endian; ALERT_N pin asserts when watched value crosses threshold"
+  ]
+}

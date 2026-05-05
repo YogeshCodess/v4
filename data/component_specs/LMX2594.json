@@ -1,0 +1,19 @@
+{
+  "mpn": "LMX2594", "manufacturer": "Texas Instruments", "family": "LMX259x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "15 GHz wideband PLLatinum RF synthesizer with integrated VCO",
+  "datasheet_url": "https://www.ti.com/product/LMX2594",
+  "spi_max_clock_hz": 50000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "spi_dummy_cycles": 0,
+  "pll_config_reg_count": 113,
+  "pll_config_bit_width": 24,
+  "pll_lock_time_us": 50,
+  "pll_min_output_freq_hz":    10000000,
+  "pll_max_output_freq_hz": 15000000000,
+  "fpga_ports": {"reset_n": false, "sync": true, "extra": ["CSB", "MUXOUT", "RAMPCLK"]},
+  "notes": [
+    "24-bit words: 1 R/W + 7-bit addr + 16-bit data",
+    "Program R112 down to R0 in descending order on cold-init",
+    "MUXOUT can be driven as digital lock detect"
+  ]
+}

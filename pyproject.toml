@@ -1,0 +1,151 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hardware-pipeline"
+version = "1.0.0"
+description = "AI-powered hardware design automation pipeline"
+requires-python = ">=3.12"
+authors = [
+    {name = "Silicon to Software (S2S) Team"},
+]
+readme = "README.md"
+license = {text = "MIT"}
+keywords = ["hardware", "design", "automation", "AI", "FastAPI"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    # Core AI/LLM
+    "anthropic>=0.42.0",
+    "chromadb>=0.5.0",
+    "openai>=1.50.0",
+    # Backend
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.5.0",
+    "sqlalchemy>=2.0.35",
+    "psycopg2-binary>=2.9.9",
+    "alembic>=1.13.0",
+    # UI
+    "streamlit>=1.40.0",
+    "streamlit-mermaid>=0.2.0",
+    # Document Generation
+    "Jinja2>=3.1.4",
+    "openpyxl>=3.1.5",
+    "pypandoc>=1.14",
+    # Engineering
+    "networkx>=3.4",
+    "numpy>=2.1.0",
+    "scipy>=1.14.0",
+    # Web Scraping
+    "playwright>=1.48.0",
+    # Code Review
+    "tree-sitter>=0.23.0",
+    "tree-sitter-c>=0.23.0",
+    # Git
+    "GitPython>=3.1.43",
+    # Utilities
+    "python-dotenv>=1.0.1",
+    "httpx>=0.27.0",
+    "rich>=13.9.0",
+    "tenacity>=9.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=5.0.0",
+    "black>=24.0.0",
+    "ruff>=0.2.0",
+    "mypy>=1.7.0",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+]
+ignore = [
+    "E501",   # line too long (handled by line-length)
+    "W291",   # trailing whitespace
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # Allow unused imports in __init__.py
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=.",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-report=html:htmlcov",
+    "--cov-report=json",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "api: marks tests that require API keys",
+    "airgap: marks tests that work without internet",
+]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+    # pytest-asyncio leaves its event loop around for the duration of the
+    # test session; Python's GC emits ResourceWarnings ("unclosed event loop")
+    # at interpreter shutdown that pytest's unraisable-exception collector
+    # then promotes to PytestUnraisableExceptionWarning. Tests all pass —
+    # this is end-of-session noise only, so we silence it.
+    "ignore::pytest.PytestUnraisableExceptionWarning",
+    "ignore::ResourceWarning",
+]
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/.venv/*",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]

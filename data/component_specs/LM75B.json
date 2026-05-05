@@ -1,0 +1,16 @@
+{
+  "mpn": "LM75B", "manufacturer": "NXP", "family": "LM75",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "Digital temperature sensor with I2C SMBus interface, 11-bit, +/-2 deg C accuracy",
+  "datasheet_url": "https://www.nxp.com/products/LM75B",
+  "i2c_slave_addr_7bit": 72,
+  "i2c_addr_width_bits": 8,
+  "i2c_page_size_bytes": 2,
+  "i2c_max_clock_hz":   400000,
+  "fpga_ports": {"reset_n": false, "interrupt": true, "extra": ["OS"]},
+  "notes": [
+    "Slave addr 0x48 + (A2,A1,A0) strap pins",
+    "4 registers via 8-bit pointer: 0=Temp (16-bit big-endian), 1=Conf, 2=T_hyst, 3=T_os",
+    "OS pin asserts when temp crosses thresholds (overtemperature shutdown)"
+  ]
+}

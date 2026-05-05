@@ -1,0 +1,334 @@
+# Silicon to Software (S2S) V2 — Project Memory
+
+## Current Status
+- **FastAPI backend** running on `localhost:8000` — serves API + React frontend
+- **React v5 frontend** built and deployed at `http://localhost:8000/app`
+- **Streamlit** (`app.py`) kept as legacy fallback — not used actively
+- Gold theme (Streamlit) tagged as `theme-gold`
+- All 8 pipeline phases functional in backend
+
+---
+
+## Completed Work
+
+### React Frontend Rebuild (v5 Design) — DONE
+- React + Tailwind + shadcn/ui frontend built at `hardware-pipeline-v5-react/`
+- Bundled to single file: `frontend/bundle.html`
+- Served by FastAPI at `http://localhost:8000/app` via `/app` route in `main.py`
+- All 9 views implemented: Overview, NewProject, DesignChat, Pipeline, Documents, Components, Netlist, CodeReview, Dashboard
+- Full 3-column layout: 248px left sidebar + flex center + 300px right panel
+- Live API integration to FastAPI backend (same origin, no CORS issues)
+
+---
+
+## Architecture
+
+```
+┌────────────────────────────────────────────────────────────────────┐
+│  REACT FRONTEND — frontend/bundle.html                             │
+│  • Served by FastAPI at http://localhost:8000/app                  │
+│  • All JS/CSS inlined — single self-contained HTML file            │
+│  • Makes live HTTP calls to FastAPI at localhost:8000              │
+└──────────────────────────────┬─────────────────────────────────────┘
+                               │ HTTP fetch() calls (same-origin)
+                               ▼
+┌────────────────────────────────────────────────────────────────────┐
+│  FASTAPI BACKEND — main.py on port 8000                            │
+│  • Runs AI agents, reads SQLite DB, generates output files         │
+│  • Swagger docs at http://localhost:8000/docs                      │
+│  • Serves React bundle at GET /app                                 │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Design System (v5)
+
+| Token            | Value                          |
+|------------------|--------------------------------|
+| Background       | `#070b14` (deep navy)          |
+| Panel BG         | `#1a2235`                      |
+| Panel Alt        | `#2a3a50`                      |
+| Accent (primary) | `#00c6a7` (teal)               |
+| Accent glow      | `rgba(0,198,167,0.25)`         |
+| Text primary     | `#e2e8f0`                      |
+| Text muted       | `#94a3b8`                      |
+| Text dim         | `#64748b`                      |
+| Border           | `rgba(42,58,80,0.8)`           |
+| Error            | `#dc2626`                      |
+| Warning          | `#f59e0b`                      |
+| Blue accent      | `#3b82f6`                      |
+| Display font     | **Syne** (Google Fonts)        |
+| UI labels font   | **DM Mono** (Google Fonts)     |
+| Code font        | **JetBrains Mono**             |
+| Border radius    | 6px cards / 4px inputs         |
+| Teal glow shadow | `0 0 28px rgba(0,198,167,0.25)`|
+
+CSS variables in `src/index.css`: `--navy`, `--panel`, `--panel2`, `--panel3`, `--teal`, `--teal-border`, `--teal-glow`, `--text`, `--text2`, `--text3`, `--text4`, `--border`, `--border2`, `--danger`, `--warning`, `--blue`, `--green`
+
+---
+
+## Layout
+
+```
++---------------------------------------------------------------------+
+|  TOPBAR  56px fixed                                                  |
+|  [lightning] Silicon to Software (S2S)  |  OVERVIEW  NEW-PROJECT  CHAT      |
+|  PIPELINE  DOCUMENTS  COMPONENTS  NETLIST  CODE  DASHBOARD           |
+|                                        |  [dot] Rf_design  ENGINE[dot]|
++------------------+---------------------------+----------------------+
+|                  |                           |  RIGHT PANEL 300px   |
+|  LEFT PANEL      |  MAIN CONTENT             |                      |
+|  248px fixed     |  flex-1 scrollable        |  Compliance rings    |
+|                  |                           |  Quality scores      |
+|  Project card    |  Per-tab view:            |  Activity log        |
+|  (name, type,    |  - Overview               |                      |
+|   progress)      |  - Pipeline phases        |                      |
+|                  |  - Design Chat            |                      |
+|  -----------     |  - Documents              |                      |
+|  PIPELINE        |  - Components             |                      |
+|  STAGES          |  - Netlist                |                      |
+|                  |  - Code Review            |                      |
+|  P1 [check]      |  - Dashboard              |                      |
+|  P2 [check]      |                           |                      |
+|  P3 [check]      |                           |                      |
+|  P4 [dot]Running |                           |                      |
+|  P5 [lock]       |                           |                      |
+|  P6 Pending      |                           |                      |
+|  P7 [lock]       |                           |                      |
+|  P8 Pending      |                           |                      |
++------------------+---------------------------+----------------------+
+```
+
+---
+
+## Views / Pages
+
+| Tab | View | Key Content |
+|-----|------|-------------|
+| OVERVIEW | Landing / hero | Hero "Silicon to Software (S2S)" (Pipeline in teal), KPI cards, project grid with Open/Create buttons |
+| NEW-PROJECT | Project creation form | Inline form: name, description, design type (RF/Digital). No product_id field (backend doesn't accept it) |
+| CHAT | Design Chat (P1) | Chat interface with streaming display, suggestion chips, message history |
+| PIPELINE | Phase cards | All P1–P8c cards with inputs/outputs/tools/metrics/sub-steps/Run buttons |
+| DOCUMENTS | Doc viewer | List of generated .md/.docx files per phase, inline markdown renderer, Mermaid diagrams, JSON viewer |
+| COMPONENTS | Component table | Recommendations with part numbers, specs, availability |
+| NETLIST | Netlist viewer | Component connectivity graph, DRC results, JSON viewer with node/edge counts |
+| CODE | Code review | MISRA-C + Clang-Tidy results, issues list, severity breakdown |
+| DASHBOARD | Analytics | Pipeline health, phase timing, metrics charts |
+
+### Phase Detail Card Format (PIPELINE view)
+
+```
+[robot/person icon]  P{n} · {Name}                    [STATUS BADGE]
+                     {description}
+
+INPUTS   --------------------------------------------------
+  - item1
+  - item2
+
+OUTPUTS  --------------------------------------------------
+  - item1
+  - item2
+
+TOOLS    --------------------------------------------------
+  - tool1 · tool2
+
+METRICS
+  TIME SAVED     ERROR REDUCTION    CONFIDENCE %    ANNUAL COST IMPACT
+  {value}        {value}            {value}         {value}
+
+SUB-STEPS (expandable accordion)
+  1. step name .............. Xmin
+  2. step name .............. Xmin
+
+[ Run P{n} ]   OR   [ Completed externally in Altium/Vivado ]
+[ APPROVE & PROCEED → ]
+```
+
+### Phase Reference Data
+
+| ID  | Name                  | Type       | Description |
+|-----|-----------------------|------------|-------------|
+| P1  | Design & Requirements | AI         | Block diagram + requirements capture via chat |
+| P2  | HRS Document          | AI         | IEEE 29148 Hardware Requirements Specification |
+| P3  | Compliance Check      | AI         | RoHS/REACH/FCC/MIL-STD rules engine |
+| P4  | Netlist Generation    | AI         | Component connectivity graph with DRC |
+| P5  | PCB Layout            | Engineer   | Altium/KiCad/OrCAD — manual, external tool |
+| P6  | GLR Specification     | AI         | Glue Logic Requirements for FPGA/CPLD |
+| P7  | FPGA Design           | Engineer   | Vivado/Quartus — manual, external tool |
+| P8a | SRS Document          | AI         | Software Requirements Specification |
+| P8b | SDD Document          | AI         | Software Design Document |
+| P8c | Code Review           | AI         | MISRA-C + Clang-Tidy static analysis |
+
+---
+
+## API Integration
+
+**Base URL:** `http://localhost:8000`
+**API prefix:** `/api/v1/`
+**Swagger docs:** `http://localhost:8000/docs`
+**CORS:** Configured in FastAPI backend
+
+| Method | Endpoint | Used For |
+|--------|----------|----------|
+| GET | `/api/v1/projects` | List all projects |
+| POST | `/api/v1/projects` | Create new project |
+| GET | `/api/v1/projects/{id}` | Project detail |
+| GET | `/api/v1/projects/{id}/status` | All phase statuses — returns `{ phase_statuses: {...} }` |
+| POST | `/api/v1/projects/{id}/pipeline/run` | Start full pipeline |
+| POST | `/api/v1/projects/{id}/phases/{phase_id}/execute` | Run a single phase |
+| POST | `/api/v1/projects/{id}/chat` | P1 design chat — returns full JSON (not a stream) |
+
+**Create Project payload:** `{ name, description, design_type }` — do NOT include `product_id`, backend ignores/rejects it.
+
+**Chat response:** Backend returns `{ response: "..." }` as a complete JSON object, not a streaming response. Display the full text at once.
+
+**Status polling:** Phase status auto-refreshes every 3 seconds when a phase is running.
+
+---
+
+## Frontend Source
+
+```
+hardware-pipeline-v5-react/
+├── index.html
+├── vite.config.ts
+├── tsconfig.app.json          # noUnusedLocals: false (avoids strict TS errors)
+├── src/
+│   ├── main.tsx               # entry point
+│   ├── App.tsx                # tab router + 3-column layout shell, project polling
+│   ├── index.css              # v5 CSS variables + Syne/DM Mono font imports
+│   ├── api.ts                 # all fetch() calls — BASE uses same-origin when on port 8000
+│   ├── types.ts               # Project, Phase, Status TypeScript types
+│   ├── components/
+│   │   ├── Topbar.tsx         # fixed 56px topbar + nav tabs (default export)
+│   │   ├── LeftPanel.tsx      # project info + pipeline stage steps (default export)
+│   │   ├── RightPanel.tsx     # compliance rings + quality scores + activity (default export)
+│   │   ├── PhaseCard.tsx      # single phase card with all sections + actions
+│   │   ├── CreateProjectModal.tsx
+│   │   ├── LoadProject.tsx
+│   │   └── StatusBadge.tsx
+│   └── views/
+│       ├── Overview.tsx
+│       ├── NewProject.tsx
+│       ├── DesignChat.tsx
+│       ├── Pipeline.tsx
+│       ├── Documents.tsx
+│       ├── Components.tsx
+│       ├── Netlist.tsx
+│       ├── CodeReview.tsx
+│       └── Dashboard.tsx
+```
+
+**Build command:** `cd hardware-pipeline-v5-react && npx vite build`
+(Use `npx vite build` NOT `tsc -b && vite build` — avoids strict TypeScript errors on unused vars)
+
+---
+
+## Bundle & Deploy
+
+### Bundle Script
+After `npx vite build`, run this Python script to inline CSS + JS into a single HTML and escape all non-ASCII characters:
+
+```python
+# bundle_and_escape.py
+import re, pathlib
+
+dist = pathlib.Path("hardware-pipeline-v5-react/dist")
+src_html = (dist / "index.html").read_text(encoding="utf-8")
+
+# Inline CSS
+for css_file in dist.glob("assets/*.css"):
+    tag = f'<link rel="stylesheet" crossorigin href="/assets/{css_file.name}">'
+    src_html = src_html.replace(tag, f"<style>{css_file.read_text('utf-8')}</style>")
+
+# Inline JS
+for js_file in dist.glob("assets/*.js"):
+    tag = f'<script type="module" crossorigin src="/assets/{js_file.name}"></script>'
+    js = js_file.read_text("utf-8")
+    src_html = src_html.replace(tag, f'<script type="module">{js}</script>')
+
+# CRITICAL: Escape all non-ASCII chars in <script> blocks
+# Without this, Windows cp1252 encoding will crash the server with UnicodeDecodeError
+def escape_script(m):
+    content = m.group(1)
+    escaped = re.sub(r'[^\x00-\x7F]', lambda c: f'\\u{ord(c.group()):04X}', content)
+    return f'<script type="module">{escaped}</script>'
+
+src_html = re.sub(r'<script type="module">([\s\S]*?)</script>', escape_script, src_html)
+
+out = pathlib.Path("frontend/bundle.html")
+out.parent.mkdir(exist_ok=True)
+out.write_text(src_html, encoding="ascii")
+print(f"Bundle written: {out} ({out.stat().st_size // 1024} KB)")
+```
+
+**Output:** `frontend/bundle.html` (~300 KB, ASCII-safe)
+
+### FastAPI /app Route (in main.py)
+```python
+@app.get("/app", response_class=HTMLResponse, tags=["ops"])
+async def serve_frontend():
+    """Serve the React v5 frontend at http://localhost:8000/app"""
+    import pathlib
+    p = pathlib.Path(__file__).parent / "frontend" / "bundle.html"
+    if p.exists():
+        return HTMLResponse(content=p.read_text(encoding="utf-8", errors="replace"), status_code=200)
+    return HTMLResponse(content="<h1>Frontend not built yet.</h1>", status_code=404)
+```
+
+---
+
+## Branding
+
+- Hero headline: **"Silicon to Software (S2S)"** — "Pipeline" in teal `#00c6a7`
+- Subline: `DATA PATTERNS INDIA · GREAT AI HACK-A-THON 2026`
+- Team credits: **NOT included**
+- Logo: lightning bolt icon (teal) — use ASCII `[lightning]` in code to avoid encoding issues
+
+---
+
+## Backend
+
+- **FastAPI**: `main.py` on `localhost:8000`
+- **Streamlit** (legacy/fallback): `app.py` on `localhost:8501`
+- **DB**: `hardware_pipeline.db` (SQLite)
+- **AI Engine**: `agents/orchestrator.py`
+
+---
+
+## Git Tags
+
+- `theme-gold` — Streamlit gold theme, all 8 phases working
+
+---
+
+## Known Issues
+
+- **P4 Netlist:** phase status shows "Pending" even when output files exist — backend tracking bug in orchestrator
+- **P4 orchestrator bug:** `data must be str, not dict` error on some P4 runs — bug in `agents/orchestrator.py`
+
+---
+
+## Critical Gotchas
+
+**1. Windows cp1252 encoding crash**
+The bundle.html must have ALL non-ASCII characters escaped as `\uXXXX` JavaScript escape sequences. Characters like the lightning bolt (U+26A1), bullet circle (U+25CF), em-dash (U+2014), etc. have byte values undefined in Windows cp1252. Python's `read_text()` will throw `UnicodeDecodeError` and serve a 500 error. The bundle script above handles this automatically.
+
+**2. Do NOT open bundle.html as file://**
+`type="module"` inline scripts block when opened via `file://` URL due to CORS restrictions. Always access via `http://localhost:8000/app`.
+
+**3. FastAPI runs on port 8000, not 8001**
+The API prefix is `/api/v1/` — always check `http://localhost:8000/docs` for exact endpoint signatures.
+
+**4. Chat is not a streaming endpoint**
+The `/api/v1/projects/{id}/chat` endpoint returns a complete JSON response, not a server-sent event stream. Display the full `response` field at once.
+
+**5. No product_id in create project**
+The backend `POST /api/v1/projects` does not accept a `product_id` field. Only send `name`, `description`, `design_type`.
+
+**6. Component files must use default exports**
+`Topbar`, `LeftPanel`, `RightPanel` and all view files must use `export default`. Named-only exports cause module resolution errors after bundling.
+
+**7. uvicorn requires manual restart**
+When adding new routes to `main.py`, the server must be restarted manually if not running with `--reload`.

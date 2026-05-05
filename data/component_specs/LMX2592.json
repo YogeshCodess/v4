@@ -1,0 +1,17 @@
+{
+  "mpn": "LMX2592", "manufacturer": "Texas Instruments", "family": "LMX259x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "9.8 GHz wideband PLL synthesizer with integrated VCO",
+  "datasheet_url": "https://www.ti.com/product/LMX2592",
+  "spi_max_clock_hz": 50000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "pll_config_reg_count": 64,
+  "pll_config_bit_width": 24,
+  "pll_lock_time_us": 50,
+  "pll_min_output_freq_hz":   20000000,
+  "pll_max_output_freq_hz": 9800000000,
+  "fpga_ports": {"reset_n": false, "sync": false, "extra": ["CSB", "MUXOUT"]},
+  "notes": [
+    "24-bit words: 1 R/W + 7-bit addr + 16-bit data, MSB first",
+    "Program R63 down to R0 on cold init"
+  ]
+}

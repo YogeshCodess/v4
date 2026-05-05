@@ -1,0 +1,19 @@
+{
+  "mpn": "Si570", "manufacturer": "Silicon Labs", "family": "Si57x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "10 MHz - 1.4 GHz I2C-programmable XO/VCXO, ultra-low jitter",
+  "datasheet_url": "https://www.silabs.com/oscillators/voltage-controlled/si570-571-vcxo",
+  "i2c_slave_addr_7bit": 85,
+  "i2c_addr_width_bits": 8,
+  "i2c_max_clock_hz":   400000,
+  "pll_config_reg_count": 6,
+  "pll_min_output_freq_hz":   10000000,
+  "pll_max_output_freq_hz": 1400000000,
+  "fpga_ports": {"reset_n": false, "extra": ["OE"]},
+  "notes": [
+    "Slave addr 0x55 (factory default; some variants ship with 0x5D)",
+    "6 config registers (HS_DIV, N1, RFREQ split across regs 7-12)",
+    "Frequency change requires assert/deassert of FREEZE_DCO bit (reg 137)",
+    "Common reference clock for Ethernet PHY, SDR, JESD systems"
+  ]
+}

@@ -1,0 +1,33 @@
+# Golden scenario — Radar, L-band surveillance / IFF-adjacent receiver (1.0-1.4 GHz)
+domain: radar
+id: l_band_surveillance
+
+round1_answers:
+  freq_band: "L-band 1.0-1.4 GHz"
+  radar_mode: "air-surveillance"
+  prf_hz: 1000
+  pulse_width_us: 20
+  channels: 1
+  sensitivity_dbm: -110
+  dynamic_range_db: 75
+  iff_interoperability: true
+  temp_range: "military -40 to +71"
+  standards: [MIL-STD-461G, STANAG 4193, MIL-STD-810H]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 1.259
+  total_gain_db: 32.5
+  tolerance_db: 0.5
+
+bom:
+  - {name: "LNA",    gain_db: 22.0, nf_db: 0.9, iip3_dbm: 28.0, p1db_dbm: 15.0, kind: "LNA",    part_number: "ADL8107"}
+  - {name: "BPF",    gain_db: -2.5, nf_db: 2.5, kind: "filter"}
+  - {name: "Mixer",  gain_db: -7.0, nf_db: 7.0, iip3_dbm: 18.0, p1db_dbm: 10.0, kind: "mixer",  part_number: "HMC1049LP5E"}
+  - {name: "IF_Amp", gain_db: 20.0, nf_db: 3.0, iip3_dbm: 25.0, p1db_dbm: 10.0, kind: "amp",    part_number: "AD8367"}
+
+expected_citations:
+  - ["MIL-STD-461G", "RE102"]
+  - ["STANAG 4193", "Part V"]
+  - ["MIL-STD-810H", "Method 514.8"]

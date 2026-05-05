@@ -1,0 +1,16 @@
+{
+  "mpn": "TCA9548A", "manufacturer": "Texas Instruments", "family": "TCA954x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "Low-voltage 8-channel I2C bus switch with reset",
+  "datasheet_url": "https://www.ti.com/product/TCA9548A",
+  "i2c_slave_addr_7bit": 112,
+  "i2c_addr_width_bits": 0,
+  "i2c_max_clock_hz":   400000,
+  "fpga_ports": {"reset_n": true,
+                 "extra": ["SDA0..SDA7", "SCL0..SCL7"]},
+  "notes": [
+    "Slave addr 0x70 + (A2,A1,A0) strap pins",
+    "Single 8-bit control register (no register address phase): bit n enables channel n",
+    "Used to fan one I2C bus out to 8 isolated downstream segments"
+  ]
+}

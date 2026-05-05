@@ -1,0 +1,47 @@
+# ─── Secrets — NEVER include in Docker image ──────────────────────────────────
+.env
+.env.backup
+.env.local
+
+# ─── Git ───────────────────────────────────────────────────────────────────────
+.git
+.gitignore
+.github
+
+# ─── Node / Frontend build artifacts ──────────────────────────────────────────
+node_modules
+hardware-pipeline-v5-react/node_modules
+hardware-pipeline-v5-react/dist
+
+# ─── Python ────────────────────────────────────────────────────────────────────
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.mypy_cache
+.ruff_cache
+htmlcov
+.coverage
+coverage.xml
+
+# ─── Runtime data (mounted as volumes at runtime) ─────────────────────────────
+output/
+chroma_data/
+logs/
+hardware_pipeline.db
+hardware_pipeline.db-shm
+hardware_pipeline.db-wal
+
+# ─── Dev tools ────────────────────────────────────────────────────────────────
+.vscode
+.idea
+*.swp
+*.swo
+
+# ─── Docs / non-essential ─────────────────────────────────────────────────────
+docs/
+bugs/
+tests/
+*.md
+!README.md

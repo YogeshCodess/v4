@@ -1,0 +1,19 @@
+{
+  "mpn": "MCP4725", "manufacturer": "Microchip", "family": "MCP47xx",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "12-bit I2C DAC with on-chip non-volatile EEPROM (saves last value)",
+  "datasheet_url": "https://www.microchip.com/en-us/product/MCP4725",
+  "i2c_slave_addr_7bit": 96,
+  "i2c_addr_width_bits": 0,
+  "i2c_max_clock_hz":   3400000,
+  "dac_resolution_bits": 12,
+  "dac_max_update_rate_hz": 200000,
+  "dac_interface": "i2c",
+  "dac_n_channels": 1,
+  "fpga_ports": {"reset_n": false, "extra": ["A0"]},
+  "notes": [
+    "Slave addr 0x60 + A0 strap pin (0x60/0x61)",
+    "No register address phase: command bytes set fast/normal/EEPROM mode",
+    "Wakes up to last EEPROM-written value (useful for default bias point)"
+  ]
+}

@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:        #070b14;
+  --panel:       #0d1423;
+  --panel2:      #1a2235;
+  --panel3:      #2a3a50;
+  --teal:        #00c6a7;
+  --teal-border: rgba(0,198,167,0.4);
+  --teal-glow:   rgba(0,198,167,0.25);
+  --text:        #e2e8f0;
+  --text2:       #94a3b8;
+  --text3:       #64748b;
+  --text4:       #475569;
+  --border:      rgba(42,58,80,0.8);
+  --border2:     #1a2235;
+  --danger:      #dc2626;
+  --warning:     #f59e0b;
+  --blue:        #3b82f6;
+  --green:       #22c55e;
+}
+
+/* ── Light theme ──────────────────────────────────────────────────── */
+[data-theme="light"] {
+  --navy:        #f0f4f8;
+  --panel:       #ffffff;
+  --panel2:      #f1f5f9;
+  --panel3:      #e2e8f0;
+  --teal:        #009e85;
+  --teal-border: rgba(0,158,133,0.4);
+  --teal-glow:   rgba(0,158,133,0.15);
+  --text:        #0f172a;
+  --text2:       #334155;
+  --text3:       #64748b;
+  --text4:       #94a3b8;
+  --border:      rgba(148,163,184,0.45);
+  --border2:     #e2e8f0;
+  --danger:      #dc2626;
+  --warning:     #d97706;
+  --blue:        #2563eb;
+  --green:       #16a34a;
+}
+
+body {
+  background: var(--navy);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  overflow-x: hidden;
+}
+
+button:focus { outline: none; }
+input:focus, textarea:focus {
+  border-color: var(--teal) !important;
+  box-shadow: 0 0 0 2px rgba(0,198,167,0.1);
+  outline: none;
+}
+
+@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0 } }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
+@keyframes spin { to { transform: rotate(360deg) } }
+@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.45 } }
+@keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(200%); } }
+
+.fade-up { animation: fadeUp 0.22s ease; }
+
+/* Scrollbar — slightly wider for usability */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a3a50; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a5068; }

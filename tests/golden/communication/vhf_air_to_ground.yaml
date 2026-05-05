@@ -1,0 +1,33 @@
+# Golden scenario — Communications, VHF air-to-ground AM voice (118-137 MHz)
+domain: communication
+id: vhf_air_to_ground
+
+round1_answers:
+  freq_range: "118-137 MHz"
+  comm_type: "VHF civil aviation air-ground AM"
+  platform: "airborne + ground-fixed"
+  modulation: ["AM"]
+  channel_bw_khz: 25.0
+  tx_power_w: 25
+  sensitivity_dbm: -107
+  dynamic_range_db: 70
+  temp_range: "aviation -55 to +70"
+  standards: [DO-160G, MIL-STD-461G]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 2.42
+  total_gain_db: 32.5
+  tolerance_db: 1.0
+
+bom:
+  - {name: "LNA",    gain_db: 18.0, nf_db: 2.0, iip3_dbm: 25.0, p1db_dbm: 15.0, kind: "LNA"}
+  - {name: "Filter", gain_db: -1.5, nf_db: 1.5, kind: "filter"}
+  - {name: "Mixer",  gain_db: -6.0, nf_db: 6.0, iip3_dbm: 18.0, p1db_dbm: 10.0, kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 22.0, nf_db: 3.0, iip3_dbm: 22.0, p1db_dbm: 12.0, kind: "amp"}
+
+expected_citations:
+  - ["DO-160G", "Section 20"]
+  - ["DO-160G", "Section 21"]
+  - ["MIL-STD-461G", "RE102"]

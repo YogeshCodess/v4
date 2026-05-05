@@ -1,0 +1,17 @@
+{
+  "mpn": "TMP117", "manufacturer": "Texas Instruments", "family": "TMP11x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "High-accuracy (+/-0.1 deg C), 16-bit I2C/SMBus digital temperature sensor with NIST traceability",
+  "datasheet_url": "https://www.ti.com/product/TMP117",
+  "i2c_slave_addr_7bit": 72,
+  "i2c_addr_width_bits": 8,
+  "i2c_page_size_bytes": 2,
+  "i2c_max_clock_hz":   1000000,
+  "fpga_ports": {"reset_n": false, "interrupt": true, "extra": ["ALERT"]},
+  "notes": [
+    "Slave addr 0x48 + ADD0 strap pin (4 possible addresses)",
+    "8-bit register pointer; 6 registers (Temp, Conf, T_high, T_low, EEPROM_UL, Device_ID)",
+    "Best-in-class accuracy +/-0.1 deg C from -20 to +50, +/-0.3 elsewhere",
+    "ALERT pin programmable: comparator-mode (limit crossing) or interrupt-mode (data-ready)"
+  ]
+}

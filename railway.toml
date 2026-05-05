@@ -1,0 +1,23 @@
+# Railway.app deployment configuration
+# Docs: https://docs.railway.app/reference/config-as-code
+#
+# How to deploy:
+#   1. Push this repo to GitHub
+#   2. Go to https://railway.app → New Project → Deploy from GitHub repo
+#   3. Railway auto-detects Dockerfile and builds the image
+#   4. Set environment variables in Railway dashboard:
+#      - ANTHROPIC_API_KEY  (or GLM_API_KEY / DEEPSEEK_API_KEY)
+#      - DATABASE_URL       (Railway Postgres plugin auto-sets this)
+#      - GITHUB_TOKEN       (optional, for auto-PR feature)
+#   5. Your app is live at https://<your-app>.up.railway.app/app
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "sh start-prod.sh"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3

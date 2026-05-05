@@ -1,0 +1,23 @@
+{
+  "mpn": "AD9082", "manufacturer": "Analog Devices", "family": "AD908x",
+  "bus": "adc", "source": "curated", "confidence": 1.0,
+  "description": "MxFE: quad 12 GSPS DAC + dual 6 GSPS ADC, JESD204C",
+  "datasheet_url": "https://www.analog.com/en/products/ad9082.html",
+  "spi_max_clock_hz": 50000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "adc_resolution_bits": 12,
+  "adc_max_sample_rate_hz": 6000000000,
+  "adc_interface": "jesd204c",
+  "adc_jesd_lanes": 8,
+  "adc_n_channels": 2,
+  "dac_resolution_bits": 16,
+  "dac_max_update_rate_hz": 12000000000,
+  "dac_interface": "jesd204c",
+  "dac_n_channels": 4,
+  "fpga_ports": {"sysref": true, "devclk": true, "sync": true, "reset_n": true,
+                 "extra": ["GPIO0..GPIO10", "IRQB", "TXEN0", "TXEN1"]},
+  "notes": [
+    "JESD204C up to 24.75 Gbps per lane; needs Versal/UltraScale+ GTH/GTY",
+    "Direct-RF sampling at 6 GSPS ADC, 12 GSPS DAC",
+    "On-chip DUC/DDC for digital frequency conversion"
+  ]
+}

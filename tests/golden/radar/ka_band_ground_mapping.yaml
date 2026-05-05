@@ -1,0 +1,33 @@
+# Golden scenario — Radar, Ka-band ground-mapping / SAR (33-36 GHz)
+domain: radar
+id: ka_band_ground_mapping
+
+round1_answers:
+  freq_band: "Ka (33-36 GHz)"
+  radar_type: "ground-mapping SAR"
+  platform: "airborne pod"
+  inst_bw_mhz: 2000
+  noise_figure_db_target: 4.0
+  sensitivity_dbm_target: -85
+  dynamic_range_db: 55
+  iip3_dbm: 0
+  temp_range: "military -40 to +71"
+  standards: [MIL-STD-461G, MIL-STD-810H, DO-254]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 3.06
+  total_gain_db: 36.5
+  tolerance_db: 1.0
+
+bom:
+  - {name: "LNA",    gain_db: 22.0, nf_db: 2.8, iip3_dbm: 15.0, p1db_dbm: 5.0,  kind: "LNA"}
+  - {name: "Filter", gain_db: -1.5, nf_db: 1.5, kind: "filter"}
+  - {name: "Mixer",  gain_db: -8.0, nf_db: 8.0, iip3_dbm: 10.0, p1db_dbm: 5.0,  kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 24.0, nf_db: 3.5, iip3_dbm: 20.0, p1db_dbm: 10.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-461G", "RE102"]
+  - ["MIL-STD-810H", "Method 514.8"]
+  - ["DO-254", "DAL A-D"]

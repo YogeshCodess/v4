@@ -1,0 +1,32 @@
+# Golden scenario — Communications, 2.4 GHz Bluetooth Low Energy transceiver
+domain: communication
+id: bluetooth_ble
+
+round1_answers:
+  freq_range: "2400-2483.5 MHz"
+  comm_type: "Bluetooth 5.x LE / mesh"
+  platform: "IoT node, coin-cell battery"
+  modulation: ["GFSK", "DPSK"]
+  channel_bw_khz: 2000.0
+  tx_power_w: 0.01
+  sensitivity_dbm: -103
+  dynamic_range_db: 60
+  temp_range: "industrial -40 to +85"
+  standards: [FCC Part 15, IEEE 1413.1]
+
+architecture: low_if
+
+expected_cascade:
+  noise_figure_db: 3.78
+  total_gain_db: 23.5
+  tolerance_db: 1.0
+
+bom:
+  - {name: "LNA",    gain_db: 12.0, nf_db: 2.2, iip3_dbm: 10.0, p1db_dbm: 0.0, kind: "LNA"}
+  - {name: "Filter", gain_db: -1.5, nf_db: 1.5, kind: "filter"}
+  - {name: "Mixer",  gain_db: -5.0, nf_db: 5.0, iip3_dbm: 8.0,  p1db_dbm: -2.0, kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 18.0, nf_db: 4.5, iip3_dbm: 12.0, p1db_dbm: 5.0,  kind: "amp"}
+
+expected_citations:
+  - ["FCC Part 15", "15.247"]
+  - ["IEEE 1413.1", "Section 6"]

@@ -1,0 +1,4362 @@
+{
+  "timestamp": 1776488033,
+  "configs": [
+    "full",
+    "no_validator",
+    "no_citation",
+    "no_redteam"
+  ],
+  "mutations": [
+    "bad_citation",
+    "hallucinated_part",
+    "cascade_inflation"
+  ],
+  "rows": [
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/bluetooth_ble",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/hf_ale",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/ism_lora_iot",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/uhf_tactical",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_air_to_ground",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_handheld",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/vhf_land_mobile",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "communication/zigbee_mesh",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/anti_drone",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/comint_hf",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/elint_narrowband",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/mmwave_radar_warn",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/radar_warning_receiver",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/vhf_doa",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "ew/wideband_sigint",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/c_band_weather",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ka_band_ground_mapping",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/ku_band_seeker",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_long_range_search",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/l_band_surveillance",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/s_band_air_surveillance",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/w_band_automotive",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "radar/x_band_fire_control",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/c_band_teleport",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/gnss_l1l5",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ka_sotm",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/ku_vsat",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/l_band_inmarsat",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_milsatcom",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "clean",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "clean",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "clean",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "clean",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "bad_citation",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "bad_citation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "bad_citation",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "bad_citation",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": false,
+      "redteam_ok": true,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "hallucinated_part",
+      "config": "full",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "hallucinated_part",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "hallucinated_part",
+      "config": "no_citation",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "hallucinated_part",
+      "config": "no_redteam",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "cascade_inflation",
+      "config": "full",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "cascade_inflation",
+      "config": "no_validator",
+      "cascade_ok": true,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": true
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "cascade_inflation",
+      "config": "no_citation",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": false,
+      "passed": false
+    },
+    {
+      "scenario": "satcom/x_band_tt_c",
+      "mutation": "cascade_inflation",
+      "config": "no_redteam",
+      "cascade_ok": false,
+      "citation_ok": true,
+      "redteam_ok": true,
+      "passed": false
+    }
+  ],
+  "summary": {
+    "clean": {
+      "full": 1.0,
+      "no_validator": 1.0,
+      "no_citation": 1.0,
+      "no_redteam": 1.0
+    },
+    "bad_citation": {
+      "full": 1.0,
+      "no_validator": 1.0,
+      "no_citation": 0.0,
+      "no_redteam": 1.0
+    },
+    "hallucinated_part": {
+      "full": 1.0,
+      "no_validator": 1.0,
+      "no_citation": 1.0,
+      "no_redteam": 0.0
+    },
+    "cascade_inflation": {
+      "full": 1.0,
+      "no_validator": 0.0,
+      "no_citation": 1.0,
+      "no_redteam": 1.0
+    }
+  }
+}

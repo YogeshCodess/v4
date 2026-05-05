@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Power Calculation — Project S2S-Demo</title>
+<style>
+body { font-family: -apple-system, Segoe UI, Inter, sans-serif; max-width: 1200px;
+       margin: 32px auto; padding: 0 24px; color: #1a2235; background: #f7f8fa; }
+h1 { font-size: 28px; margin-bottom: 4px; color: #0b1220; }
+h1 small { display: block; font-size: 14px; color: #64748b; font-weight: 400; margin-top: 6px; }
+h2 { font-size: 18px; margin-top: 32px; border-bottom: 2px solid #00c6a7;
+     padding-bottom: 6px; color: #0b1220; }
+p.note { color: #475569; font-size: 13px; line-height: 1.55; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 24px; font-size: 13px; background: #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-radius: 6px; overflow: hidden; }
+th { background: #0b1220; color: #e2e8f0; text-align: left; padding: 10px 12px; font-weight: 600; font-size: 12px; letter-spacing: 0.3px; }
+td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; }
+tr.totals td { background: #eef5f3; font-weight: 600; }
+td.warn { background: #fff4e5; color: #c2410c; font-weight: 600; }
+p.verdict { padding: 10px 14px; border-radius: 6px; font-size: 13px; }
+p.verdict.ok { background: #ecfdf5; color: #065f46; }
+p.verdict.warn { background: #fef2f2; color: #991b1b; }
+code { background: #eef2f6; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>Power Calculation
+  <small>Project S2S-Demo · Date: 19-04-2026</small>
+</h1>
+
+<p class="note">All values in Watts (W). TYP = typical operating power,
+MAX = worst-case (130 % of TYP). Rail assignment uses the component's optimal
+V_d (datasheet value when present in the BOM, otherwise derived from
+first-principles RF bias formulas tied to the NF / Pout / IIP3 targets).</p>
+
+<h2>Power Budget — 5 V &amp; 3.3 V Rails</h2>
+<table><tr><th>SI</th><th>Description</th><th>Part No</th><th>Qty</th><th>5V TYP (W)</th><th>5V MAX (W)</th><th>3.3V TYP (W)</th><th>3.3V MAX (W)</th><th>Total TYP (W)</th><th>Total MAX (W)</th></tr><tr><td>1</td><td>Limiter</td><td>MA4L011-134</td><td>1</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>2</td><td>SAW Filter</td><td>Qorvo 855931</td><td>1</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>3</td><td>GaN HEMT LNA</td><td>Qorvo QPL9547</td><td>1</td><td>0.4</td><td>0.52</td><td>—</td><td>—</td><td>0.4</td><td>0.52</td></tr><tr><td>4</td><td>Driver Amplifier</td><td>ADI ADL8107</td><td>1</td><td>0.3</td><td>0.39</td><td>—</td><td>—</td><td>0.3</td><td>0.39</td></tr><tr><td>5</td><td>Output Buffer</td><td>ADI HMC-C070</td><td>1</td><td>0.3</td><td>0.39</td><td>—</td><td>—</td><td>0.3</td><td>0.39</td></tr><tr><td>6</td><td>Control Interface (I/O Expander)</td><td>MCP23017</td><td>1</td><td>—</td><td>—</td><td>0.003</td><td>0.004</td><td>0.003</td><td>0.004</td></tr><tr><td>7</td><td>RF Connector (SMA)</td><td>Amphenol 132134</td><td>1</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>8</td><td>Heat Sink</td><td>Wakefield 2455</td><td>1</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr class="totals"><td></td><td><b>TOTALS</b></td><td></td><td></td><td><b>1.0</b></td><td><b>1.3</b></td><td><b>0.003</b></td><td><b>0.004</b></td><td><b>1.003</b></td><td><b>1.304</b></td></tr></table>
+
+<h2>Power Summary</h2>
+<table>
+  <tr><th>Rail</th><th>Typical Power (W)</th><th>Max Power (W)</th></tr>
+  <tr><td>5V</td><td>1.0</td><td>1.3</td></tr><tr><td>3.3V</td><td>0.003</td><td>0.004</td></tr><tr><td>2.5V</td><td>0.0</td><td>0.0</td></tr><tr><td>1.8V</td><td>0.0</td><td>0.0</td></tr><tr class='totals'><td><b>TOTAL</b></td><td><b>1.003</b></td><td><b>1.304</b></td></tr>
+</table>
+<p class="note">Power values are estimated from component datasheets and design
+parameters. Actual measurements should be taken during hardware bring-up and
+updated in this table.</p>
+
+<h2>Power Converters &amp; LDOs — Dissipation and Thermal Analysis</h2>
+<p class="note">Each regulator's dissipation is
+ <code>P_diss = (V_in − V_out) × I_out</code> for linear LDOs,
+ or <code>P_out × (1 − η) / η</code> for switching converters.
+ Junction temperature is
+ <code>T_j = T_ambient + P_diss × θ_ja</code>
+ evaluated at <b>T_ambient = 85 °C</b> (worst-case avionics chamber),
+ with θ_jc / θ_ja from the datasheet or typical package values.</p>
+<table>
+  <tr><th>SI</th><th>Part No</th><th>Topology</th><th>V_in (V)</th>
+      <th>V_out (V)</th><th>I_out (A)</th><th>η</th><th>P_diss (W)</th>
+      <th>θ_jc (°C/W)</th><th>θ_ja (°C/W)</th><th>T_j @ 85 °C amb (°C)</th>
+      <th>Heatsink?</th></tr>
+  <tr><td>1</td><td>ADI ADP7104</td><td>LDO</td><td>5</td><td>3.3</td><td>0.001</td><td>N/A (linear)</td><td>0.002</td><td>15</td><td>80</td><td>85.1</td><td>no</td></tr><tr><td>2</td><td>TI TPS62913</td><td>Buck</td><td>12</td><td>5</td><td>0.200</td><td>90%</td><td>0.111</td><td>6</td><td>30</td><td>88.3</td><td>no</td></tr>
+</table>
+<p class="verdict ok"><b>Thermal verdict:</b> OK — all junctions below T_j,max (125 °C industrial / 150 °C mil-spec).</p>
+
+</body>
+</html>

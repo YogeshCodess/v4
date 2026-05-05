@@ -1,0 +1,18 @@
+{
+  "mpn": "AD7124-8", "manufacturer": "Analog Devices", "family": "AD712x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "24-bit, low-noise, 8-channel sigma-delta ADC with PGA, internal reference",
+  "datasheet_url": "https://www.analog.com/en/products/ad7124-8.html",
+  "spi_max_clock_hz": 5000000, "spi_mode": 3, "spi_data_width_bits": 24,
+  "adc_resolution_bits": 24,
+  "adc_max_sample_rate_hz": 19200,
+  "adc_interface": "spi",
+  "adc_n_channels": 8,
+  "fpga_ports": {"reset_n": true, "interrupt": true,
+                 "extra": ["CS", "DOUT_RDY", "SYNC"]},
+  "notes": [
+    "SPI mode 3 (CPOL=1, CPHA=1)",
+    "DOUT_RDY pin asserts low when conversion is ready (data-ready interrupt)",
+    "Used for thermocouple, RTD, load-cell, bridge sensor measurement"
+  ]
+}

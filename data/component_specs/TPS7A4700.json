@@ -1,0 +1,12 @@
+{
+  "mpn": "TPS7A4700", "manufacturer": "Texas Instruments", "family": "TPS7A47",
+  "bus": "gpio", "source": "curated", "confidence": 1.0,
+  "description": "36V, 1A, 4.17 uVrms, RF ultra-low-noise LDO regulator",
+  "datasheet_url": "https://www.ti.com/product/TPS7A4700",
+  "fpga_ports": {"reset_n": false, "extra": ["EN", "PG", "ANY_OUT0..ANY_OUT6"]},
+  "notes": [
+    "Output voltage set by ANY_OUT0..6 strap pins (parallel binary, 50 mV steps)",
+    "EN pin from FPGA enables / sequences the rail",
+    "PG (power-good) returns to FPGA as input for boot sequencing"
+  ]
+}

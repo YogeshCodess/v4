@@ -1,0 +1,33 @@
+# Golden scenario — Radar, L-band long-range air-defence search radar (1–2 GHz)
+domain: radar
+id: l_band_long_range_search
+
+round1_answers:
+  freq_band: "L (1-2 GHz)"
+  radar_type: "long-range volumetric search"
+  platform: "ground-fixed"
+  inst_bw_mhz: 10
+  noise_figure_db_target: 1.5
+  sensitivity_dbm_target: -120
+  dynamic_range_db: 80
+  iip3_dbm: -10
+  temp_range: "ground-mobile -40 to +71"
+  standards: [MIL-STD-461G, MIL-STD-810H, MIL-STD-704F]
+
+architecture: dual_conversion_digital_if
+
+expected_cascade:
+  noise_figure_db: 0.93
+  total_gain_db: 25.5
+  tolerance_db: 0.5
+
+bom:
+  - {name: "LNA1",   gain_db: 18.0, nf_db: 0.9, iip3_dbm: 25.0, p1db_dbm: 12.0, kind: "LNA",    part_number: "HMC-ALH482"}
+  - {name: "LNA2",   gain_db: 15.0, nf_db: 1.5, iip3_dbm: 30.0, p1db_dbm: 18.0, kind: "LNA"}
+  - {name: "Filter", gain_db: -1.5, nf_db: 1.5, kind: "filter"}
+  - {name: "Mixer",  gain_db: -6.0, nf_db: 6.0, iip3_dbm: 15.0, p1db_dbm: 5.0,  kind: "mixer"}
+
+expected_citations:
+  - ["MIL-STD-461G", "CE102"]
+  - ["MIL-STD-810H", "Method 501.7"]
+  - ["MIL-STD-704F", "Section 5"]

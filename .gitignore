@@ -1,0 +1,84 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+eggs/
+*.egg
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Environment variables — ignore ALL .env variants so backup / local
+# overrides can't get tracked accidentally. `.env.example` is the
+# one exception because it only carries placeholder values and is
+# meant to be committed as documentation. The bare `env` file (no dot)
+# is a legacy local copy with the same secrets — never commit it.
+.env
+.env.*
+!.env.example
+env
+!env/    # preserve directory path matches (e.g. packaging modules named env/)
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Database
+*.db
+*.sqlite3
+
+# ChromaDB
+chroma_data/
+
+# Generated outputs
+output/
+generated/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Claude
+.claude/
+
+# Sandbox / filesystem artefacts
+.fuse_hidden*
+pytest-cache-files-*/
+
+# Accidental Windows path leaks
+hardware-pipeline-v5-react/C:/
+hardware-pipeline-v5-react/C:\*
+
+# SQLite transient journals (WAL / shared memory)
+*.db-shm
+*.db-wal
+*.db-journal
+
+# Pandoc Windows binary — installed locally per dev box, NOT committed
+# (231MB exe). On Docker/CI pandoc is installed system-wide via apt-get.
+# `main.py::_resolve_pandoc()` checks `bin/pandoc.exe` first, then PATH.
+bin/pandoc.exe
+tools/pandoc_dl/

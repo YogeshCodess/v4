@@ -1,0 +1,29 @@
+# Golden scenario — Radar, W-band short-range (76-81 GHz) short-pulse
+domain: radar
+id: w_band_automotive
+
+round1_answers:
+  freq_band: "W-band 76-81 GHz"
+  radar_mode: "FMCW"
+  ramp_bw_ghz: 4.0
+  channels: 4
+  sensitivity_dbm: -95
+  dynamic_range_db: 60
+  temp_range: "automotive -40 to +125"
+  standards: [MIL-STD-461G, MIL-STD-810H]
+
+architecture: direct_rf_sampling
+
+expected_cascade:
+  noise_figure_db: 2.848
+  total_gain_db: 37.0
+  tolerance_db: 0.5
+
+bom:
+  - {name: "LNA",    gain_db: 20.0, nf_db: 2.5, iip3_dbm: 10.0, p1db_dbm: 5.0, kind: "LNA"}
+  - {name: "Mixer",  gain_db: -8.0, nf_db: 8.0, iip3_dbm: 8.0,  kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 25.0, nf_db: 4.0, iip3_dbm: 20.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-461G", "RE102"]
+  - ["MIL-STD-810H", "Method 507.6"]

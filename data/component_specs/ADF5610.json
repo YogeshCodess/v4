@@ -1,0 +1,17 @@
+{
+  "mpn": "ADF5610", "manufacturer": "Analog Devices", "family": "ADF561x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "57 MHz - 14 GHz wideband synthesizer + VCO + integer/fractional PLL",
+  "datasheet_url": "https://www.analog.com/en/products/adf5610.html",
+  "spi_max_clock_hz": 25000000, "spi_mode": 0, "spi_data_width_bits": 32,
+  "pll_config_reg_count": 25,
+  "pll_config_bit_width": 32,
+  "pll_lock_time_us": 200,
+  "pll_min_output_freq_hz":     57000000,
+  "pll_max_output_freq_hz":  14000000000,
+  "fpga_ports": {"reset_n": false, "sync": false, "extra": ["LE", "MUXOUT", "CE"]},
+  "notes": [
+    "32-bit words; 4 LSB = register address (R0-R24)",
+    "Init order: R24,R23,...,R0"
+  ]
+}

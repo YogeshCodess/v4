@@ -1,0 +1,96 @@
+version: '3.8'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Silicon to Software (S2S) — Docker Compose
+#
+# Quick start:
+#   cp .env.example .env        # fill in API keys
+#   docker compose up --build
+#   open http://localhost:8000/app
+#
+# On-prem / air-gapped mode (no cloud LLM):
+#   Set OLLAMA_BASE_URL=http://ollama:11434 and add the ollama service below,
+#   or point to an existing Ollama instance on your network.
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: hardware_pipeline
+      POSTGRES_USER: hardware_pipeline
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hardware_pipeline"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ── Silicon to Software (S2S) App ───────────────────────────────────────────────────
+  app:
+    build: .
+    ports:
+      - "8000:8000"   # FastAPI + React frontend at /app
+    environment:
+      # ── Database ───────────────────────────────────────────────────────────
+      - DATABASE_URL=postgresql://hardware_pipeline:${POSTGRES_PASSWORD:-password}@db:5432/hardware_pipeline
+
+      # ── LLM API Keys (set at least one) ───────────────────────────────────
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GLM_API_KEY=${GLM_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+
+      # ── LLM Models ────────────────────────────────────────────────────────
+      - PRIMARY_MODEL=${PRIMARY_MODEL:-claude-opus-4-6}
+      - FAST_MODEL=${FAST_MODEL:-claude-haiku-4-5-20251001}
+      - FALLBACK_MODEL=${FALLBACK_MODEL:-ollama/qwen2.5-coder:32b}
+
+      # ── Ollama (air-gap fallback) ─────────────────────────────────────────
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://localhost:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5-coder:32b}
+
+      # ── GitHub / Git integration ──────────────────────────────────────────
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - GITHUB_REPO=${GITHUB_REPO:-}
+      - GIT_ENABLED=${GIT_ENABLED:-false}
+
+      # ── Component APIs (optional — pipeline works without these) ──────────
+      - DIGIKEY_CLIENT_ID=${DIGIKEY_CLIENT_ID:-}
+      - DIGIKEY_CLIENT_SECRET=${DIGIKEY_CLIENT_SECRET:-}
+      - MOUSER_API_KEY=${MOUSER_API_KEY:-}
+
+      # ── Password Gate (set to protect the public URL) ─────────────────────
+      - APP_PASSWORD=${APP_PASSWORD:-}
+
+      # ── Application ───────────────────────────────────────────────────────
+      - APP_ENV=${APP_ENV:-production}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - DEBUG=${DEBUG:-false}
+      - CHROMA_PERSIST_DIR=/app/chroma_data
+      - ANONYMIZED_TELEMETRY=False
+      - CHROMA_ANONYMIZED_TELEMETRY=False
+
+    volumes:
+      - ./output:/app/output           # generated design artifacts
+      - ./chroma_data:/app/chroma_data # component vector index
+      - ./logs:/app/logs               # application logs
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    restart: unless-stopped
+
+    # Use production start script (no --reload, no Streamlit)
+    command: ["sh", "start-prod.sh"]
+
+volumes:
+  postgres_data:

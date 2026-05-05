@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>RF Gain-Loss Budget — X-band EW Receiver</title>
+<style>
+body { font-family: -apple-system, Segoe UI, Inter, sans-serif; max-width: 1200px;
+       margin: 32px auto; padding: 0 24px; color: #1a2235; background: #f7f8fa; }
+h1 { font-size: 28px; margin-bottom: 4px; color: #0b1220; }
+h1 small { display: block; font-size: 14px; color: #64748b; font-weight: 400; margin-top: 6px; }
+h2 { font-size: 18px; margin-top: 32px; border-bottom: 2px solid #00c6a7;
+     padding-bottom: 6px; color: #0b1220; }
+p.note { color: #475569; font-size: 13px; line-height: 1.55; }
+p.formula { font-size: 15px; text-align: center; padding: 14px; background: #fff;
+            border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 24px; font-size: 13px; background: #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-radius: 6px; overflow: hidden; }
+th { background: #0b1220; color: #e2e8f0; text-align: left; padding: 10px 12px;
+     font-weight: 600; font-size: 12px; letter-spacing: 0.3px; }
+td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; }
+tr.totals td { background: #eef5f3; font-weight: 600; }
+td.warn { background: #fff4e5; color: #c2410c; font-weight: 600; }
+td.pass { background: #ecfdf5; color: #065f46; font-weight: 600; }
+td.fail { background: #fef2f2; color: #991b1b; font-weight: 600; }
+p.verdict { padding: 10px 14px; border-radius: 6px; font-size: 13px; }
+p.verdict.ok { background: #ecfdf5; color: #065f46; }
+p.verdict.warn { background: #fef2f2; color: #991b1b; }
+code { background: #eef2f6; padding: 1px 5px; border-radius: 3px; font-size: 12px; font-family: JetBrains Mono, Consolas, monospace; }
+</style>
+</head>
+<body>
+<h1>RF Gain-Loss Budget
+  <small>X-band EW Receiver · Generated: 2026-04-19 · AI-GENERATED — verify against final component datasheets</small>
+</h1>
+
+
+<h2>System Parameters</h2>
+<table>
+  <tr><th>Parameter</th><th>Value</th><th>Unit</th></tr>
+  <tr><td>Centre Frequency</td><td>10000</td><td>MHz</td></tr><tr><td>RF Bandwidth</td><td>100</td><td>MHz</td></tr><tr><td>Input Signal Level</td><td>-80</td><td>dBm</td></tr><tr><td>Target Output Power</td><td>-10</td><td>dBm</td></tr><tr><td>Required System Gain</td><td>70</td><td>dB</td></tr>
+</table>
+
+
+<h2>Stage-by-Stage Gain / Loss Budget</h2>
+<table>
+  <tr><th>#</th><th>Stage</th><th>Component</th><th>Gain/Loss (dB)</th>
+      <th>Cum. Gain (dB)</th><th>Output Power (dBm)</th>
+      <th>NF (dB)</th><th>Cum. NF (dB)</th>
+      <th>P1dB Out (dBm)</th><th>OIP3 (dBm)</th><th>Notes</th></tr>
+  <tr><td>1</td><td>Input SMA Connector</td><td>SMA-F</td><td class='warn'>-0.1</td><td>-0.1</td><td>-80.2</td><td>0.15</td><td>0.15</td><td>—</td><td>—</td><td>Min connector loss (SMA typ, ≤18 GHz)</td></tr><tr><td>2</td><td>PCB Trace</td><td>50Ω Microstrip (RO4350B)</td><td class='warn'>-0.3</td><td>-0.5</td><td>-80.5</td><td>0.30</td><td>0.45</td><td>N/A</td><td>N/A</td><td>Typ 1–2 in RO4350B microstrip loss at band</td></tr><tr><td>3</td><td>Preselector</td><td>SAW BPF</td><td class='warn'>-1.5</td><td>-1.9</td><td>-82.0</td><td>1.50</td><td>1.95</td><td>N/A</td><td>N/A</td><td></td></tr><tr><td>4</td><td>LNA</td><td>HMC8410</td><td class='pass'>+15.0</td><td>13.1</td><td>-67.0</td><td>1.30</td><td>3.25</td><td>23.0</td><td>34.0</td><td></td></tr><tr><td>5</td><td>Image Filter</td><td>LC BPF</td><td class='warn'>-1.0</td><td>12.1</td><td>-68.0</td><td>1.00</td><td>3.28</td><td>N/A</td><td>N/A</td><td></td></tr><tr><td>6</td><td>Mixer</td><td>HMC1056</td><td class='warn'>-7.0</td><td>5.0</td><td>-75.0</td><td>7.00</td><td>3.76</td><td>10.0</td><td>24.0</td><td></td></tr><tr><td>7</td><td>IF Amp</td><td>ADL5523</td><td class='pass'>+20.0</td><td>25.1</td><td>-55.0</td><td>2.50</td><td>4.18</td><td>20.0</td><td>35.0</td><td></td></tr><tr><td>8</td><td>Output SMA</td><td>SMA-M</td><td class='warn'>-0.1</td><td>24.9</td><td>-55.1</td><td>0.15</td><td>4.18</td><td>—</td><td>—</td><td>Min connector loss (SMA typ, ≤18 GHz)</td></tr>
+</table>
+
+
+<h2>Budget Summary</h2>
+<table>
+  <tr><th>Metric</th><th>Value</th><th>Unit</th></tr>
+  <tr><td>Total System Gain</td><td>24.9</td><td>dB</td></tr><tr><td>Final Output Power</td><td>-55.1</td><td>dBm</td></tr><tr><td>Cascaded System NF</td><td>4.18</td><td>dB</td></tr><tr><td>Output Power Margin</td><td>+45.1</td><td>dB</td></tr>
+</table>
+
+
+<h2>Noise Floor &amp; Sensitivity</h2>
+<table>
+  <tr><th>Parameter</th><th>Formula</th><th>Value</th><th>Unit</th></tr>
+  <tr><td>Thermal Noise Floor (kTB)</td><td><code>-174 + 10·log(BW_Hz)</code></td><td>-94.00</td><td>dBm</td></tr>
+  <tr><td>System NF (cascaded)</td><td>Friis</td><td>4.18</td><td>dB</td></tr>
+  <tr><td>Input-Referred Noise Floor</td><td><code>kTB + NF_sys</code></td><td class="warn">-89.82</td><td>dBm</td></tr>
+  <tr><td>Output Noise Floor</td><td><code>Noise_in + Total_Gain</code></td><td>-64.92</td><td>dBm</td></tr>
+  <tr class="totals"><td><b>MDS (SNR = 10 dB)</b></td><td><code>Noise_in + 10</code></td><td><b>-79.82</b></td><td>dBm</td></tr>
+</table>
+<p class="note">Assumes 290 K ambient, full RF instantaneous bandwidth, AWGN channel.
+MDS convention: 10 dB SNR above the input-referred noise floor.</p>
+
+
+<h2>Gain Variation — Thermal (-40 to +85 °C)</h2>
+<table>
+  <tr><th>#</th><th>Stage</th><th>Component</th>
+      <th>Nominal Gain (dB)</th><th>Tempco (dB/°C)</th>
+      <th>ΔG @ -40 °C</th><th>ΔG @ +85 °C</th><th>Worst-Case (dB)</th></tr>
+  <tr><td>1</td><td>Input SMA Connector</td><td>SMA-F</td><td>-0.15</td><td>±0.005</td><td>+0.33</td><td>-0.30</td><td>±0.33</td></tr><tr><td>2</td><td>PCB Trace</td><td>50Ω Microstrip (RO4350B)</td><td>-0.30</td><td>±0.005</td><td>+0.33</td><td>-0.30</td><td>±0.33</td></tr><tr><td>3</td><td>Preselector</td><td>SAW BPF</td><td>-1.50</td><td>±0.005</td><td>+0.33</td><td>-0.30</td><td>±0.33</td></tr><tr><td>4</td><td>LNA</td><td>HMC8410</td><td>+15.00</td><td>±0.020</td><td>+1.30</td><td>-1.20</td><td>±1.30</td></tr><tr><td>5</td><td>Image Filter</td><td>LC BPF</td><td>-1.00</td><td>±0.005</td><td>+0.33</td><td>-0.30</td><td>±0.33</td></tr><tr><td>6</td><td>Mixer</td><td>HMC1056</td><td>-7.00</td><td>±0.020</td><td>+1.30</td><td>-1.20</td><td>±1.30</td></tr><tr><td>7</td><td>IF Amp</td><td>ADL5523</td><td>+20.00</td><td>±0.020</td><td>+1.30</td><td>-1.20</td><td>±1.30</td></tr><tr><td>8</td><td>Output SMA</td><td>SMA-M</td><td>-0.15</td><td>±0.005</td><td>+0.33</td><td>-0.30</td><td>±0.33</td></tr>
+  <tr class="totals"><td colspan="5"><b>TOTAL SYSTEM</b></td>
+      <td class="warn"><b>+5.53</b></td>
+      <td class="warn"><b>-5.10</b></td>
+      <td>—</td></tr>
+</table>
+<p class="note">Active stages (LNA, amp, mixer): ±0.020 dB/°C typical for GaAs pHEMT / SiGe.
+Passives (connectors, traces, filters, splitters): ±0.005 dB/°C.
+Plan for ≥ 3 dB AGC range or closed-loop gain compensation to hold system gain across the
+temperature envelope.</p>
+
+
+<h2>Gain Variation — Frequency (across RF bandwidth)</h2>
+<table>
+  <tr><th>#</th><th>Stage</th><th>Component</th>
+      <th>Nominal Gain (dB)</th><th>Typ Flatness (± dB)</th>
+      <th>Min Gain (dB)</th><th>Max Gain (dB)</th></tr>
+  <tr><td>1</td><td>Input SMA Connector</td><td>SMA-F</td><td>-0.15</td><td>±0.1</td><td>-0.25</td><td>-0.05</td></tr><tr><td>2</td><td>PCB Trace</td><td>50Ω Microstrip (RO4350B)</td><td>-0.30</td><td>±0.1</td><td>-0.40</td><td>-0.20</td></tr><tr><td>3</td><td>Preselector</td><td>SAW BPF</td><td>-1.50</td><td>±1.0</td><td>-2.50</td><td>-0.50</td></tr><tr><td>4</td><td>LNA</td><td>HMC8410</td><td>+15.00</td><td>±0.5</td><td>+14.50</td><td>+15.50</td></tr><tr><td>5</td><td>Image Filter</td><td>LC BPF</td><td>-1.00</td><td>±1.0</td><td>-2.00</td><td>+0.00</td></tr><tr><td>6</td><td>Mixer</td><td>HMC1056</td><td>-7.00</td><td>±0.5</td><td>-7.50</td><td>-6.50</td></tr><tr><td>7</td><td>IF Amp</td><td>ADL5523</td><td>+20.00</td><td>±0.5</td><td>+19.50</td><td>+20.50</td></tr><tr><td>8</td><td>Output SMA</td><td>SMA-M</td><td>-0.15</td><td>±0.1</td><td>-0.25</td><td>-0.05</td></tr>
+  <tr class="totals"><td colspan="4"><b>WORST-CASE (Σ)</b></td>
+      <td class="warn"><b>±3.8</b></td><td>—</td><td>—</td></tr>
+  <tr class="totals"><td colspan="4"><b>RSS (statistical)</b></td>
+      <td class=""><b>±1.67</b></td><td>—</td><td>—</td></tr>
+</table>
+<p class="note">Amps: ±0.5 dB in-band. Filters: ±1.0 dB (passband ripple + skirt roll-off).
+Passives: ±0.1 dB. Worst-case Σ assumes all deviations align; RSS assumes uncorrelated
+contributions — the truth sits between the two. If flatness is critical (e.g. ±1 dB system
+spec), add an equaliser or gain-slope compensator after the LNA.</p>
+
+
+
+<h2>Harmonic Rejection</h2>
+<table>
+  <tr><th>Harmonic Order</th><th>Frequency (MHz)</th>
+      <th>Expected Rejection (dBc)</th><th>Required Spec (dBc)</th><th>Pass/Fail</th></tr>
+  <tr><td>2H</td><td>20000</td><td>-35.0</td><td>-30.0</td><td class='pass'><b>PASS</b></td></tr><tr><td>3H</td><td>30000</td><td>-25.0</td><td>-30.0</td><td class='fail'><b>FAIL</b></td></tr>
+</table>
+<p class="note">More-negative dBc values are better. Add a filter if the spec is not met.</p>
+
+
+
+
+
+<h2>Cascade Noise Figure — Friis Formula</h2>
+<p class="formula"><code>F<sub>sys</sub> = F<sub>1</sub> + (F<sub>2</sub> − 1) / G<sub>1</sub>
+  + (F<sub>3</sub> − 1) / (G<sub>1</sub>·G<sub>2</sub>) + …</code></p>
+<p class="note">Where <em>F</em> = linear noise factor (not dB), <em>G</em> = linear gain.
+The first stage NF dominates — minimise LNA / driver NF for the best system sensitivity.</p>
+<p class="verdict ok"><b>Note:</b> All values are estimated from component datasheets at 25 °C nominal.
+Verify with bench measurements (spectrum analyser + noise source) during hardware bring-up.</p>
+
+</body>
+</html>

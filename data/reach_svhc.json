@@ -1,0 +1,43 @@
+{
+  "standard": "REACH EC 1907/2006",
+  "description": "Substances of Very High Concern (SVHC) - partial list for demonstration",
+  "last_updated": "2024-01-01",
+  "substances": [
+    {
+      "name": "Antimony trioxide",
+      "cas_number": "1309-64-4",
+      "svhc_reason": "toxic for reproduction (Article 57c)",
+      "included_date": "2021-01-19"
+    },
+    {
+      "name": "Cobalt(II) chloride",
+      "cas_number": "7646-79-9",
+      "svhc_reason": "toxic for reproduction (Article 57c)",
+      "included_date": "2021-01-19"
+    },
+    {
+      "name": "Cobalt(II) sulfate",
+      "cas_number": "10124-43-3",
+      "svhc_reason": "toxic for reproduction (Article 57c)",
+      "included_date": "2021-01-19"
+    },
+    {
+      "name": "Dichromium tris(chromate)",
+      "cas_number": "24613-89-6",
+      "svhc_reason": "carcinogenic (Article 57a)",
+      "included_date": "2021-01-19"
+    },
+    {
+      "name": "Lead chromate",
+      "cas_number": "7758-97-6",
+      "svhc_reason": "carcinogenic, toxic for reproduction (Article 57a, 57c)",
+      "included_date": "2021-01-19"
+    },
+    {
+      "name": "Triethyl arsenate",
+      "cas_number": "15606-95-8",
+      "svhc_reason": "toxic for reproduction (Article 57c)",
+      "included_date": "2021-01-19"
+    }
+  ]
+}

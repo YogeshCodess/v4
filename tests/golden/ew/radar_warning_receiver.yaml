@@ -1,0 +1,32 @@
+# Golden scenario — EW, C/X-band Radar Warning Receiver (2-18 GHz crystal-video-style)
+domain: ew
+id: radar_warning_receiver
+
+round1_answers:
+  freq_range: "2000-18000 MHz"
+  ew_type: "RWR"
+  platform: "airborne"
+  channels: 4
+  sensitivity_dbm: -65
+  dynamic_range_db: 55
+  probability_intercept: "> 95%"
+  signal_type: ["pulsed", "CW"]
+  temp_range: "military -40 to +85"
+  standards: [MIL-STD-461G, MIL-STD-810H, DO-254]
+
+architecture: crystal_video
+
+expected_cascade:
+  noise_figure_db: 2.19
+  total_gain_db: 35.0
+  tolerance_db: 1.0
+
+bom:
+  - {name: "LNA",          gain_db: 15.0, nf_db: 1.8, iip3_dbm: 25.0, p1db_dbm: 15.0, kind: "LNA"}
+  - {name: "Log_Detector", gain_db: 0.0,  nf_db: 6.0, iip3_dbm: 10.0, kind: "amp"}
+  - {name: "Video_Amp",    gain_db: 20.0, nf_db: 4.0, iip3_dbm: 15.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-461G", "RE102"]
+  - ["MIL-STD-810H", "Method 514.8"]
+  - ["DO-254", "DAL A-D"]

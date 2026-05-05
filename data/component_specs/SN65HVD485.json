@@ -1,0 +1,15 @@
+{
+  "mpn": "SN65HVD485", "manufacturer": "Texas Instruments", "family": "SN65HVD",
+  "bus": "uart", "source": "curated", "confidence": 1.0,
+  "description": "3.3V half-duplex RS-485 transceiver, 250 kbps",
+  "datasheet_url": "https://www.ti.com/product/SN65HVD485",
+  "uart_max_baud_hz": 250000,
+  "uart_levels": "rs485",
+  "fpga_ports": {"reset_n": false, "driver_enable": true,
+                 "extra": ["DE", "RE_N"]},
+  "notes": [
+    "Half-duplex - DE high enables driver (TX), RE_N low enables receiver (RX)",
+    "FPGA must time DE/RE_N around the byte being transmitted",
+    "120 ohm bus termination required at both ends"
+  ]
+}

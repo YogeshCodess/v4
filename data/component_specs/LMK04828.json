@@ -1,0 +1,18 @@
+{
+  "mpn": "LMK04828", "manufacturer": "Texas Instruments", "family": "LMK048xx",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "Ultra-low-noise dual-loop JESD204B clock jitter cleaner with 14 outputs",
+  "datasheet_url": "https://www.ti.com/product/LMK04828",
+  "spi_max_clock_hz": 50000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "pll_config_reg_count": 320,
+  "pll_config_bit_width": 24,
+  "pll_lock_time_us": 200,
+  "pll_min_output_freq_hz":     1000000,
+  "pll_max_output_freq_hz": 3100000000,
+  "fpga_ports": {"reset_n": true, "sync": true, "extra": ["CSB", "STATUS_LD1", "STATUS_LD2", "SYNC", "GPIO0..GPIO5"]},
+  "notes": [
+    "24-bit SPI: 1 R/W + 15-bit addr + 8-bit data; ~320 register file",
+    "JESD204B subclass-1; provides DEVCLK + SYSREF for converter array",
+    "Dual loop: PLL1 cleans reference, PLL2 synthesizes output"
+  ]
+}

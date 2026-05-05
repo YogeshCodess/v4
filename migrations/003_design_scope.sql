@@ -1,0 +1,11 @@
+-- Migration 003 — add design_scope column to projects table.
+--
+-- design_scope is the wizard-selected scope ('full', 'front-end',
+-- 'downconversion', 'dsp') that determines which downstream phases are
+-- applicable. Previously lived only in browser localStorage which meant
+-- the backend could not validate runs and the UI could show 'NOT APPLICABLE'
+-- while the pipeline still executed those phases.
+--
+-- This column is populated from POST /projects and read by GET /status
+-- and POST /phases/{id}/execute (which returns 409 on mismatch).
+ALTER TABLE projects ADD COLUMN design_scope TEXT NOT NULL DEFAULT 'full';

@@ -1,0 +1,33 @@
+# Golden scenario — EW, Counter-UAV receiver (C-band 5.8 GHz ISM + 2.4 GHz)
+domain: ew
+id: anti_drone
+
+round1_answers:
+  freq_range: "2400-5850 MHz"
+  ew_type: "C-UAS / counter-drone"
+  platform: "ground-mobile"
+  channels: 2
+  inst_bw_mhz: 80
+  sensitivity_dbm: -95
+  dynamic_range_db: 65
+  probability_intercept: "> 90%"
+  signal_type: ["CW", "FHSS", "OFDM"]
+  temp_range: "industrial -40 to +85"
+  standards: [FCC Part 15, MIL-STD-461G]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 2.10
+  total_gain_db: 32.0
+  tolerance_db: 1.0
+
+bom:
+  - {name: "LNA",    gain_db: 18.0, nf_db: 1.5, iip3_dbm: 25.0, p1db_dbm: 15.0, kind: "LNA"}
+  - {name: "Filter", gain_db: -2.0, nf_db: 2.0, kind: "filter"}
+  - {name: "Mixer",  gain_db: -6.0, nf_db: 6.0, iip3_dbm: 15.0, p1db_dbm: 8.0,  kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 22.0, nf_db: 3.5, iip3_dbm: 18.0, p1db_dbm: 10.0, kind: "amp"}
+
+expected_citations:
+  - ["FCC Part 15", "15.247"]
+  - ["MIL-STD-461G", "RE102"]

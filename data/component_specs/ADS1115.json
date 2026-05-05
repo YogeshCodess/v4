@@ -1,0 +1,21 @@
+{
+  "mpn": "ADS1115", "manufacturer": "Texas Instruments", "family": "ADS111x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "16-bit I2C delta-sigma ADC, 4-channel single-ended or 2-channel differential, 860 SPS",
+  "datasheet_url": "https://www.ti.com/product/ADS1115",
+  "i2c_slave_addr_7bit": 72,
+  "i2c_addr_width_bits": 8,
+  "i2c_page_size_bytes": 2,
+  "i2c_max_clock_hz":   3400000,
+  "adc_resolution_bits": 16,
+  "adc_max_sample_rate_hz": 860,
+  "adc_interface": "i2c",
+  "adc_n_channels": 4,
+  "fpga_ports": {"reset_n": false, "interrupt": true,
+                 "extra": ["ALERT_RDY"]},
+  "notes": [
+    "Slave addr 0x48 + ADDR strap pin (0x48/0x49/0x4A/0x4B)",
+    "4 registers via 8-bit pointer: 0=conversion, 1=config, 2=lo_thresh, 3=hi_thresh",
+    "ALERT_RDY pin can act as data-ready interrupt when configured"
+  ]
+}

@@ -1,0 +1,31 @@
+# Golden scenario — EW, mmWave radar warning receiver (18-40 GHz)
+domain: ew
+id: mmwave_radar_warn
+
+round1_answers:
+  freq_range: "18000-40000 MHz"
+  ew_type: "RWR"
+  platform: "airborne"
+  channels: 1
+  probability_intercept: "> 95%"
+  sensitivity_dbm: -65
+  signal_type: ["pulsed"]
+  temp_range: "military -40 to +71"
+  standards: [MIL-STD-461G, MIL-STD-810H, DO-160G]
+
+architecture: crystal_video
+
+expected_cascade:
+  noise_figure_db: 4.510
+  total_gain_db: 42.0
+  tolerance_db: 0.5
+
+bom:
+  - {name: "LNA",      gain_db: 15.0, nf_db: 3.5, iip3_dbm: 15.0, kind: "LNA"}
+  - {name: "Detector", gain_db: -8.0, nf_db: 10.0, kind: "filter"}
+  - {name: "Video",    gain_db: 35.0, nf_db: 4.0, iip3_dbm: 22.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-461G", "RE102"]
+  - ["DO-160G", "Section 21"]
+  - ["MIL-STD-810H", "Method 500.6"]

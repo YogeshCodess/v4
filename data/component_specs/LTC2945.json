@@ -1,0 +1,17 @@
+{
+  "mpn": "LTC2945", "manufacturer": "Analog Devices", "family": "LTC294x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "Wide-range I2C power, charge, and energy monitor",
+  "datasheet_url": "https://www.analog.com/en/products/ltc2945.html",
+  "i2c_slave_addr_7bit": 103,
+  "i2c_addr_width_bits": 8,
+  "i2c_page_size_bytes": 4,
+  "i2c_max_clock_hz":   400000,
+  "fpga_ports": {"reset_n": false, "interrupt": true,
+                 "extra": ["ALERT_N"]},
+  "notes": [
+    "Slave addr 0x67 default; ADR0/ADR1 strap pins give up to 9 addresses",
+    "12-bit ADC reads sense (delta-V) + bus-V; 24-bit power = sense*bus accumulator",
+    "Reads are big-endian, span 1-3 bytes depending on register"
+  ]
+}

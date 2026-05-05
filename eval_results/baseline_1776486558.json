@@ -1,0 +1,160 @@
+{
+  "timestamp": 1776486558,
+  "scenarios_total": 4,
+  "scenarios_passed": 4,
+  "all_passed": true,
+  "results": [
+    {
+      "domain": "communication",
+      "id": "uhf_tactical",
+      "architecture": "zero_if_sdr",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 0.56,
+          "computed": 0.557,
+          "delta": 0.003,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 52.0,
+          "computed": 52.0,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 3,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/communication/uhf_tactical.yaml"
+    },
+    {
+      "domain": "ew",
+      "id": "wideband_sigint",
+      "architecture": "direct_rf_sampling",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 0.93,
+          "computed": 0.929,
+          "delta": 0.001,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 33.0,
+          "computed": 33.0,
+          "delta": 0.0,
+          "tol": 0.5,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/ew/wideband_sigint.yaml"
+    },
+    {
+      "domain": "radar",
+      "id": "x_band_fire_control",
+      "architecture": "superheterodyne",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 2.3,
+          "computed": 1.966,
+          "delta": 0.334,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 40.0,
+          "computed": 40.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/radar/x_band_fire_control.yaml"
+    },
+    {
+      "domain": "satcom",
+      "id": "ka_sotm",
+      "architecture": "superheterodyne_digital_if",
+      "all_passed": true,
+      "checks": [
+        {
+          "check": "NF within tolerance",
+          "expected": 2.0,
+          "computed": 1.924,
+          "delta": 0.076,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "Gain within tolerance",
+          "expected": 45.0,
+          "computed": 45.0,
+          "delta": 0.0,
+          "tol": 1.0,
+          "passed": true
+        },
+        {
+          "check": "All cited clauses resolve",
+          "expected": 2,
+          "missing": [],
+          "passed": true
+        },
+        {
+          "check": "Red-team audit: no cascade/citation issues",
+          "cascade_errors": 0,
+          "unresolved_citations": 0,
+          "overall_pass_from_audit": false,
+          "passed": true
+        }
+      ],
+      "source": "tests/golden/satcom/ka_sotm.yaml"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "mpn": "ADF4159", "manufacturer": "Analog Devices", "family": "ADF415x",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "13 GHz fractional-N frequency synthesizer with waveform generation (FMCW)",
+  "datasheet_url": "https://www.analog.com/en/products/adf4159.html",
+  "spi_max_clock_hz": 25000000, "spi_mode": 0, "spi_data_width_bits": 32,
+  "spi_dummy_cycles": 0,
+  "pll_config_reg_count": 8,
+  "pll_config_bit_width": 32,
+  "pll_lock_time_us": 100,
+  "pll_min_output_freq_hz":      500000000,
+  "pll_max_output_freq_hz":   13000000000,
+  "fpga_ports": {"reset_n": false, "sync": false, "extra": ["LE", "MUXOUT", "TXDATA", "TRIG"]},
+  "notes": [
+    "Designed for FMCW radar ramps; TXDATA + TRIG pins from FPGA control ramp start",
+    "32-bit words, 3 LSB = register address (R0-R7)",
+    "Init order: R7,R6,R5,R4,R3,R2,R1,R0"
+  ]
+}

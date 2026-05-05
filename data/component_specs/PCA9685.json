@@ -1,0 +1,17 @@
+{
+  "mpn": "PCA9685", "manufacturer": "NXP", "family": "PCA968x",
+  "bus": "i2c", "source": "curated", "confidence": 1.0,
+  "description": "16-channel, 12-bit PWM controller, I2C, 1.6 kHz max",
+  "datasheet_url": "https://www.nxp.com/products/PCA9685",
+  "i2c_slave_addr_7bit": 64,
+  "i2c_addr_width_bits": 8,
+  "i2c_page_size_bytes": 4,
+  "i2c_max_clock_hz":   1000000,
+  "fpga_ports": {"reset_n": true, "interrupt": false,
+                 "extra": ["OE", "LED0..LED15"]},
+  "notes": [
+    "Slave addr 0x40 + 6 strap pins (64 possible addresses on one bus)",
+    "8-bit register address; each LED uses 4 registers (ON_L,ON_H,OFF_L,OFF_H)",
+    "OE pin (active-low output enable) lets FPGA gate all 16 outputs at once"
+  ]
+}

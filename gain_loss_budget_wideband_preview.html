@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>RF Gain-Loss Budget — 2-18 GHz EW Receiver</title>
+<style>
+body { font-family: -apple-system, Segoe UI, Inter, sans-serif; max-width: 1200px;
+       margin: 32px auto; padding: 0 24px; color: #1a2235; background: #f7f8fa; }
+h1 { font-size: 28px; margin-bottom: 4px; color: #0b1220; }
+h1 small { display: block; font-size: 14px; color: #64748b; font-weight: 400; margin-top: 6px; }
+h2 { font-size: 18px; margin-top: 32px; border-bottom: 2px solid #00c6a7;
+     padding-bottom: 6px; color: #0b1220; }
+p.note { color: #475569; font-size: 13px; line-height: 1.55; }
+p.formula { font-size: 15px; text-align: center; padding: 14px; background: #fff;
+            border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 24px; font-size: 13px; background: #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-radius: 6px; overflow: hidden; }
+th { background: #0b1220; color: #e2e8f0; text-align: left; padding: 10px 12px;
+     font-weight: 600; font-size: 12px; letter-spacing: 0.3px; }
+td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; }
+tr.totals td { background: #eef5f3; font-weight: 600; }
+td.warn { background: #fff4e5; color: #c2410c; font-weight: 600; }
+td.pass { background: #ecfdf5; color: #065f46; font-weight: 600; }
+td.fail { background: #fef2f2; color: #991b1b; font-weight: 600; }
+p.verdict { padding: 10px 14px; border-radius: 6px; font-size: 13px; }
+p.verdict.ok { background: #ecfdf5; color: #065f46; }
+p.verdict.warn { background: #fef2f2; color: #991b1b; }
+code { background: #eef2f6; padding: 1px 5px; border-radius: 3px; font-size: 12px; font-family: JetBrains Mono, Consolas, monospace; }
+span.warn-inline { color: #c2410c; font-size: 11px; font-style: italic; }
+table.sweep th, table.sweep td { padding: 6px 8px; font-size: 12px; text-align: right; }
+table.sweep th:nth-child(-n+3), table.sweep td:nth-child(-n+3) { text-align: left; }
+table.sweep .rowlabel { font-weight: 600; color: #0b1220; background: #f7f8fa; }
+</style>
+</head>
+<body>
+<h1>RF Gain-Loss Budget
+  <small>2-18 GHz EW Receiver · Generated: 2026-04-20 · AI-GENERATED — verify against final component datasheets</small>
+</h1>
+
+
+<h2>Design Contract Checks</h2>
+<p class="verdict warn">&#9888; WARN — 0 hard violations, 1 warning(s) — review before release</p>
+<table>
+  <tr><th>#</th><th>Rule</th><th>Status</th><th>Detail</th></tr>
+  <tr><td><b>C1</b></td><td>Analysis at worst-case frequency</td><td class='pass'><b>&#9989; pass</b></td><td>Cascade evaluated at f_max = 18000 MHz (centre 10000 + BW/2 = 8000 MHz).</td></tr><tr><td><b>C2</b></td><td>Bias conditions declared for every active stage</td><td class='pass'><b>&#9989; pass</b></td><td>Every LNA / amp / mixer stage cites the datasheet Vdd/Idq row that produces its gain and NF.</td></tr><tr><td><b>C3</b></td><td>Pdc = Vdd × Idq (±10 mW)</td><td class='pass'><b>&#9989; pass</b></td><td>All biased stages obey the Ohm-law tie between supply and DC power.</td></tr><tr><td><b>C4</b></td><td>Passive NF = |insertion loss| (Friis)</td><td class='pass'><b>&#9989; pass</b></td><td>Every passive stage&#x27;s NF equals its insertion loss in dB, as thermodynamics requires.</td></tr><tr><td><b>C5</b></td><td>GLB ↔ BOM component match</td><td class='warn'><b>&#9888; warn</b></td><td>Stage 9 (IF Amp) uses &#x27;ADL5523&#x27; which is not in the project BOM</td></tr>
+</table>
+<p class="note">These five invariants must hold for any RF receiver GLB to be
+releasable to PCB. Any <b>fail</b> row is a contract violation — regenerate
+Phase 1 or edit the offending stage before proceeding to PCB layout.</p>
+
+
+
+<h2>System Parameters</h2>
+<table>
+  <tr><th>Parameter</th><th>Value</th><th>Unit</th></tr>
+  <tr><td>Centre Frequency</td><td>10000</td><td>MHz</td></tr><tr><td>RF Bandwidth</td><td>16000</td><td>MHz</td></tr><tr><td><b>Analysis Frequency (worst-case upper edge)</b></td><td class='warn'><b>18000</b></td><td>MHz</td></tr><tr><td>Input Signal Level</td><td>-60</td><td>dBm</td></tr><tr><td>Target Output Power</td><td>0</td><td>dBm</td></tr><tr><td>Required System Gain</td><td>60</td><td>dB</td></tr>
+</table>
+
+
+<h2>Stage-by-Stage Gain / Loss Budget</h2>
+<table>
+  <tr><th>#</th><th>Stage</th><th>Component</th><th>Gain/Loss (dB)</th>
+      <th>Cum. Gain (dB)</th><th>Output Power (dBm)</th>
+      <th>NF (dB)</th><th>Cum. NF (dB)</th>
+      <th>P1dB Out (dBm)</th><th>OIP3 (dBm)</th>
+      <th>Region</th><th>Notes</th></tr>
+  <tr><td>1</td><td>SMA Input</td><td>SMA-F</td><td class='warn'>-0.2</td><td>-0.2</td><td>-60.2</td><td>0.15</td><td>0.15</td><td>N/A</td><td>N/A</td><td class='pass'>Linear (passive)</td><td>Min connector loss (SMA typ, ≤18 GHz)<br><span class='warn-inline'>&#9888; S11 = 30.0 dB — exceptional, verify</span></td></tr><tr><td>2</td><td>PCB Trace</td><td>50Ω Microstrip (RO4350B)</td><td class='warn'>-0.3</td><td>-0.6</td><td>-60.5</td><td>0.30</td><td>0.45</td><td>N/A</td><td>N/A</td><td class='pass'>Linear (passive)</td><td>Typ 1–2 in RO4350B microstrip loss at band</td></tr><tr><td>3</td><td>Limiter</td><td>PL-DIODE</td><td class='warn'>-0.6</td><td>-1.1</td><td>-61.1</td><td>0.50</td><td>0.96</td><td>N/A</td><td>N/A</td><td class='pass'>Linear (passive)</td><td>TVS limiter, 50 W peak survivable</td></tr><tr><td>4</td><td>Preselector</td><td>SAW BPF</td><td class='warn'>-2.5</td><td>-3.6</td><td>-63.6</td><td>1.50</td><td>2.50</td><td>N/A</td><td>N/A</td><td class='pass'>Linear (passive)</td><td>2-18 GHz bandpass, 30 dB rejection at image<br><span class='warn-inline'>&#9888; Passive NF ≠ |loss| (1.50 vs 2.50 dB)</span></td></tr><tr><td>5</td><td>LNA</td><td>HMC8410LP2FE</td><td class='pass'>+14.5</td><td>10.9</td><td>-49.1</td><td>1.80</td><td>4.71</td><td>22.0</td><td>33.0</td><td class='pass'>Linear (71.1 dB BO)</td><td>GaAs pHEMT LNA, 2-18 GHz</td></tr><tr><td>6</td><td>Driver Amp</td><td>ADL5611</td><td class='pass'>+17.5</td><td>28.4</td><td>-31.6</td><td>2.70</td><td>4.81</td><td>21.0</td><td>33.0</td><td class='pass'>Linear (52.6 dB BO)</td><td>SiGe IF driver, 30 MHz – 6 GHz</td></tr><tr><td>7</td><td>IF Filter</td><td>LC Bandpass</td><td class='warn'>-2.5</td><td>25.9</td><td>-34.1</td><td>1.50</td><td>4.81</td><td>N/A</td><td>N/A</td><td class='pass'>Linear (passive)</td><td>1 GHz IF, 400 MHz BW<br><span class='warn-inline'>&#9888; Passive NF ≠ |loss| (1.50 vs 2.50 dB)</span></td></tr><tr><td>8</td><td>Mixer</td><td>HMC1056</td><td class='warn'>-7.5</td><td>18.4</td><td>-41.6</td><td>7.50</td><td>4.83</td><td>9.0</td><td>23.0</td><td class='pass'>Linear (50.6 dB BO)</td><td>Double-balanced passive mixer</td></tr><tr><td>9</td><td>IF Amp</td><td>ADL5523</td><td class='pass'>+19.0</td><td>37.4</td><td>-22.6</td><td>2.10</td><td>4.84</td><td>21.0</td><td>36.0</td><td class='pass'>Linear (43.6 dB BO)</td><td>Low-noise IF gain stage</td></tr><tr><td>10</td><td>SMA Output</td><td>SMA-M</td><td class='warn'>-0.2</td><td>37.2</td><td>-22.8</td><td>0.15</td><td>4.84</td><td>N/A</td><td>N/A</td><td class='pass'>Linear (passive)</td><td>Min connector loss (SMA typ, ≤18 GHz)<br><span class='warn-inline'>&#9888; S11 = 30.0 dB — exceptional, verify</span></td></tr>
+</table>
+<p class="note"><b>Region legend:</b> <em>Linear</em> = ≥10 dB back-off from P1dB ·
+<em>Near-linear</em> = 6-10 dB · <em>Compressing</em> = 0-6 dB (onset of gain compression) ·
+<em>Saturated</em> = above P1dB (hard non-linear). Keep every stage in the Linear zone for
+analogue receivers; transmit chains may intentionally drive the PA into compression.
+Warning icons (&#9888;) flag datasheet values that fail senior-RF-engineer sanity checks
+(e.g. OIP3 &lt; P1dB + 5 dB, NF &lt; 0.5 dB, passive NF &ne; |loss|, mixer gain outside
+typical passive/active bands).</p>
+
+
+<h2>Budget Summary</h2>
+<table>
+  <tr><th>Metric</th><th>Value</th><th>Unit</th></tr>
+  <tr><td>Total System Gain</td><td>37.2</td><td>dB</td></tr><tr><td>Final Output Power</td><td>-22.8</td><td>dBm</td></tr><tr><td>Cascaded System NF</td><td>4.84</td><td>dB</td></tr><tr><td>Output Power Margin</td><td>+22.8</td><td>dB</td></tr>
+</table>
+
+
+<h2>Power Consumption per Stage — Datasheet Bias Conditions</h2>
+<table>
+  <tr><th>#</th><th>Stage</th><th>Component</th>
+      <th>Vdd (V)</th><th>Idq (mA)</th><th>Pdc (mW)</th>
+      <th>Datasheet Condition</th></tr>
+  <tr><td>1</td><td>SMA Input</td><td>SMA-F</td><td>—</td><td>—</td><td>—</td><td></td></tr><tr><td>2</td><td>PCB Trace</td><td>50Ω Microstrip (RO4350B)</td><td>—</td><td>—</td><td>—</td><td></td></tr><tr><td>3</td><td>Limiter</td><td>PL-DIODE</td><td>—</td><td>—</td><td>—</td><td></td></tr><tr><td>4</td><td>Preselector</td><td>SAW BPF</td><td>—</td><td>—</td><td>—</td><td></td></tr><tr><td>5</td><td>LNA</td><td>HMC8410LP2FE</td><td>5.00</td><td>65.0</td><td>325.0</td><td>HMC8410 datasheet Rev C, Table 2 typ @ Vdd=5 V, Id=65 mA, f=10 GHz, T=25 °C</td></tr><tr><td>6</td><td>Driver Amp</td><td>ADL5611</td><td>5.00</td><td>100.0</td><td>500.0</td><td>ADL5611 datasheet Rev A, Table 2 typ @ Vcc=5 V, Icc=100 mA, f=1 GHz</td></tr><tr><td>7</td><td>IF Filter</td><td>LC Bandpass</td><td>—</td><td>—</td><td>—</td><td></td></tr><tr><td>8</td><td>Mixer</td><td>HMC1056</td><td>—</td><td>—</td><td>0.0</td><td>HMC1056LP4BE, passive mixer, LO drive +15 dBm typ</td></tr><tr><td>9</td><td>IF Amp</td><td>ADL5523</td><td>5.00</td><td>90.0</td><td>450.0</td><td>ADL5523 datasheet Rev B, Table 3 typ @ Vpos=5 V, Id=90 mA, f=400 MHz–4 GHz</td></tr><tr><td>10</td><td>SMA Output</td><td>SMA-M</td><td>—</td><td>—</td><td>—</td><td></td></tr>
+  <tr class="totals"><td colspan="5"><b>TOTAL</b></td>
+      <td><b>1275.0</b></td>
+      <td>Sum of all powered-stage Pdc</td></tr>
+</table>
+<p class="note"><b>Key consistency rule:</b> the Vdd and Idq above must be the exact
+bias conditions under which the datasheet specifies the gain, NF, P1dB and OIP3 values
+in the stage-by-stage table. Different bias ⇒ different RF performance. The <b>Pdc per
+stage</b> (mW) flows directly into the Power Budget document — these numbers must match
+the per-rail current draws in that spreadsheet. Example: HMC8410 LNA — 15 dB typ gain
+is specified at Vdd = 5.0 V, Idq = 65 mA (Pdc = 325 mW). Biasing it at 3.3 V / 40 mA
+reduces gain to ≈ 13 dB and degrades NF by ~0.3 dB — the GLB numbers would no longer
+be valid.</p>
+
+
+<h2>Noise Floor &amp; Sensitivity</h2>
+<table>
+  <tr><th>Parameter</th><th>Formula</th><th>Value</th><th>Unit</th></tr>
+  <tr><td>Thermal Noise Floor (kTB)</td><td><code>-174 + 10·log(BW_Hz)</code></td><td>-71.96</td><td>dBm</td></tr>
+  <tr><td>System NF (cascaded)</td><td>Friis</td><td>4.84</td><td>dB</td></tr>
+  <tr><td>Input-Referred Noise Floor</td><td><code>kTB + NF_sys</code></td><td class="warn">-67.12</td><td>dBm</td></tr>
+  <tr><td>Output Noise Floor</td><td><code>Noise_in + Total_Gain</code></td><td>-29.92</td><td>dBm</td></tr>
+  <tr class="totals"><td><b>MDS (SNR = 10 dB)</b></td><td><code>Noise_in + 10</code></td><td><b>-57.12</b></td><td>dBm</td></tr>
+</table>
+<p class="note">Assumes 290 K ambient, full RF instantaneous bandwidth, AWGN channel.
+MDS convention: 10 dB SNR above the input-referred noise floor.</p>
+
+
+<h2>Gain Variation — Thermal (-40 to +85 °C)</h2>
+<table>
+  <tr><th>#</th><th>Stage</th><th>Component</th>
+      <th>Nominal Gain (dB)</th><th>Tempco (dB/°C)</th>
+      <th>ΔG @ -40 °C</th><th>ΔG @ +85 °C</th><th>Worst-Case (dB)</th></tr>
+  <tr><td>1</td><td>SMA Input</td><td>SMA-F</td><td>-0.20</td><td>±0.005</td><td>+0.33</td><td>-0.30</td><td>±0.33</td></tr><tr><td>2</td><td>PCB Trace</td><td>50Ω Microstrip (RO4350B)</td><td>-0.35</td><td>±0.005</td><td>+0.33</td><td>-0.30</td><td>±0.33</td></tr><tr><td>3</td><td>Limiter</td><td>PL-DIODE</td><td>-0.55</td><td>±0.005</td><td>+0.33</td><td>-0.30</td><td>±0.33</td></tr><tr><td>4</td><td>Preselector</td><td>SAW BPF</td><td>-2.50</td><td>±0.005</td><td>+0.33</td><td>-0.30</td><td>±0.33</td></tr><tr><td>5</td><td>LNA</td><td>HMC8410LP2FE</td><td>+14.50</td><td>±0.020</td><td>+1.30</td><td>-1.20</td><td>±1.30</td></tr><tr><td>6</td><td>Driver Amp</td><td>ADL5611</td><td>+17.50</td><td>±0.020</td><td>+1.30</td><td>-1.20</td><td>±1.30</td></tr><tr><td>7</td><td>IF Filter</td><td>LC Bandpass</td><td>-2.50</td><td>±0.005</td><td>+0.33</td><td>-0.30</td><td>±0.33</td></tr><tr><td>8</td><td>Mixer</td><td>HMC1056</td><td>-7.50</td><td>±0.020</td><td>+1.30</td><td>-1.20</td><td>±1.30</td></tr><tr><td>9</td><td>IF Amp</td><td>ADL5523</td><td>+19.00</td><td>±0.020</td><td>+1.30</td><td>-1.20</td><td>±1.30</td></tr><tr><td>10</td><td>SMA Output</td><td>SMA-M</td><td>-0.20</td><td>±0.005</td><td>+0.33</td><td>-0.30</td><td>±0.33</td></tr>
+  <tr class="totals"><td colspan="5"><b>TOTAL SYSTEM</b></td>
+      <td class="warn"><b>+7.15</b></td>
+      <td class="warn"><b>-6.60</b></td>
+      <td>—</td></tr>
+</table>
+<p class="note">Active stages (LNA, amp, mixer): ±0.020 dB/°C typical for GaAs pHEMT / SiGe.
+Passives (connectors, traces, filters, splitters): ±0.005 dB/°C.
+Plan for ≥ 3 dB AGC range or closed-loop gain compensation to hold system gain across the
+temperature envelope.</p>
+
+
+<h2>Gain Variation — Frequency (across RF bandwidth)</h2>
+<table>
+  <tr><th>#</th><th>Stage</th><th>Component</th>
+      <th>Nominal Gain (dB)</th><th>Typ Flatness (± dB)</th>
+      <th>Min Gain (dB)</th><th>Max Gain (dB)</th></tr>
+  <tr><td>1</td><td>SMA Input</td><td>SMA-F</td><td>-0.20</td><td>±0.1</td><td>-0.30</td><td>-0.10</td></tr><tr><td>2</td><td>PCB Trace</td><td>50Ω Microstrip (RO4350B)</td><td>-0.35</td><td>±0.1</td><td>-0.45</td><td>-0.25</td></tr><tr><td>3</td><td>Limiter</td><td>PL-DIODE</td><td>-0.55</td><td>±0.1</td><td>-0.65</td><td>-0.45</td></tr><tr><td>4</td><td>Preselector</td><td>SAW BPF</td><td>-2.50</td><td>±1.0</td><td>-3.50</td><td>-1.50</td></tr><tr><td>5</td><td>LNA</td><td>HMC8410LP2FE</td><td>+14.50</td><td>±0.5</td><td>+14.00</td><td>+15.00</td></tr><tr><td>6</td><td>Driver Amp</td><td>ADL5611</td><td>+17.50</td><td>±0.5</td><td>+17.00</td><td>+18.00</td></tr><tr><td>7</td><td>IF Filter</td><td>LC Bandpass</td><td>-2.50</td><td>±1.0</td><td>-3.50</td><td>-1.50</td></tr><tr><td>8</td><td>Mixer</td><td>HMC1056</td><td>-7.50</td><td>±0.5</td><td>-8.00</td><td>-7.00</td></tr><tr><td>9</td><td>IF Amp</td><td>ADL5523</td><td>+19.00</td><td>±0.5</td><td>+18.50</td><td>+19.50</td></tr><tr><td>10</td><td>SMA Output</td><td>SMA-M</td><td>-0.20</td><td>±0.1</td><td>-0.30</td><td>-0.10</td></tr>
+  <tr class="totals"><td colspan="4"><b>WORST-CASE (Σ)</b></td>
+      <td class="warn"><b>±4.4</b></td><td>—</td><td>—</td></tr>
+  <tr class="totals"><td colspan="4"><b>RSS (statistical)</b></td>
+      <td class=""><b>±1.74</b></td><td>—</td><td>—</td></tr>
+</table>
+<p class="note">Amps: ±0.5 dB in-band. Filters: ±1.0 dB (passband ripple + skirt roll-off).
+Passives: ±0.1 dB. Worst-case Σ assumes all deviations align; RSS assumes uncorrelated
+contributions — the truth sits between the two. If flatness is critical (e.g. ±1 dB system
+spec), add an equaliser or gain-slope compensator after the LNA.</p>
+
+
+<h2>Stage Gain vs Frequency — 1 GHz step</h2>
+<table class="sweep">
+  <tr><th>#</th><th>Stage</th><th>Component</th><th>Nominal (dB)</th><th>2.0 GHz</th><th>3.0 GHz</th><th>4.0 GHz</th><th>5.0 GHz</th><th>6.0 GHz</th><th>7.0 GHz</th><th>8.0 GHz</th><th>9.0 GHz</th><th>10.0 GHz</th><th>11.0 GHz</th><th>12.0 GHz</th><th>13.0 GHz</th><th>14.0 GHz</th><th>15.0 GHz</th><th>16.0 GHz</th><th>17.0 GHz</th><th>18.0 GHz</th></tr>
+  <tr><td>1</td><td class='rowlabel'>SMA Input</td><td>SMA-F</td><td>-0.15</td><td>-0.20</td><td>-0.19</td><td>-0.19</td><td>-0.18</td><td>-0.17</td><td>-0.17</td><td>-0.16</td><td>-0.16</td><td>-0.15</td><td>-0.16</td><td>-0.16</td><td>-0.17</td><td>-0.17</td><td>-0.18</td><td>-0.19</td><td>-0.19</td><td>-0.20</td></tr><tr><td>2</td><td class='rowlabel'>PCB Trace</td><td>50Ω Microstrip (RO4350B)</td><td>-0.30</td><td>-0.35</td><td>-0.34</td><td>-0.34</td><td>-0.33</td><td>-0.33</td><td>-0.32</td><td>-0.31</td><td>-0.31</td><td>-0.30</td><td>-0.31</td><td>-0.31</td><td>-0.32</td><td>-0.33</td><td>-0.33</td><td>-0.34</td><td>-0.34</td><td>-0.35</td></tr><tr><td>3</td><td class='rowlabel'>Limiter</td><td>PL-DIODE</td><td>-0.50</td><td>-0.55</td><td>-0.54</td><td>-0.54</td><td>-0.53</td><td>-0.53</td><td>-0.52</td><td>-0.51</td><td>-0.51</td><td>-0.50</td><td>-0.51</td><td>-0.51</td><td>-0.52</td><td>-0.53</td><td>-0.53</td><td>-0.54</td><td>-0.54</td><td>-0.55</td></tr><tr><td>4</td><td class='rowlabel'>Preselector</td><td>SAW BPF</td><td>-1.50</td><td>-2.50</td><td>-2.38</td><td>-2.25</td><td>-2.12</td><td>-2.00</td><td>-1.88</td><td>-1.75</td><td>-1.62</td><td>-1.50</td><td>-1.62</td><td>-1.75</td><td>-1.88</td><td>-2.00</td><td>-2.12</td><td>-2.25</td><td>-2.38</td><td>-2.50</td></tr><tr><td>5</td><td class='rowlabel'>LNA</td><td>HMC8410LP2FE</td><td>+15.00</td><td>+15.50</td><td>+15.44</td><td>+15.38</td><td>+15.31</td><td>+15.25</td><td>+15.19</td><td>+15.12</td><td>+15.06</td><td>+15.00</td><td>+14.94</td><td>+14.88</td><td>+14.81</td><td>+14.75</td><td>+14.69</td><td>+14.62</td><td>+14.56</td><td>+14.50</td></tr><tr><td>6</td><td class='rowlabel'>Driver Amp</td><td>ADL5611</td><td>+18.00</td><td>+18.50</td><td>+18.44</td><td>+18.38</td><td>+18.31</td><td>+18.25</td><td>+18.19</td><td>+18.12</td><td>+18.06</td><td>+18.00</td><td>+17.94</td><td>+17.88</td><td>+17.81</td><td>+17.75</td><td>+17.69</td><td>+17.62</td><td>+17.56</td><td>+17.50</td></tr><tr><td>7</td><td class='rowlabel'>IF Filter</td><td>LC Bandpass</td><td>-1.50</td><td>-2.50</td><td>-2.38</td><td>-2.25</td><td>-2.12</td><td>-2.00</td><td>-1.88</td><td>-1.75</td><td>-1.62</td><td>-1.50</td><td>-1.62</td><td>-1.75</td><td>-1.88</td><td>-2.00</td><td>-2.12</td><td>-2.25</td><td>-2.38</td><td>-2.50</td></tr><tr><td>8</td><td class='rowlabel'>Mixer</td><td>HMC1056</td><td>-7.00</td><td>-6.50</td><td>-6.56</td><td>-6.62</td><td>-6.69</td><td>-6.75</td><td>-6.81</td><td>-6.88</td><td>-6.94</td><td>-7.00</td><td>-7.06</td><td>-7.12</td><td>-7.19</td><td>-7.25</td><td>-7.31</td><td>-7.38</td><td>-7.44</td><td>-7.50</td></tr><tr><td>9</td><td class='rowlabel'>IF Amp</td><td>ADL5523</td><td>+19.50</td><td>+20.00</td><td>+19.94</td><td>+19.88</td><td>+19.81</td><td>+19.75</td><td>+19.69</td><td>+19.62</td><td>+19.56</td><td>+19.50</td><td>+19.44</td><td>+19.38</td><td>+19.31</td><td>+19.25</td><td>+19.19</td><td>+19.12</td><td>+19.06</td><td>+19.00</td></tr><tr><td>10</td><td class='rowlabel'>SMA Output</td><td>SMA-M</td><td>-0.15</td><td>-0.20</td><td>-0.19</td><td>-0.19</td><td>-0.18</td><td>-0.17</td><td>-0.17</td><td>-0.16</td><td>-0.16</td><td>-0.15</td><td>-0.16</td><td>-0.16</td><td>-0.17</td><td>-0.17</td><td>-0.18</td><td>-0.19</td><td>-0.19</td><td>-0.20</td></tr>
+</table>
+<p class="note">Gain roll-off model: amps &amp; mixers fall off monotonically toward the
+high edge of the band by ±0.5 dB; filters ripple symmetrically by ±1.0 dB across the
+passband; connectors and PCB traces vary by ±0.1 dB.</p>
+
+<h2>System Rollup vs Frequency</h2>
+<table>
+  <tr><th>Frequency (GHz)</th><th>Total Gain (dB)</th>
+      <th>Cascaded NF (dB)</th><th>Output Power (dBm)</th>
+      <th>MDS @ 10 dB SNR (dBm)</th></tr>
+  <tr><td>2.0</td><td>+41.20</td><td>4.20</td><td>-18.80</td><td>-57.76</td></tr><tr><td>3.0</td><td>+41.24</td><td>4.15</td><td>-18.76</td><td>-57.81</td></tr><tr><td>4.0</td><td>+41.26</td><td>4.11</td><td>-18.74</td><td>-57.85</td></tr><tr><td>5.0</td><td>+41.28</td><td>4.05</td><td>-18.72</td><td>-57.91</td></tr><tr><td>6.0</td><td>+41.30</td><td>4.01</td><td>-18.70</td><td>-57.95</td></tr><tr><td>7.0</td><td>+41.32</td><td>3.97</td><td>-18.68</td><td>-57.99</td></tr><tr><td>8.0</td><td>+41.34</td><td>3.92</td><td>-18.66</td><td>-58.04</td></tr><tr><td>9.0</td><td>+41.36</td><td>3.88</td><td>-18.64</td><td>-58.08</td></tr><tr><td>10.0</td><td>+41.40</td><td>3.83</td><td>-18.60</td><td>-58.13</td></tr><tr><td>11.0</td><td>+40.88</td><td>3.88</td><td>-19.12</td><td>-58.08</td></tr><tr><td>12.0</td><td>+40.38</td><td>3.92</td><td>-19.62</td><td>-58.04</td></tr><tr><td>13.0</td><td>+39.80</td><td>3.98</td><td>-20.20</td><td>-57.98</td></tr><tr><td>14.0</td><td>+39.30</td><td>4.03</td><td>-20.70</td><td>-57.93</td></tr><tr><td>15.0</td><td>+38.80</td><td>4.07</td><td>-21.20</td><td>-57.89</td></tr><tr><td>16.0</td><td>+38.22</td><td>4.13</td><td>-21.78</td><td>-57.83</td></tr><tr><td>17.0</td><td>+37.72</td><td>4.17</td><td>-22.28</td><td>-57.78</td></tr><tr><td>18.0</td><td>+37.20</td><td>4.23</td><td>-22.80</td><td>-57.73</td></tr>
+</table>
+<p class="note">Cascaded NF recomputed with Friis at each frequency — the LNA
+continues to dominate, so NF typically stays within ±0.3 dB of nominal across
+the band. If the band-edge MDS is more than 2 dB worse than midband, add
+frequency-dependent equalisation or re-allocate gain toward the LNA.</p>
+
+
+<h2>Return Loss — Per Stage</h2>
+<table>
+  <tr><th>#</th><th>Stage</th><th>Component</th>
+      <th>S11 — Input RL (dB)</th><th>S22 — Output RL (dB)</th><th>Notes</th></tr>
+  <tr><td>1</td><td>SMA Input</td><td>SMA-F</td><td>30.0</td><td>—</td><td>Min connector loss (SMA typ, ≤18 GHz)</td></tr><tr><td>2</td><td>PCB Trace</td><td>50Ω Microstrip (RO4350B)</td><td>25.0</td><td>—</td><td>Typ 1–2 in RO4350B microstrip loss at band</td></tr><tr><td>3</td><td>Limiter</td><td>PL-DIODE</td><td>20.0</td><td>—</td><td>TVS limiter, 50 W peak survivable</td></tr><tr><td>4</td><td>Preselector</td><td>SAW BPF</td><td>18.0</td><td>—</td><td>2-18 GHz bandpass, 30 dB rejection at image</td></tr><tr><td>5</td><td>LNA</td><td>HMC8410LP2FE</td><td>15.0</td><td>—</td><td>GaAs pHEMT LNA, 2-18 GHz</td></tr><tr><td>6</td><td>Driver Amp</td><td>ADL5611</td><td>18.0</td><td>—</td><td>SiGe IF driver, 30 MHz – 6 GHz</td></tr><tr><td>7</td><td>IF Filter</td><td>LC Bandpass</td><td>20.0</td><td>—</td><td>1 GHz IF, 400 MHz BW</td></tr><tr><td>8</td><td>Mixer</td><td>HMC1056</td><td>15.0</td><td>—</td><td>Double-balanced passive mixer</td></tr><tr><td>9</td><td>IF Amp</td><td>ADL5523</td><td>16.0</td><td>—</td><td>Low-noise IF gain stage</td></tr><tr><td>10</td><td>SMA Output</td><td>SMA-M</td><td>30.0</td><td>—</td><td>Min connector loss (SMA typ, ≤18 GHz)</td></tr>
+</table>
+<p class="note">Return loss values referenced to 50 Ω. Higher value = better match.</p>
+
+
+
+
+
+
+<h2>Consistency Checks</h2>
+<p class="verdict warn"><b>&#9888; BOM / Block-Diagram mismatches detected — review before PCB release:</b></p>
+<ul><li>Stage 9 (IF Amp) uses &#x27;ADL5523&#x27; which is not in the project BOM</li></ul>
+
+
+<h2>Cascade Noise Figure — Friis Formula</h2>
+<p class="formula"><code>F<sub>sys</sub> = F<sub>1</sub> + (F<sub>2</sub> − 1) / G<sub>1</sub>
+  + (F<sub>3</sub> − 1) / (G<sub>1</sub>·G<sub>2</sub>) + …</code></p>
+<p class="note">Where <em>F</em> = linear noise factor (not dB), <em>G</em> = linear gain.
+The first stage NF dominates — minimise LNA / driver NF for the best system sensitivity.</p>
+<p class="verdict ok"><b>Note:</b> All values are estimated from component datasheets at 25 °C nominal.
+Verify with bench measurements (spectrum analyser + noise source) during hardware bring-up.</p>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+# Golden scenario — Radar, S-band air-surveillance receiver (2–4 GHz)
+domain: radar
+id: s_band_air_surveillance
+
+round1_answers:
+  freq_band: "S (2-4 GHz)"
+  radar_type: "air-surveillance / long-range search"
+  platform: "ground-mobile"
+  inst_bw_mhz: 200
+  noise_figure_db_target: 2.0
+  sensitivity_dbm_target: -110
+  dynamic_range_db: 70
+  iip3_dbm: 0
+  temp_range: "military -40 to +71"
+  standards: [MIL-STD-461G, MIL-STD-810H]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 1.43
+  total_gain_db: 35.5
+  tolerance_db: 1.0
+
+bom:
+  - {name: "LNA",    gain_db: 22.0, nf_db: 1.2, iip3_dbm: 30.0, p1db_dbm: 18.0, kind: "LNA",    part_number: "ADL8107"}
+  - {name: "Filter", gain_db: -1.5, nf_db: 1.5, kind: "filter"}
+  - {name: "Mixer",  gain_db: -7.0, nf_db: 7.0, iip3_dbm: 15.0, p1db_dbm: 5.0,  kind: "mixer",  part_number: "HMC1049LP5E"}
+  - {name: "IF_Amp", gain_db: 22.0, nf_db: 2.5, iip3_dbm: 20.0, p1db_dbm: 10.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-461G", "RE102"]
+  - ["MIL-STD-810H", "Method 514.8"]

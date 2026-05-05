@@ -1,0 +1,17 @@
+{
+  "mpn": "HMC1190", "manufacturer": "Analog Devices", "family": "HMC1190",
+  "bus": "spi", "source": "curated", "confidence": 1.0,
+  "description": "8.6 GHz wideband fractional-N PLL with integrated VCO",
+  "datasheet_url": "https://www.analog.com/en/products/hmc1190.html",
+  "spi_max_clock_hz": 50000000, "spi_mode": 0, "spi_data_width_bits": 24,
+  "pll_config_reg_count": 24,
+  "pll_config_bit_width": 24,
+  "pll_lock_time_us": 100,
+  "pll_min_output_freq_hz":   25000000,
+  "pll_max_output_freq_hz": 8600000000,
+  "fpga_ports": {"reset_n": false, "sync": false, "extra": ["SEN", "GPO", "LD"]},
+  "notes": [
+    "Open-drain SPI: pull-ups required on SDI/SCK/SEN",
+    "GPO can be muxed as digital lock detect"
+  ]
+}

@@ -1,0 +1,31 @@
+# Golden scenario — Satcom, C-band teleport receiver (3.7-4.2 GHz)
+domain: satcom
+id: c_band_teleport
+
+round1_answers:
+  freq_band: "C (3.7-4.2 GHz)"
+  terminal_type: "teleport earth station"
+  g_t_db_per_k: 32
+  orbit: "GEO"
+  eirp_dbw: 60
+  data_rate_mbps: 155
+  modulation: ["QPSK", "8PSK", "16APSK"]
+  temp_range: "commercial 0 to +55"
+  standards: [MIL-STD-188-164, FCC Part 15]
+
+architecture: superheterodyne
+
+expected_cascade:
+  noise_figure_db: 0.74
+  total_gain_db: 42.0
+  tolerance_db: 1.0
+
+bom:
+  - {name: "LNA",    gain_db: 30.0, nf_db: 0.7, iip3_dbm: 20.0, p1db_dbm: 10.0, kind: "LNA"}
+  - {name: "Filter", gain_db: -2.0, nf_db: 2.0, kind: "filter"}
+  - {name: "Mixer",  gain_db: -6.0, nf_db: 6.0, iip3_dbm: 15.0, p1db_dbm: 8.0,  kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 20.0, nf_db: 2.5, iip3_dbm: 22.0, p1db_dbm: 12.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-188-164", "Section 5"]
+  - ["FCC Part 15", "15.247"]

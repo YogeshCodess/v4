@@ -1,0 +1,34 @@
+# Golden scenario — Radar, X-band fire-control receiver front-end
+domain: radar
+id: x_band_fire_control
+
+round1_answers:
+  freq_band: "X (8-12 GHz)"
+  radar_type: "fire-control / tracking"
+  platform: "ground-mobile"
+  inst_bw_mhz: 500
+  noise_figure_db_target: 3.0
+  sensitivity_dbm_target: -95
+  dynamic_range_db: 65
+  iip3_dbm: -5
+  temp_range: "military -40 to +71"
+  standards: [MIL-STD-461G, MIL-STD-810H]
+
+architecture: superheterodyne
+
+# Numerical expectations — the validator must land within 1 dB of these.
+expected_cascade:
+  noise_figure_db: 2.3
+  total_gain_db: 40.0
+  tolerance_db: 1.0
+
+# BOM used to drive the cascade (real parts from domains/radar/components.json).
+bom:
+  - {name: "LNA",    gain_db: 24.0, nf_db: 1.8, iip3_dbm: 30.0, p1db_dbm: 18.0, kind: "LNA",    part_number: "TGA2578"}
+  - {name: "Filter", gain_db: -2.0, nf_db: 2.0, kind: "filter"}
+  - {name: "Mixer",  gain_db: -7.0, nf_db: 7.0, iip3_dbm: 10.0, p1db_dbm: 5.0, kind: "mixer"}
+  - {name: "IF_Amp", gain_db: 25.0, nf_db: 3.0, iip3_dbm: 20.0, p1db_dbm: 10.0, kind: "amp"}
+
+expected_citations:
+  - ["MIL-STD-461G", "RE102"]
+  - ["MIL-STD-810H", "Method 514.8"]
