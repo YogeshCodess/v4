@@ -7,6 +7,7 @@
 - Gold theme (Streamlit) tagged as `theme-gold`
 - **11 pipeline phases** functional in backend (P1, P2, P3, P4, P5, P6, P7, P7a, P8a, P8b, P8c)
 - **design_scope is advisory only (v23, 2026-04-20)** — scope is still a DB column and still steers the P1 wizard (architecture picker / spec questions), but `PHASE_APPLICABLE_SCOPES` now maps every phase to every scope, so every project runs all 11 phases. The execute-gate + pipeline-run gate code paths are still in place but never fire.
+- **DesignManifest SSoT (v24, 2026-05-06)** — single source of truth for the post-audit BOM. Every downstream phase (P2 HRS, P3 Compliance, P4 Netlist, P6 GLR, P8a SRS) now reads `manifest.bom` via `ProjectService.get_design_manifest(project_id)` instead of regex-parsing markdown. A cross-file MPN leak gate (`services/manifest_validator.check_no_mpn_leak`) blocks the hackathon-final HMC bug class. Block diagrams are deterministically rendered as Mermaid `block-beta` (not `flowchart`). See **DesignManifest pattern** section below.
 
 ---
 
@@ -50,6 +51,47 @@
 - Frontend (`App.tsx → refreshStatuses`) reconciles to the backend scope on every poll; localStorage is kept only as a transient cache that the backend always overrides
 - `PhaseHeader` suppresses the Execute and Re-run buttons when `!isPhaseApplicable(phase, scope)` and shows a `NOT APPLICABLE` pill
 - Build tag: `BUILD v22 (backend-authoritative design_scope · /status returns applicable_phase_ids · execute-gate 409 on out-of-scope phase · 11 phases)`
+
+### V24 DesignManifest single-source-of-truth + leak gate — DONE ✅ (2026-05-06)
+
+Closes the hackathon-final HMC bug class: banned MPNs that the audit dropped from `component_recommendations` but survived in `gain_loss_budget.md` and the `requirements.md` prose body.
+
+**Root cause (now fixed)**: `services.rf_audit.run_all` only mutated `tool_input["component_recommendations"]`. The LLM had also embedded the same MPNs in `tool_input["gain_loss_budget"]["stages"]`, the `requirements` text body, and the mermaid labels — none of those fields were touched by the audit, and the markdown builders rendered all four files from the same partially-mutated `tool_input`. HRS (P2) read the cleaned `component_recommendations.md` while requirements.md still mentioned the dropped part.
+
+**Fix (six commits, on `main`)**:
+1. `services/design_manifest.py` — `DesignManifest` dataclass + 3-level SHA256 hashing (`requirements_hash` / `bom_hash` / `manifest_hash`). `bom_hash` strips prices/URLs/lifecycle so a distributor refresh does NOT mark phases stale.
+2. Migration `008_design_manifest.sql` adds `projects.design_manifest_json` (TEXT) + `projects.manifest_hash` (TEXT). `RESETTABLE_COLUMNS` extended.
+3. `services/manifest_validator.py::check_no_mpn_leak()` — scans every text artifact in the project output dir, flags any MPN-shaped token NOT in `manifest.allowed_mpns()`. Conservative regex with standards-aware exclusion list (`IEEE`, `MIL-STD`, `FCC15`, `REQ-HW`, `USB3`, `PCIE4`, `DDR4`, etc.).
+4. `services/p1_renderers.py::render_block_diagram_mermaid()` — deterministic Mermaid **`block-beta`** (NOT `flowchart`) renderer with three layouts: linear cascade, switch-matrix tree, direct-RF sampling. PURE function of `manifest.bom + manifest.architecture + manifest.design_parameters` — leak-proof by construction.
+5. `services/p1_finalize.py` — builds and freezes the manifest after the RF audit completes. Returns `manifest`/`manifest_row` in the bundle.
+6. `agents/requirements_agent.py` — block diagram rendered deterministically; leak gate runs after `_generate_output_files`; leaks merged as `manifest_mpn_leak` audit issues with severity=high (downgrades `overall_pass`).
+7. **Cross-phase consumption**: P2 HRS, P3 Compliance, P4 Netlist (LLM prompt + BOM-fallback), P6 GLR, P8a SRS all load `manifest.bom` and inject the locked BOM block into the LLM prompt with a "no MPNs outside this list" rule.
+
+**API surface**:
+- `services.project_service.ProjectService.get_design_manifest(project_id) -> Optional[DesignManifest]` — sync helper for downstream phases.
+- `ProjectService.async_get_design_manifest(project_id)` — async variant for background tasks.
+- `manifest.allowed_mpns() -> set[str]` — uppercase MPN whitelist for the leak detector.
+- `GET /api/v1/projects/{id}/status` returns `manifest_hash` + `manifest_summary` (bom_size, architecture, audit_pass, audit_blocker_count). Full BOM via `GET /api/v1/projects/{id}/documents/design_manifest.json`.
+
+**Pattern for downstream phases (use this for P7, P7a, P8b, P8c if/when they need structured BOM access)**:
+```python
+manifest = None
+manifest_bom_block = ""
+try:
+    from services.project_service import ProjectService as _PS
+    _pid = project_context.get("project_id")
+    if _pid is not None:
+        manifest = _PS().get_design_manifest(int(_pid))
+    if manifest and manifest.bom:
+        # Inject the canonical BOM as authoritative context
+        # ...
+except Exception as _exc:
+    self.log(f"DesignManifest load skipped: {_exc}", "info")
+```
+
+**Tests**: 50 cases across `tests/services/test_design_manifest.py`, `tests/services/test_manifest_validator.py`, `tests/services/test_p1_renderers.py`, `tests/services/test_e2e_leak_gate.py` — including a regression test that reproduces the exact HMC pattern.
+
+**Build tag**: `BUILD v24 (DesignManifest SSoT · cross-file MPN leak gate · Mermaid block-beta · 11 phases)`
 
 ---
 
@@ -565,6 +607,15 @@ All 7 agents scrub these words via `re.sub(r'\b(TBD|TBC|TBA)\b', '[specify]', ..
 - `run_pipeline()` skips out-of-scope phases silently (logs `pipeline.phase_skipped_out_of_scope`) — safe to click "Approve & Run" on any scope
 - `GET /api/v1/projects/{id}/status` returns `design_scope` and `applicable_phase_ids: string[]` — prefer `api.getFullStatus()` over `getStatus`/`getStatusRaw` when scope info is needed
 - Migration `003_design_scope.sql` is idempotent (column-exists check in `migrations/__init__.py::_apply_003`) — safe to re-run
+
+**12. DesignManifest is the post-audit BOM source of truth (added 2026-05-06)**
+- `manifest.bom` is the ONLY place MPNs should live for facts-of-record. The markdown files (`component_recommendations.md`, `gain_loss_budget.md`, `requirements.md`) are HUMAN-READABLE artifacts, not authoritative inputs to other phases.
+- Downstream phases that need the BOM call `ProjectService.get_design_manifest(project_id)` and read `manifest.bom`. Pattern is documented in the V24 section above. Do NOT regex-parse markdown for MPNs.
+- The leak gate (`services/manifest_validator.check_no_mpn_leak`) runs at the end of P1. If you write a new artifact in `output_dir` that mentions an MPN, the gate will flag any token NOT in `manifest.allowed_mpns()` as `manifest_mpn_leak` (severity=high). Either: (a) use `manifest.bom` as the only source of MPN strings in your renderer, or (b) add an exclusion to `_NOT_AN_MPN` / `_STANDARDS_PREFIXES` in `manifest_validator.py` if your token is a false positive (standards reference, requirement ID, etc.).
+- Block diagrams are rendered as Mermaid `block-beta` (not `flowchart`) via `services/p1_renderers.render_block_diagram_mermaid(manifest)`. The rendered diagram is leak-proof by construction (PURE function of `manifest.bom`).
+- `bom_hash` deliberately excludes price / lifecycle / URLs so a distributor refresh does NOT mark all phases stale — only design-relevant fields participate.
+- Legacy `requirements_locked_json` continues to exist alongside `design_manifest_json` for backward compat. The two snapshots are written transactionally in `chat_service.send_message`.
+- Migration `008_design_manifest.sql` is idempotent (column-exists check in `migrations/__init__.py::_apply_008`).
 
 ---
 
