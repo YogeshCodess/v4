@@ -19,6 +19,11 @@ interface Props {
   phase: PhaseMeta;
   status: PhaseStatusValue;
   pipelineRunning?: boolean;
+  /** DesignManifest top-level hash (migration 008). Cache-bust key — when
+   *  it changes, P1 has re-locked and every cached document is stale. The
+   *  contents map + docx pre-conversion cache are cleared so the next
+   *  render re-fetches from disk. Null until P1 finishes its first lock. */
+  manifestHash?: string | null;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -507,7 +512,7 @@ function GeneratingState({ phase, elapsed }: { phase: PhaseMeta; elapsed: number
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export default function DocumentsView({ project, phase, status, pipelineRunning }: Props) {
+export default function DocumentsView({ project, phase, status, pipelineRunning, manifestHash }: Props) {
   const [files, setFiles] = useState<DocFile[]>([]);
   const [loadingList, setLoadingList] = useState(true);
   // Track which phase IDs have been loaded at least once — prevents spinner on phase re-visit
@@ -559,6 +564,41 @@ export default function DocumentsView({ project, phase, status, pipelineRunning 
       delete phaseStartTsRef.current[phase.id];
     }
   }, [phase.id, status]);
+
+  // ── DesignManifest cache-bust ──────────────────────────────────────────────
+  // When the project's manifest_hash changes, P1 has re-locked (user added /
+  // edited requirements and re-confirmed). Every cached document on disk is
+  // now potentially stale, so wipe the in-memory `contents` map, every
+  // pre-converted DOCX blob, and the contentsRef the prefetch loop reads.
+  // The next render will re-fetch from disk through `getDocumentText`.
+  //
+  // Null check: legacy projects predating migration 008 never have a
+  // manifest_hash and we don't want to thrash their cache on every poll.
+  const prevManifestHashRef = useRef<string | null | undefined>(manifestHash);
+  useEffect(() => {
+    if (
+      manifestHash &&
+      prevManifestHashRef.current &&
+      manifestHash !== prevManifestHashRef.current
+    ) {
+      // Bump the generation guard so any in-flight prefetch from the prior
+      // manifest hash will skip its setState on resolve.
+      generationRef.current += 1;
+      // Wipe content + DOCX caches.
+      setContents({});
+      contentsRef.current = {};
+      // Revoke pre-converted DOCX blob URLs to free memory; they reference
+      // bytes that no longer match the on-disk markdown.
+      Object.values(docxBlobUrls).forEach(url => {
+        try { URL.revokeObjectURL(url); } catch { /* ignore */ }
+      });
+      setDocxBlobUrls({});
+      setDocxPreconverting({});
+      docxPreconvertingRef.current.clear();
+    }
+    prevManifestHashRef.current = manifestHash;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [manifestHash]);
 
   // Clear all loading/preparing states when switching phases
   // IMPORTANT: Clear states IMMEDIATELY when phase.id changes, not just in cleanup.

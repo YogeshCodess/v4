@@ -100,7 +100,10 @@ export const api = {
 
   /** Full /status payload including the authoritative design_scope and
    *  applicable_phase_ids computed by the backend. Prefer this over
-   *  getStatus/getStatusRaw whenever you need scope info. */
+   *  getStatus/getStatusRaw whenever you need scope info or manifest_hash
+   *  (used as a cache key for the DocumentsView contents map — when the
+   *  hash changes, P1 has re-locked and the cached document text is stale).
+   */
   getFullStatus: (id: number) =>
     req<{
       project_id: number;
@@ -111,6 +114,24 @@ export const api = {
       requirements_hash: string | null;
       requirements_frozen_at: string | null;
       stale_phase_ids: string[];
+      /** Top-level DesignManifest hash (added 2026-05-06, migration 008).
+       *  null when P1 hasn't been locked yet, or for legacy projects
+       *  predating the manifest. Use as a cache-bust key — when it
+       *  changes, every cached document for this project is stale. */
+      manifest_hash: string | null;
+      /** Compact manifest summary for the topbar — bom_size,
+       *  architecture, audit_pass, audit_blocker_count. Empty `{}` when
+       *  the manifest hasn't been built yet. */
+      manifest_summary: {
+        manifest_hash?: string;
+        bom_hash?: string;
+        bom_size?: number;
+        architecture?: string;
+        domain?: string;
+        frozen_at?: string;
+        audit_pass?: boolean;
+        audit_blocker_count?: number;
+      };
     }>(`/api/v1/projects/${id}/status`),
 
   runPipeline: (id: number) =>

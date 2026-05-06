@@ -45,6 +45,11 @@ export default function App() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   // Raw status entries with updated_at timestamps — used for staleness detection
   const [statusesRaw, setStatusesRaw] = useState<StatusesRaw>({});
+  // DesignManifest top-level hash (migration 008). Used by DocumentsView as
+  // a cache-bust key — when it changes, P1 has re-locked and every cached
+  // document for this project is stale. Null until P1 finishes its first
+  // lock. The backend returns it on every /status poll.
+  const [manifestHash, setManifestHash] = useState<string | null>(null);
   // v20 — Stage 0 design scope, persisted per-project in localStorage.
   // null = not yet picked (user will see the scope picker card in ChatView).
   const [scope, setScope] = useState<DesignScope | null>(null);
@@ -184,6 +189,13 @@ export default function App() {
         setScope(full.design_scope as DesignScope);
         try { localStorage.setItem(scopeKey(project.id), full.design_scope); } catch { /* ignore */ }
       }
+      // DesignManifest cache-bust key. When P1 re-locks (user adds/edits
+      // requirements and re-confirms), the manifest_hash changes and
+      // DocumentsView clears its `contents` cache so the next render
+      // re-fetches every document. Null check tolerates legacy projects.
+      if (full.manifest_hash !== manifestHash) {
+        setManifestHash(full.manifest_hash ?? null);
+      }
       prevP1StatusRef.current = s['P1'];
 
       // Detect newly completed phases for toast notifications
@@ -215,7 +227,7 @@ export default function App() {
       // NOTE: We no longer auto-start the pipeline from the status poll.
       // The user must explicitly click "Approve & Run" in ChatView.
     } catch (_) { /* silent */ }
-  }, [project, scope]);
+  }, [project, scope, manifestHash]);
 
   // Reactive polling:
   //   2s   — while a phase is actively in_progress
@@ -730,7 +742,7 @@ export default function App() {
                 Phase changes propagate via props so the file cache is preserved. */}
             <div style={{ display: tab === 'documents' ? 'block' : 'none' }}>
               <ErrorBoundary>
-                <DocumentsView project={project} phase={selectedPhase} status={selectedStatus} pipelineRunning={hasRunning} />
+                <DocumentsView project={project} phase={selectedPhase} status={selectedStatus} pipelineRunning={hasRunning} manifestHash={manifestHash} />
               </ErrorBoundary>
             </div>
           </div>
