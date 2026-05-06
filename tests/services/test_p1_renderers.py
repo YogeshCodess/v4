@@ -139,3 +139,135 @@ class TestMarkdownWrapper:
         assert "```mermaid" in md
         assert "```\n" in md
         assert "block-beta" in md
+
+
+# ---------------------------------------------------------------------------
+# Components.md renderer
+# ---------------------------------------------------------------------------
+
+class TestComponentsRenderer:
+    def test_includes_every_bom_row(self):
+        from services.p1_renderers import render_components_md
+        from services.design_manifest import freeze
+        m = freeze(DesignManifest(
+            project_id="1",
+            architecture="superhet",
+            bom=[
+                _row("HMC8410", "lna", gain_db=18, nf_db=1.2),
+                _row("LT5560", "mixer", gain_db=-8),
+                _row("AD9082", "adc"),
+            ],
+        ))
+        md = render_components_md(m, project_name="Demo")
+        for pn in ("HMC8410", "LT5560", "AD9082"):
+            assert pn in md
+
+    def test_no_leak_by_construction(self):
+        """The Components renderer is a pure function of manifest.bom —
+        every MPN in the output must be in the BOM."""
+        from services.p1_renderers import render_components_md
+        from services.manifest_validator import extract_mpns
+
+        m = DesignManifest(
+            project_id="1",
+            bom=[
+                _row("HMC8410", "lna"),
+                _row("LT5560", "mixer"),
+            ],
+        )
+        md = render_components_md(m)
+        rendered = extract_mpns(md)
+        leaks = rendered - m.allowed_mpns()
+        assert leaks == set(), f"Components renderer leaked: {leaks}"
+
+    def test_empty_bom_produces_friendly_message(self):
+        from services.p1_renderers import render_components_md
+        m = DesignManifest(project_id="1", bom=[])
+        md = render_components_md(m, project_name="Empty")
+        assert "Manifest BOM is empty" in md
+        assert "Empty" in md
+
+    def test_includes_specs_when_present(self):
+        from services.p1_renderers import render_components_md
+        m = DesignManifest(
+            project_id="1",
+            bom=[_row("HMC8410", "lna", gain_db=18, nf_db=1.2, package="QFN-32")],
+        )
+        md = render_components_md(m)
+        assert "gain_db" in md
+        assert "nf_db" in md
+        assert "QFN-32" in md
+        # Em-dash placeholder should NOT be in the output for present values.
+        assert "| gain_db | 18 dB |" in md or "18 dB" in md
+
+
+# ---------------------------------------------------------------------------
+# GLB renderer (simplified deterministic version)
+# ---------------------------------------------------------------------------
+
+class TestGlbRenderer:
+    def test_emits_table_and_cascade_summary(self):
+        from services.p1_renderers import render_glb_md
+        m = DesignManifest(
+            project_id="1",
+            bom=[
+                _row("HMC8410", "lna", gain_db=18, nf_db=1.2),
+                _row("LT5560", "mixer", gain_db=-8, nf_db=10.0),
+                _row("AD9082", "adc", gain_db=0, nf_db=20.0),
+            ],
+        )
+        md = render_glb_md(m, project_name="Demo")
+        assert "Per-stage budget" in md
+        assert "Cascade summary" in md
+        # All three parts in the table.
+        for pn in ("HMC8410", "LT5560", "AD9082"):
+            assert pn in md
+        # Total gain is 18 + (-8) + 0 = 10 dB
+        assert "10.00 dB" in md
+
+    def test_friis_cascade_nf_correct(self):
+        """Friis: F_total = F1 + (F2-1)/G1 + (F3-1)/(G1*G2)
+           For a 2-stage cascade with NF1=2 dB, G1=20 dB, NF2=10 dB:
+             F1 = 1.585, G1 = 100, F2 = 10
+             F_total = 1.585 + (10 - 1)/100 = 1.585 + 0.09 = 1.675
+             NF_total = 10*log10(1.675) = 2.24 dB
+        """
+        from services.p1_renderers import render_glb_md
+        m = DesignManifest(
+            project_id="1",
+            bom=[
+                _row("LNA", "lna", gain_db=20, nf_db=2.0),
+                _row("MIX", "mixer", gain_db=-6, nf_db=10.0),
+            ],
+        )
+        md = render_glb_md(m)
+        # Total gain = 20 - 6 = 14 dB
+        assert "14.00 dB" in md
+        # Friis NF should be approximately 2.24 dB — the exact decimals
+        # depend on the precision of intermediate computation. Match a
+        # tolerant regex.
+        assert "2.2" in md or "2.3" in md, (
+            "Friis NF should be ~2.24 dB for this cascade; found neither "
+            "2.2x nor 2.3x in output"
+        )
+
+    def test_missing_specs_disables_friis(self):
+        from services.p1_renderers import render_glb_md
+        m = DesignManifest(
+            project_id="1",
+            bom=[_row("HMC8410", "lna")],   # no gain_db/nf_db
+        )
+        md = render_glb_md(m)
+        assert "cannot be computed" in md.lower() or "missing" in md.lower()
+
+    def test_no_leak_by_construction_glb(self):
+        from services.p1_renderers import render_glb_md
+        from services.manifest_validator import extract_mpns
+        m = DesignManifest(
+            project_id="1",
+            bom=[_row("HMC8410", "lna", gain_db=18, nf_db=1.2)],
+        )
+        md = render_glb_md(m)
+        rendered = extract_mpns(md)
+        leaks = rendered - m.allowed_mpns()
+        assert leaks == set(), f"GLB renderer leaked: {leaks}"

@@ -32,6 +32,7 @@ of false-positive leaks because the LLM puts MPNs in node labels).
 """
 from __future__ import annotations
 
+import math
 import re
 from typing import Any, Optional
 
@@ -385,3 +386,238 @@ def render_block_diagram_md(manifest: DesignManifest, project_name: Optional[str
         f"## {name}\n\n"
         f"```mermaid\n{body}```\n"
     )
+
+
+# ---------------------------------------------------------------------------
+# Components table renderer (Step 3 — deterministic component_recommendations.md)
+# ---------------------------------------------------------------------------
+
+def _fmt_num(v: Any, unit: str = "") -> str:
+    """Format a numeric BOM field for the markdown table. Returns "—" for
+    None / missing. Unit is appended only when a value is present so the
+    column doesn't read "— dB" for empty rows."""
+    if v is None or v == "":
+        return "—"
+    try:
+        f = float(v)
+        # Drop trailing ".0" on whole numbers; otherwise 2 decimal places.
+        s = f"{f:.0f}" if f == int(f) else f"{f:.2f}"
+    except (TypeError, ValueError):
+        s = str(v)
+    return f"{s} {unit}".strip() if unit else s
+
+
+def render_components_md(
+    manifest: DesignManifest,
+    project_name: Optional[str] = None,
+) -> str:
+    """Build component_recommendations.md from the locked manifest BOM.
+
+    Pure function of `manifest.bom`. Used as the Step 3 deterministic
+    replacement for `RequirementsAgent._build_components_md`. Same column
+    set as the LLM-rendered version but every row is guaranteed to be a
+    member of `manifest.bom` — leak-proof by construction.
+
+    Output structure:
+
+      # Component Recommendations
+      ## <project_name>
+      _<n> parts · manifest_hash <prefix>_
+
+      ### <i>. <Role title> — <Refdes>
+      **Primary Choice:** [<MPN>](<datasheet_url>) (<manufacturer>)
+
+      | spec | value |
+      |------|-------|
+      | gain_db | ... |
+      | nf_db   | ... |
+      | package | ... |
+
+    Designed to round-trip cleanly through
+    `RequirementsAgent._build_netlist_from_bom` so the legacy markdown
+    parser still works.
+    """
+    name = project_name or "Project"
+    if not manifest or not manifest.bom:
+        return (
+            f"# Component Recommendations\n"
+            f"## {name}\n\n"
+            "_Manifest BOM is empty — Approve P1 to populate._\n"
+        )
+
+    lines: list[str] = [
+        f"# Component Recommendations",
+        f"## {name}",
+        "",
+        f"_{len(manifest.bom)} parts · manifest `{(manifest.manifest_hash or '')[:12]}…`_",
+        "",
+    ]
+
+    # Reuse the linear-cascade ordering so the table reads in signal-chain order.
+    rows = sorted(list(manifest.bom), key=_role_order_key)
+    counter: dict[str, int] = {}
+
+    for i, row in enumerate(rows, 1):
+        pn = (
+            row.get("part_number")
+            or row.get("primary_part")
+            or row.get("mpn")
+            or ""
+        )
+        if not pn:
+            continue
+        mfr = (
+            row.get("manufacturer")
+            or row.get("primary_manufacturer")
+            or row.get("vendor")
+            or "—"
+        )
+        role = (row.get("role") or row.get("kind") or "stage").title()
+        ds_url = row.get("datasheet_url") or row.get("datasheet") or ""
+        rd = _refdes_for(row, counter)
+
+        lines.append(f"### {i}. {role} — `{rd}`")
+        lines.append("")
+        if ds_url:
+            lines.append(f"**Primary Choice:** [{pn}]({ds_url}) ({mfr})")
+        else:
+            lines.append(f"**Primary Choice:** `{pn}` ({mfr})")
+        lines.append("")
+
+        # Spec table — only emit rows for fields that are actually populated.
+        spec_pairs: list[tuple[str, str]] = []
+        for key, unit in (
+            ("gain_db", "dB"),
+            ("nf_db", "dB"),
+            ("iip3_dbm", "dBm"),
+            ("p1db_dbm", "dBm"),
+            ("pout_dbm", "dBm"),
+            ("supply_voltage", "V"),
+            ("current_ma", "mA"),
+        ):
+            v = row.get(key)
+            if v is not None:
+                spec_pairs.append((key, _fmt_num(v, unit)))
+        if row.get("package"):
+            spec_pairs.append(("package", str(row["package"])))
+        if row.get("qty"):
+            spec_pairs.append(("qty", str(row["qty"])))
+        if row.get("lifecycle_status"):
+            spec_pairs.append(("lifecycle", str(row["lifecycle_status"])))
+
+        if spec_pairs:
+            lines.append("| spec | value |")
+            lines.append("|------|-------|")
+            for k, v in spec_pairs:
+                lines.append(f"| {k} | {v} |")
+            lines.append("")
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+# ---------------------------------------------------------------------------
+# Simplified Gain-Loss Budget renderer (Step 3 — partial)
+# ---------------------------------------------------------------------------
+
+def render_glb_md(
+    manifest: DesignManifest,
+    project_name: Optional[str] = None,
+) -> str:
+    """Build a simplified gain_loss_budget.md from the locked manifest BOM.
+
+    NOTE: This is a SIMPLIFIED renderer — it produces a per-stage table of
+    gain / NF / IIP3 / P1dB pulled directly from `manifest.bom`. The
+    rich cascade-optimiser pipeline (Friis recompute, GLB_OPTIMIZER pass,
+    BOM cross-check rules C1-C5, worst-case-frequency projection) lives
+    in `RequirementsAgent._build_gain_loss_budget_md` and is used as the
+    PRIMARY GLB renderer.
+
+    This deterministic version is intended for two cases:
+      1. Fallback when the LLM's `gain_loss_budget` field is empty or
+         malformed — better to emit a simple BOM-derived table than to
+         leave the file empty.
+      2. Leak-proof rendering when downstream phases ever need to
+         materialise GLB content from the manifest alone (e.g. a future
+         "re-render all artifacts from manifest" tool).
+
+    Pure function of `manifest.bom`. Every MPN in the output is a member
+    of the BOM by construction.
+    """
+    name = project_name or "Project"
+    if not manifest or not manifest.bom:
+        return (
+            f"# Gain-Loss Budget\n"
+            f"## {name}\n\n"
+            "_Manifest BOM is empty — GLB cannot be computed yet._\n"
+        )
+
+    lines: list[str] = [
+        f"# Gain-Loss Budget",
+        f"## {name}",
+        "",
+        f"_Deterministic GLB derived from manifest `{(manifest.manifest_hash or '')[:12]}…` "
+        f"({len(manifest.bom)} parts)._",
+        "",
+        "## Per-stage budget",
+        "",
+        "| # | Stage | MPN | Gain (dB) | NF (dB) | IIP3 (dBm) | P1dB (dBm) |",
+        "|---|-------|-----|-----------|---------|------------|------------|",
+    ]
+
+    rows = sorted(list(manifest.bom), key=_role_order_key)
+    cum_gain: float = 0.0
+    cum_gain_lin: float = 1.0       # linear total gain (V/V power)
+    cum_nf_factor: float = 1.0      # Friis cumulative NF factor
+    valid_friis = True
+
+    for i, row in enumerate(rows, 1):
+        pn = row.get("part_number") or row.get("primary_part") or "—"
+        role = (row.get("role") or row.get("kind") or "stage").title()
+        g = row.get("gain_db")
+        nf = row.get("nf_db")
+        iip3 = row.get("iip3_dbm")
+        p1db = row.get("p1db_dbm")
+        lines.append(
+            f"| {i} | {role} | `{pn}` "
+            f"| {_fmt_num(g)} | {_fmt_num(nf)} | {_fmt_num(iip3)} | {_fmt_num(p1db)} |"
+        )
+
+        # Friis cascade — only when both gain and NF are present + numeric.
+        try:
+            if g is None or nf is None:
+                valid_friis = False
+            else:
+                g_db = float(g)
+                nf_db = float(nf)
+                cum_gain += g_db
+                # Friis: F_total = F1 + (F2 - 1)/G1 + (F3 - 1)/(G1*G2) + ...
+                stage_f = 10 ** (nf_db / 10.0)
+                if i == 1:
+                    cum_nf_factor = stage_f
+                else:
+                    cum_nf_factor += (stage_f - 1) / cum_gain_lin
+                cum_gain_lin *= 10 ** (g_db / 10.0)
+        except (TypeError, ValueError):
+            valid_friis = False
+
+    lines.append("")
+    lines.append("## Cascade summary")
+    lines.append("")
+    if valid_friis:
+        cum_nf_db = 10 * math.log10(cum_nf_factor) if cum_nf_factor > 0 else 0.0
+        lines.append(f"- **Total gain (sum):** {cum_gain:.2f} dB")
+        lines.append(f"- **Cascaded NF (Friis):** {cum_nf_db:.2f} dB")
+    else:
+        lines.append(
+            "_Cascade NF cannot be computed: one or more stages is missing "
+            "`gain_db` or `nf_db` in the manifest BOM. Populate those fields "
+            "and re-run P1 to get the Friis number here._"
+        )
+    lines.append("")
+    lines.append(
+        "_This is the deterministic SSoT view — for the full optimiser-"
+        "driven cascade with worst-case frequency projection, see the "
+        "primary GLB rendered by P1._"
+    )
+
+    return "\n".join(lines).rstrip() + "\n"
