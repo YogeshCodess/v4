@@ -90,6 +90,19 @@ class ProjectDB(Base):
     requirements_frozen_at = Column(DateTime, nullable=True)
     requirements_locked_json = Column(Text, nullable=True)
 
+    # ── DesignManifest columns (added via migration 008) ────────────────────
+    # The DesignManifest extends the requirements lock with the post-audit BOM,
+    # cascade summary, and audit verdict — i.e. everything that determines
+    # downstream artifacts. Every P2/P3/P4/P6/P7/P8 phase reads this manifest
+    # via services.project_service.get_design_manifest() so they all share one
+    # source of truth instead of regex-parsing markdown files.
+    #
+    # `manifest_hash` is the top-level SHA256, mirrored as a column for cheap
+    # stale-detection (downstream phases compare to a snapshot taken at run
+    # time without re-parsing the JSON).
+    design_manifest_json = Column(Text, nullable=True)
+    manifest_hash = Column(Text, nullable=True)
+
     # Relationships
     phase_outputs = relationship("PhaseOutputDB", back_populates="project", cascade="all, delete-orphan")
     components = relationship("ComponentCacheDB", back_populates="project", cascade="all, delete-orphan")

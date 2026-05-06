@@ -42,6 +42,12 @@ RESETTABLE_COLUMNS: tuple[str, ...] = (
     "requirements_hash",
     "requirements_frozen_at",
     "requirements_locked_json",
+    # DesignManifest columns (migration 008). Cleared on Judge-mode reset
+    # because they're tied 1:1 to the lock — keeping a stale manifest while
+    # wiping requirements_hash would leave the manifest pointing at deleted
+    # spec content.
+    "design_manifest_json",
+    "manifest_hash",
 )
 
 IDENTITY_COLUMNS: tuple[str, ...] = (
@@ -60,6 +66,8 @@ _DEFAULTS: dict[str, Any] = {
     "requirements_hash": lambda: None,
     "requirements_frozen_at": lambda: None,
     "requirements_locked_json": lambda: None,
+    "design_manifest_json": lambda: None,
+    "manifest_hash": lambda: None,
 }
 
 

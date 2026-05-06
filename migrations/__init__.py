@@ -327,6 +327,27 @@ def _apply_007(conn: sqlite3.Connection) -> bool:
     return True
 
 
+def _apply_008(conn: sqlite3.Connection) -> bool:
+    """Add design_manifest_json + manifest_hash columns to the projects table.
+
+    Backs the DesignManifest single-source-of-truth refactor. Both columns
+    are nullable — legacy projects keep working until P1 next finalises and
+    builds a fresh manifest. Idempotent.
+    """
+    if not _table_exists(conn, "projects"):
+        return False
+    changed = False
+    needed = [
+        ("design_manifest_json", "TEXT"),
+        ("manifest_hash", "TEXT"),
+    ]
+    for col, ddl in needed:
+        if not _column_exists(conn, "projects", col):
+            conn.execute(f"ALTER TABLE projects ADD COLUMN {col} {ddl}")
+            changed = True
+    return changed
+
+
 _MIGRATIONS = [
     ("001_requirements_lock", _apply_001),
     ("002_pipeline_runs_llm_calls", _apply_002),
@@ -335,6 +356,7 @@ _MIGRATIONS = [
     ("005_phase_status_dict_shape", _apply_005),
     ("006_output_dir_backfill", _apply_006),
     ("007_pipeline_runs_project_id_int", _apply_007),
+    ("008_design_manifest", _apply_008),
 ]
 
 

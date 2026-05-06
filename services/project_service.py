@@ -88,6 +88,13 @@ def _project_to_dict(p: ProjectDB) -> dict:
             p.requirements_frozen_at.isoformat()
             if getattr(p, "requirements_frozen_at", None) else None
         ),
+        # DesignManifest top-level hash (migration 008). The full
+        # `design_manifest_json` blob is intentionally NOT included in
+        # this dict — it can be 5-50 KB per project and most callers only
+        # need the hash for stale-detection / cache-busting. Use
+        # ProjectService.get_design_manifest(project_id) when you need
+        # the structured BOM.
+        "manifest_hash": getattr(p, "manifest_hash", None),
     }
 
 
@@ -371,6 +378,102 @@ class ProjectService:
         finally:
             session.close()
 
+    # ── DesignManifest persistence (migration 008) ──────────────────────────
+
+    def save_design_manifest(self, project_id: int, manifest_row: dict) -> None:
+        """Persist a frozen DesignManifest onto the project row.
+
+        `manifest_row` is the dict produced by
+        `services.design_manifest.save_to_row()` — it contains
+        `design_manifest_json` (canonical JSON blob) and `manifest_hash`
+        (top-level SHA256). Both are written transactionally; either both
+        land or neither does.
+        """
+        if not manifest_row:
+            return
+        session = get_session()
+        try:
+            p = session.query(ProjectDB).filter(ProjectDB.id == project_id).first()
+            if not p:
+                raise ValueError(f"Project {project_id} not found")
+            p.design_manifest_json = manifest_row.get("design_manifest_json")
+            p.manifest_hash = manifest_row.get("manifest_hash")
+            session.commit()
+            log.info(
+                "project.design_manifest_saved",
+                extra={
+                    "project_id": project_id,
+                    "manifest_hash_prefix": (p.manifest_hash or "")[:12],
+                    "blob_bytes": len(p.design_manifest_json or ""),
+                },
+            )
+        except Exception:
+            session.rollback()
+            log.exception(
+                "project.design_manifest_save_failed",
+                extra={"project_id": project_id},
+            )
+            raise
+        finally:
+            session.close()
+
+    def get_design_manifest(self, project_id: int):
+        """Load the frozen DesignManifest for a project, or None if no
+        manifest has been saved (e.g. legacy project / fresh row).
+
+        Returned object is a `services.design_manifest.DesignManifest`
+        instance — downstream phases can call `manifest.allowed_mpns()`
+        for the canonical part-number whitelist or read `manifest.bom`
+        directly for structured BOM access.
+        """
+        from services.design_manifest import DesignManifest as _DM
+        session = get_session()
+        try:
+            p = session.query(ProjectDB).filter(ProjectDB.id == project_id).first()
+            if not p or not getattr(p, "design_manifest_json", None):
+                return None
+            return _DM.from_json(p.design_manifest_json)
+        finally:
+            session.close()
+
+    async def async_save_design_manifest(
+        self, project_id: int, manifest_row: dict
+    ) -> None:
+        """Async version of save_design_manifest — safe for background tasks."""
+        if not manifest_row:
+            return
+        factory = get_async_session_factory()
+        async with factory() as session:
+            async with session.begin():
+                result = await session.execute(
+                    select(ProjectDB).where(ProjectDB.id == project_id)
+                )
+                p = result.scalar_one_or_none()
+                if not p:
+                    raise ValueError(f"Project {project_id} not found")
+                p.design_manifest_json = manifest_row.get("design_manifest_json")
+                p.manifest_hash = manifest_row.get("manifest_hash")
+            log.info(
+                "project.design_manifest_saved (async)",
+                extra={
+                    "project_id": project_id,
+                    "manifest_hash_prefix": (p.manifest_hash or "")[:12],
+                },
+            )
+
+    async def async_get_design_manifest(self, project_id: int):
+        """Async version of get_design_manifest."""
+        from services.design_manifest import DesignManifest as _DM
+        factory = get_async_session_factory()
+        async with factory() as session:
+            result = await session.execute(
+                select(ProjectDB).where(ProjectDB.id == project_id)
+            )
+            p = result.scalar_one_or_none()
+            if not p or not getattr(p, "design_manifest_json", None):
+                return None
+            return _DM.from_json(p.design_manifest_json)
+
     def get_stale_phase_ids(self, project_id: int) -> list[str]:
         """Return the list of downstream phase IDs whose last output was
         generated against an older requirements_hash than the current lock.
@@ -440,6 +543,12 @@ class ProjectService:
             p.requirements_hash = None
             p.requirements_frozen_at = None
             p.requirements_locked_json = None
+            # DesignManifest columns (migration 008) - cleared alongside the
+            # lock so a reset wipes ALL frozen P1 state in one go.
+            if hasattr(p, "design_manifest_json"):
+                p.design_manifest_json = None
+            if hasattr(p, "manifest_hash"):
+                p.manifest_hash = None
 
             # Back to the start of the pipeline (full reset only - phases_only
             # leaves current_phase alone since the user is mid-iteration).
