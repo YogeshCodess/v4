@@ -438,7 +438,7 @@ class NetlistAgent(BaseAgent):
         output_dir.mkdir(parents=True, exist_ok=True)
         project_name = project_context.get("name", "Project")
 
-        # Load prior phase outputs
+        # Load prior phase outputs (markdown — kept for prose context)
         requirements = self._load_file(output_dir / "requirements.md")
         components_text = self._load_file(output_dir / "component_recommendations.md")
         hrs = self._load_file(output_dir / f"HRS_{project_name.replace(' ', '_')}.md")
@@ -454,11 +454,72 @@ class NetlistAgent(BaseAgent):
                 "outputs": {},
             }
 
+        # ── Cross-phase context: load the locked DesignManifest ─────────
+        # P4 now reads the structured BOM directly from the manifest
+        # instead of relying on `components_text` (which is a markdown
+        # truncation of `component_recommendations.md` — and was the
+        # leak source of the "components not shown in netlist" bug). The
+        # manifest gives us:
+        #   - the canonical, post-audit BOM (no banned/EOL parts, no
+        #     hallucinated MPNs)
+        #   - structured fields per component (refdes, role, package,
+        #     pin count) that the netlist tool can consume directly
+        #   - the manifest_hash so PipelineRun can stamp it for
+        #     reproducibility
+        manifest = None
+        manifest_bom_block = ""
+        try:
+            from services.project_service import ProjectService as _PS
+            _pid = project_context.get("project_id")
+            if _pid is not None:
+                manifest = _PS().get_design_manifest(int(_pid))
+            if manifest and manifest.bom:
+                # Build an authoritative BOM block. THIS overrides whatever
+                # the truncated `components_text` markdown said — so even
+                # if a banned/EOL HMC was stripped from the audit but
+                # survived in the markdown prose, the netlist will be
+                # built only from the canonical list below.
+                _rows = []
+                for row in manifest.bom:
+                    pn = row.get("part_number") or row.get("primary_part") or ""
+                    mfr = row.get("manufacturer") or row.get("primary_manufacturer") or ""
+                    role = row.get("role") or row.get("kind") or "stage"
+                    pkg = row.get("package") or ""
+                    qty = row.get("qty") or 1
+                    _rows.append(
+                        f"- `{pn}` ({mfr}) — role={role} qty={qty}"
+                        + (f" pkg={pkg}" if pkg else "")
+                    )
+                manifest_bom_block = (
+                    "\n### Locked BOM (DesignManifest — single source of truth)\n"
+                    f"manifest_hash: `{manifest.manifest_hash}`  "
+                    f"bom_hash: `{manifest.bom_hash}`  "
+                    f"({len(manifest.bom)} parts, audit_pass="
+                    f"{'yes' if manifest.audit_pass else 'no'})\n\n"
+                    "**RULE:** The netlist MUST instantiate every part below — "
+                    "no more, no less. Do not invent additional MPNs and do not "
+                    "drop any. Use the role to choose appropriate refdes "
+                    "(LNA → U-prefix, switch → SW-prefix, filter → FL-prefix, "
+                    "regulator → VR-prefix, etc.).\n\n"
+                    + "\n".join(_rows) + "\n"
+                )
+                logger.info(
+                    "P4 loaded DesignManifest hash=%s parts=%d audit_pass=%s",
+                    (manifest.manifest_hash or "")[:12], len(manifest.bom),
+                    manifest.audit_pass,
+                )
+        except Exception as _exc:
+            logger.info("P4 DesignManifest load skipped: %s", _exc)
+
         # P1.4 — surface the P1 cascade targets + scope so the netlist agent
         # can honour them (NF, gain, IIP3, phase-noise floor, frequency range).
         # Previously the agent only saw the BOM + prose requirements and had
         # no structured way to check the schematic against the P1 budget.
         design_parameters = project_context.get("design_parameters") or {}
+        if manifest and manifest.design_parameters:
+            # Manifest takes precedence over project_context — manifest values
+            # are post-audit and locked, project_context values may be stale.
+            design_parameters = {**design_parameters, **manifest.design_parameters}
         design_scope = project_context.get("design_scope") or ""
         cascade_hints = self._format_cascade_targets(design_parameters)
 
@@ -475,18 +536,23 @@ class NetlistAgent(BaseAgent):
 {cascade_hints}
 
 ### Design Scope: {design_scope or '(not specified)'}
-{block_hint}
+{manifest_bom_block}{block_hint}
 ### Requirements:
 {requirements[:8000]}
 
-### Selected Components (MUST include ALL of these in the netlist):
+### Component Recommendations (markdown — for human-readable context only;
+### authoritative BOM is the Locked BOM block above when present):
 {components_text[:12000]}
 
 ### HRS Reference:
 {hrs[:6000] if hrs else 'Not yet generated.'}
 
 CRITICAL: You MUST call the `generate_netlist` tool IMMEDIATELY with:
-1. ALL component instances from the BOM above — every IC, passive, connector, FPGA, LNA, mixer, filter, ADC, power regulator
+1. ALL component instances from the LOCKED BOM (when present) or the BOM
+   markdown — every IC, passive, connector, FPGA, LNA, mixer, filter, ADC,
+   power regulator. The "Locked BOM" block, when present, is the canonical
+   list — every MPN there MUST appear as a netlist node, and no extra MPNs
+   may be invented beyond it.
 2. ALL pin-to-pin connections between them with correct signal types (RF, IF, power, ground, digital, clock, LVDS, analog)
 3. Power and ground nets for every power domain
 4. A Mermaid diagram showing the full connectivity
@@ -730,9 +796,21 @@ Do NOT generate a minimal 2-component skeleton. The netlist must be COMPLETE.
             self.log(f"Netlist: {len(netlist_data.get('nodes', []))} nodes, {len(netlist_data.get('edges', []))} edges")
 
         else:
-            # LLM did not call the generate_netlist tool — build netlist from P1 BOM
-            logger.warning("P4: LLM skipped tool call — building netlist from component_recommendations.md")
-            netlist_data = self._build_netlist_from_bom(components_text, requirements)
+            # LLM did not call the generate_netlist tool — build netlist from P1 BOM.
+            # When the manifest is available, prefer the structured BOM over the
+            # markdown parser so the fallback path is also leak-proof. The
+            # manifest BOM is post-audit (banned/EOL parts already stripped),
+            # so the fallback netlist will be coherent with the rest of P1.
+            if manifest and manifest.bom:
+                logger.warning(
+                    "P4: LLM skipped tool call — building netlist from "
+                    "DesignManifest BOM (%d parts, hash=%s)",
+                    len(manifest.bom), (manifest.manifest_hash or "")[:12],
+                )
+                netlist_data = self._build_netlist_from_manifest(manifest)
+            else:
+                logger.warning("P4: LLM skipped tool call — building netlist from component_recommendations.md")
+                netlist_data = self._build_netlist_from_bom(components_text, requirements)
             # Same power/ground binding pass we run for the LLM path so
             # the fallback netlist also gets a power_map and fully
             # terminated VCC/GND edges.
@@ -1475,6 +1553,50 @@ Do NOT generate a minimal 2-component skeleton. The netlist must be COMPLETE.
         if path.exists():
             return path.read_text(encoding="utf-8")
         return ""
+
+    def _build_netlist_from_manifest(self, manifest) -> dict:
+        """Build a netlist from the structured DesignManifest BOM.
+
+        Converts each manifest BOM row into the markdown shape that the
+        existing `_build_netlist_from_bom` parser already understands, then
+        reuses that parser for the connection / power / ground inference.
+        Means we get a leak-proof fallback for free without re-implementing
+        the netlist topology heuristics.
+        """
+        if not manifest or not manifest.bom:
+            return {"nodes": [], "edges": [], "validation_notes": []}
+        md_parts: list[str] = []
+        for i, row in enumerate(manifest.bom, 1):
+            pn = (
+                row.get("part_number")
+                or row.get("primary_part")
+                or row.get("mpn")
+                or ""
+            )
+            if not pn:
+                continue
+            mfr = (
+                row.get("manufacturer")
+                or row.get("primary_manufacturer")
+                or row.get("vendor")
+                or ""
+            )
+            role = (row.get("role") or row.get("kind") or "stage").title()
+            ds_url = row.get("datasheet_url") or row.get("datasheet") or "#"
+            md_parts.append(
+                f"### {i}. {role}\n"
+                f"**Primary Choice:** [{pn}]({ds_url}) ({mfr})\n"
+            )
+            # Surface gain/nf so the parser's spec-aware connections trigger.
+            if row.get("gain_db") is not None or row.get("nf_db") is not None:
+                md_parts.append(
+                    f"\n| key | value |\n|-----|-------|\n"
+                    + (f"| gain_db | {row['gain_db']} |\n"
+                       if row.get("gain_db") is not None else "")
+                    + (f"| nf_db | {row['nf_db']} |\n"
+                       if row.get("nf_db") is not None else "")
+                )
+        return self._build_netlist_from_bom("\n".join(md_parts), "")
 
     def _build_netlist_from_bom(self, components_md: str, requirements_md: str) -> dict:
         """Parse component_recommendations.md to build a complete netlist when LLM

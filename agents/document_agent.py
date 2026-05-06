@@ -119,11 +119,55 @@ class DocumentAgent(BaseAgent):
                 "outputs": {},
             }
 
+        # ── Cross-phase context: load the locked DesignManifest ─────────
+        # P2 now reads the structured BOM directly from the manifest
+        # instead of regex-parsing component_recommendations.md. The
+        # markdown still feeds the LLM's prose generation as
+        # human-readable context, but anywhere we need facts (MPN list,
+        # cascade NF, audit verdict) we go through the manifest. This is
+        # the cross-phase pattern the SSoT refactor introduces — every
+        # downstream phase will adopt it.
+        manifest = None
+        manifest_bom_block: str = ""
+        try:
+            from services.project_service import ProjectService as _PS
+            _pid = project_context.get("project_id")
+            if _pid is not None:
+                manifest = _PS().get_design_manifest(int(_pid))
+            if manifest and manifest.bom:
+                # Build a compact authoritative BOM block to inject into the
+                # LLM prompt. Strict instruction: HRS must use ONLY these
+                # MPNs in BOM section 6, no inventions. This neutralises
+                # the cross-file leak class at the prompt level too.
+                _rows = []
+                for row in manifest.bom[:30]:  # cap to keep prompt tight
+                    pn = row.get("part_number") or row.get("primary_part") or ""
+                    mfr = row.get("manufacturer") or row.get("primary_manufacturer") or ""
+                    role = row.get("role") or row.get("kind") or ""
+                    _rows.append(f"- `{pn}` ({mfr}) — {role}")
+                manifest_bom_block = (
+                    "## Locked BOM (DesignManifest — single source of truth)\n"
+                    f"manifest_hash: `{manifest.manifest_hash}`\n"
+                    f"architecture: `{manifest.architecture}`\n"
+                    f"domain: `{manifest.domain}`\n\n"
+                    "**RULE:** Section 6 (Bill of Materials) of the HRS MUST list ONLY "
+                    "the MPNs below. Do not invent or substitute parts.\n\n"
+                    + "\n".join(_rows) + "\n\n"
+                )
+                self.log(
+                    f"Loaded DesignManifest (hash={manifest.manifest_hash[:12]}, "
+                    f"{len(manifest.bom)} parts) — using as authoritative BOM",
+                    "info",
+                )
+        except Exception as _exc:
+            self.log(f"DesignManifest load skipped: {_exc}", "info")
+
         # PRIMARY PATH: LLM writes the full IEEE 29148 document from P1 context
         user_message = (
             f"Generate a complete IEEE 29148:2018 Hardware Requirements Specification for:\n\n"
             f"**Project:** {project_name}\n\n"
-            f"## Phase 1 Requirements\n{requirements_content[:8000]}\n\n"
+            + manifest_bom_block
+            + f"## Phase 1 Requirements\n{requirements_content[:8000]}\n\n"
             f"## Block Diagram\n{block_diagram[:3000] if block_diagram else 'Not captured.'}\n\n"
             f"## System Architecture\n{architecture[:3000] if architecture else 'Not captured.'}\n\n"
             f"## Component Recommendations\n{components[:5000] if components else 'Not captured.'}\n\n"

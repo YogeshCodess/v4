@@ -14,7 +14,7 @@ from generators.srs_generator import SRSGenerator
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are a senior software architect generating a comprehensive, publication-quality IEEE 830-1998 / ISO/IEC/IEEE 29148:2018-compliant Software Requirements Specification (SRS) for an embedded hardware system.
+SYSTEM_PROMPT = r"""You are a senior software architect generating a comprehensive, publication-quality IEEE 830-1998 / ISO/IEC/IEEE 29148:2018-compliant Software Requirements Specification (SRS) for an embedded hardware system.
 
 This document must be thorough — equivalent to 60+ pages of professional content. Every section must be fully populated with project-specific, measurable, concrete, testable requirements derived from the hardware context provided.
 
@@ -626,6 +626,42 @@ class SRSAgent(BaseAgent):
         hrs = self._load_file(output_dir / f"HRS_{project_name.replace(' ', '_')}.md")
         glr = self._load_file(output_dir / "glr_specification.md")
 
+        # ── Cross-phase context: load locked DesignManifest ─────────────
+        # SRS produces software requirements that depend on hardware
+        # interfaces. The hardware interfaces are derived from the BOM,
+        # so the manifest BOM is the canonical input. Without this, the
+        # SRS could enumerate interfaces for parts the audit dropped.
+        manifest = None
+        manifest_bom_block = ""
+        try:
+            from services.project_service import ProjectService as _PS
+            _pid = project_context.get("project_id")
+            if _pid is not None:
+                manifest = _PS().get_design_manifest(int(_pid))
+            if manifest and manifest.bom:
+                _rows = []
+                for row in manifest.bom[:30]:
+                    pn = row.get("part_number") or row.get("primary_part") or ""
+                    mfr = row.get("manufacturer") or row.get("primary_manufacturer") or ""
+                    role = row.get("role") or row.get("kind") or ""
+                    _rows.append(f"- `{pn}` ({mfr}) — role={role}")
+                manifest_bom_block = (
+                    "## Locked BOM (DesignManifest — authoritative for SW interface derivation)\n"
+                    f"manifest_hash: `{manifest.manifest_hash}`\n\n"
+                    "**RULE:** Hardware interfaces (Section 3.1) and the FPGA "
+                    "register map (Appendix B) MUST account only for the parts "
+                    "below. No invented MPNs.\n\n"
+                    + "\n".join(_rows) + "\n\n"
+                )
+                self.log(
+                    f"P8a SRS loaded DesignManifest hash="
+                    f"{(manifest.manifest_hash or '')[:12]} "
+                    f"({len(manifest.bom)} parts)",
+                    "info",
+                )
+        except Exception as _exc:
+            self.log(f"P8a DesignManifest load skipped: {_exc}", "info")
+
         from datetime import datetime
         today = datetime.now().strftime("%d %B %Y")
 
@@ -634,7 +670,8 @@ class SRSAgent(BaseAgent):
             f"Generate a COMPLETE, DETAILED, 60+ page IEEE 830-1998 / IEEE 29148:2018 Software Requirements Specification for:\n\n"
             f"**Project:** {project_name}\n"
             f"**Date:** {today}\n\n"
-            f"## Hardware Requirements Specification (P2 — primary input):\n"
+            + manifest_bom_block
+            + f"## Hardware Requirements Specification (P2 — primary input):\n"
             f"{hrs[:8000] if hrs else 'Not yet generated — use P1 requirements below.'}\n\n"
             f"## P1 Requirements & BOM:\n"
             f"{requirements[:5000] if requirements else 'Not captured.'}\n\n"

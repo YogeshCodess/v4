@@ -504,6 +504,47 @@ class GLRAgent(BaseAgent):
         hrs           = self._load_file(output_dir / f"HRS_{project_name.replace(' ', '_')}.md")
         block_diag    = self._load_file(output_dir / "block_diagram.md")
 
+        # ── Cross-phase context: load locked DesignManifest ─────────────
+        # GLR derives FPGA glue logic + register maps + UART protocol from
+        # the BOM (specifically: how many UARTs, SPIs, I2Cs, GPIOs the BOM
+        # exposes, and what each peripheral's interface looks like). The
+        # markdown is a truncated rendering — for accurate peripheral
+        # accounting we read the structured manifest BOM.
+        manifest = None
+        manifest_bom_block = ""
+        try:
+            from services.project_service import ProjectService as _PS
+            _pid = project_context.get("project_id")
+            if _pid is not None:
+                manifest = _PS().get_design_manifest(int(_pid))
+            if manifest and manifest.bom:
+                _rows = []
+                for row in manifest.bom:
+                    pn = row.get("part_number") or row.get("primary_part") or ""
+                    mfr = row.get("manufacturer") or row.get("primary_manufacturer") or ""
+                    role = row.get("role") or row.get("kind") or ""
+                    pkg = row.get("package") or ""
+                    _rows.append(
+                        f"- `{pn}` ({mfr}) — role={role}"
+                        + (f" pkg={pkg}" if pkg else "")
+                    )
+                manifest_bom_block = (
+                    "## Locked BOM (DesignManifest — authoritative for register / pinout derivation)\n"
+                    f"manifest_hash: `{manifest.manifest_hash}`\n\n"
+                    "**RULE:** Section 10 (Software Register Address Map) and Section 3 "
+                    "(pinout) MUST account for every peripheral implied by the parts below. "
+                    "Do NOT invent peripherals for parts not in this list.\n\n"
+                    + "\n".join(_rows) + "\n\n"
+                )
+                self.log(
+                    f"P6 loaded DesignManifest hash="
+                    f"{(manifest.manifest_hash or '')[:12]} "
+                    f"({len(manifest.bom)} parts)",
+                    "info",
+                )
+        except Exception as _exc:
+            self.log(f"P6 DesignManifest load skipped: {_exc}", "info")
+
         user_message = f"""Generate a COMPLETE, DETAILED Glue Logic Requirements (GLR) document for:
 
 **Project:** {project_name}
@@ -512,7 +553,7 @@ class GLRAgent(BaseAgent):
 ## Hardware Requirements (P1):
 {requirements[:5000] if requirements else '(not available — use component data below)'}
 
-## Component BOM (P1):
+{manifest_bom_block}## Component BOM markdown (human-readable context):
 {components[:5000] if components else '(not available)'}
 
 ## Netlist Signal Connections (P4):

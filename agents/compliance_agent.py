@@ -79,7 +79,45 @@ class ComplianceAgent(BaseAgent):
         if req_file.exists():
             requirements = req_file.read_text(encoding="utf-8")
 
-        if not components:
+        # ── Cross-phase context: load locked DesignManifest ─────────────
+        # Compliance MUST validate against the post-audit BOM, not the
+        # markdown rendering. If a banned/EOL part was stripped from the
+        # canonical BOM but survived in the markdown, validating against
+        # the markdown would produce a false-positive compliance pass for
+        # a part that's actually been dropped. Manifest is authoritative.
+        manifest = None
+        manifest_bom_block = ""
+        try:
+            from services.project_service import ProjectService as _PS
+            _pid = project_context.get("project_id")
+            if _pid is not None:
+                manifest = _PS().get_design_manifest(int(_pid))
+            if manifest and manifest.bom:
+                _rows = []
+                for row in manifest.bom:
+                    pn = row.get("part_number") or row.get("primary_part") or ""
+                    mfr = row.get("manufacturer") or row.get("primary_manufacturer") or ""
+                    role = row.get("role") or row.get("kind") or ""
+                    lifecycle = row.get("lifecycle_status") or "unknown"
+                    _rows.append(f"- `{pn}` ({mfr}) — role={role} lifecycle={lifecycle}")
+                manifest_bom_block = (
+                    "### Locked BOM (DesignManifest — authoritative for compliance)\n"
+                    f"manifest_hash: `{manifest.manifest_hash}`\n\n"
+                    "**RULE:** Validate compliance against THIS list. Do not "
+                    "validate parts that appear only in the markdown below "
+                    "but not here — they were stripped by the audit.\n\n"
+                    + "\n".join(_rows) + "\n\n"
+                )
+                self.log(
+                    f"P3 loaded DesignManifest hash="
+                    f"{(manifest.manifest_hash or '')[:12]} "
+                    f"({len(manifest.bom)} parts to validate)",
+                    "info",
+                )
+        except Exception as _exc:
+            self.log(f"P3 DesignManifest load skipped: {_exc}", "info")
+
+        if not components and not (manifest and manifest.bom):
             return {
                 "response": "No component data found. Complete Phase 1 first.",
                 "phase_complete": False,
@@ -93,11 +131,11 @@ class ComplianceAgent(BaseAgent):
 ### Requirements (for compliance context):
 {requirements[:3000]}
 
-### Components to Validate:
+{manifest_bom_block}### Component Markdown (human-readable context only):
 {components}
 
 Generate a complete compliance report with:
-1. Summary compliance matrix (table)
+1. Summary compliance matrix (table) — rows MUST be the parts from the Locked BOM (when present), not invented or pulled from the markdown
 2. Per-component detailed analysis
 3. Risk items requiring human review
 4. Recommendations for any non-compliant components
