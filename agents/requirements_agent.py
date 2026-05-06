@@ -1629,7 +1629,11 @@ FIND_CANDIDATE_PARTS_TOOL = {
         "a concrete component — LNA, mixer, filter, ADC, etc. — then use "
         "ONLY the MPNs returned here in component_recommendations. "
         "DO NOT invent part numbers; if no candidates are returned, widen "
-        "the hint and call again, or omit the stage from the BOM."
+        "the hint and call again, or omit the stage from the BOM. "
+        "When the project has a known RF band, ALWAYS pass freq_min_ghz "
+        "and freq_max_ghz — parts whose spec'd range doesn't overlap the "
+        "requested band are filtered out at retrieval (no LLM round-trip "
+        "wasted on a part the post-audit will reject)."
     ),
     "input_schema": {
         "type": "object",
@@ -1652,6 +1656,25 @@ FIND_CANDIDATE_PARTS_TOOL = {
                     "'2-18 GHz NF<2dB SMT' or '12-bit 1 GSPS JESD204B'. Keep it "
                     "under ~10 words — distributor keyword engines degrade on "
                     "overly long queries."
+                ),
+            },
+            "freq_min_ghz": {
+                "type": "number",
+                "description": (
+                    "Optional lower bound of the project's RF band, in GHz. "
+                    "When supplied with `freq_max_ghz`, parts whose spec'd "
+                    "frequency range does NOT overlap [freq_min, freq_max] are "
+                    "dropped from the candidate pool. Pass the project's "
+                    "user-stated frequency_range_ghz here. Parts with unknown "
+                    "freq info are kept (let the LLM decide)."
+                ),
+            },
+            "freq_max_ghz": {
+                "type": "number",
+                "description": (
+                    "Optional upper bound of the project's RF band, in GHz. "
+                    "Pair with freq_min_ghz to enable retrieval-side band "
+                    "filtering."
                 ),
             },
             "max_results": {
@@ -2098,6 +2121,14 @@ class RequirementsAgent(BaseAgent):
         # MPNs must not bleed into this turn's audit gate.
         self._offered_candidate_mpns = set()
         self._offered_candidates_by_stage = {}
+
+        # Stash the wizard-captured design_parameters on self so the
+        # `find_candidate_parts` tool handler can auto-fill freq_min_ghz /
+        # freq_max_ghz when the LLM forgets to pass them. Without this
+        # stash, the band filter only fires when the LLM explicitly
+        # supplies the freq args — which it sometimes does and sometimes
+        # doesn't. Auto-filling closes that gap.
+        self._design_parameters = dict(project_context.get("design_parameters") or {})
 
         system = self.get_system_prompt(project_context)
 
@@ -3945,6 +3976,14 @@ class RequirementsAgent(BaseAgent):
         and spec hint.  Every MPN surfaced here is accumulated in
         `self._offered_candidate_mpns` so the post-LLM audit can verify
         that `component_recommendations` picked from this shortlist.
+
+        Frequency filter (added 2026-05-06): when `freq_min_ghz` /
+        `freq_max_ghz` are supplied, every distributor candidate whose
+        spec'd frequency range has NO overlap with the requested band is
+        dropped before the LLM sees it. Parts with unknown frequency info
+        pass through (let the LLM judge from the description). Defense in
+        depth with `services.freq_audit` — this stops the bad part at
+        retrieval, the post-audit gate catches anything that slips past.
         """
         stage = (input_data.get("stage") or "").strip()
         hint = (input_data.get("spec_hint") or "").strip()
@@ -3954,16 +3993,43 @@ class RequirementsAgent(BaseAgent):
             max_results = 5
         max_results = max(1, min(max_results, 10))
 
+        # Optional frequency filter — pulled from the LLM's tool input or,
+        # when missing, from the project_context's design_parameters that
+        # the wizard captured. We over-fetch candidates so the post-filter
+        # can drop ones that don't span the band and we still hit
+        # max_results.
+        freq_min_ghz = input_data.get("freq_min_ghz")
+        freq_max_ghz = input_data.get("freq_max_ghz")
+        if freq_min_ghz is None or freq_max_ghz is None:
+            try:
+                from services.freq_audit import extract_design_freq_range as _xt_dp
+                _r = _xt_dp(getattr(self, "_design_parameters", {}) or {})
+                if _r is not None:
+                    freq_min_ghz = freq_min_ghz if freq_min_ghz is not None else _r[0]
+                    freq_max_ghz = freq_max_ghz if freq_max_ghz is not None else _r[1]
+            except Exception:
+                pass
+        try:
+            freq_min_ghz = float(freq_min_ghz) if freq_min_ghz is not None else None
+            freq_max_ghz = float(freq_max_ghz) if freq_max_ghz is not None else None
+        except (TypeError, ValueError):
+            freq_min_ghz = freq_max_ghz = None
+
         if not stage:
             return {"stage": stage, "candidates": [], "count": 0,
                     "message": "stage is required"}
+
+        # Over-fetch from the distributors when filtering — pulls 2× normal
+        # so we still have headroom after dropping out-of-band candidates.
+        _band_filter_active = freq_min_ghz is not None and freq_max_ghz is not None
+        _retrieval_max = max_results * (3 if _band_filter_active else 2)
 
         try:
             from tools.parametric_search import find_candidates
             candidates = find_candidates(
                 stage, hint,
-                max_per_source=max_results,
-                max_total=max_results * 2,
+                max_per_source=_retrieval_max,
+                max_total=_retrieval_max,
                 timeout_s=12.0,
             )
         except Exception as exc:
@@ -3971,6 +4037,48 @@ class RequirementsAgent(BaseAgent):
             return {"stage": stage, "candidates": [], "count": 0,
                     "error": str(exc),
                     "message": "Retrieval failed. Do not invent MPNs — ask the user for guidance."}
+
+        # Apply the band filter — drop candidates whose spec'd frequency
+        # range has no overlap with the requested band. Parts with no
+        # parseable frequency info in their description are kept (we can't
+        # tell — let the LLM decide informed by the spec_hint context).
+        if _band_filter_active:
+            try:
+                from services.freq_audit import (
+                    extract_part_freq_range as _xt_freq,
+                    freq_band_relationship as _band_check,
+                )
+                _kept = []
+                _dropped: list[tuple[str, tuple[float, float]]] = []
+                for c in candidates:
+                    row = {
+                        "part_number": getattr(c, "part_number", "") or "",
+                        "description": getattr(c, "description", "") or "",
+                    }
+                    pr = _xt_freq(row)
+                    if pr is None:
+                        _kept.append(c)
+                        continue
+                    rel = _band_check(pr[0], pr[1], freq_min_ghz, freq_max_ghz)
+                    if rel == "no_overlap":
+                        _dropped.append((row["part_number"], pr))
+                        continue
+                    _kept.append(c)
+                if _dropped:
+                    self.log(
+                        f"find_candidate_parts dropped {len(_dropped)} "
+                        f"out-of-band candidate(s) for {freq_min_ghz}-"
+                        f"{freq_max_ghz} GHz: "
+                        + ", ".join(f"{m} ({a:g}-{b:g} GHz)" for m, (a, b) in _dropped[:5])
+                        + ("..." if len(_dropped) > 5 else ""),
+                        "info",
+                    )
+                candidates = _kept[:max_results]
+            except Exception as _exc:
+                self.log(f"find_candidate_parts band filter skipped: {_exc}", "warning")
+                candidates = candidates[:max_results]
+        else:
+            candidates = candidates[:max_results]
 
         # Remember every MPN we surfaced — this is the authoritative
         # shortlist the audit will gate against.

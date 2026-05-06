@@ -294,6 +294,8 @@ class ComponentSearchTool:
         min_similarity: float = 0.6,
         exclude_obsolete: bool = True,
         exclude_through_hole: bool = True,
+        freq_min_ghz: Optional[float] = None,
+        freq_max_ghz: Optional[float] = None,
     ) -> List[ComponentSearchResult]:
         """Semantic search for components. Returns top-k above the threshold.
 
@@ -308,6 +310,16 @@ class ComponentSearchTool:
         Pre-fix, the lifecycle gate fired only as a post-audit, so the BOM
         could ship with NRND/EOL parts; through-hole parts had no filter at
         all and slipped past whenever the LLM picked one.
+
+        2026-05-06: added a frequency-band filter so the LLM never sees parts
+        whose spec'd RF range doesn't overlap the requested band.
+          • ``freq_min_ghz`` / ``freq_max_ghz`` (optional) — when both are
+            supplied, parts with NO overlap to [freq_min_ghz, freq_max_ghz]
+            are dropped. Parts with unknown frequency info pass (we can't
+            tell — let the LLM decide).
+        Defense in depth with the post-audit `services.freq_audit` gate —
+        this stops the bad candidate at retrieval, the gate catches anything
+        that slips through.
         """
         if not self._vs:
             logger.warning("ComponentSearchTool not available, returning []")
@@ -315,10 +327,24 @@ class ComponentSearchTool:
         try:
             flt: Optional[dict] = {"category": category} if category else None
             # Over-fetch so post-filters can drop bad candidates and still
-            # return n_results. 4× headroom is enough in practice.
+            # return n_results. 4× headroom is enough in practice; bumped
+            # to 6× when frequency filtering is active so we don't run out.
+            overfetch = 6 if (freq_min_ghz is not None and freq_max_ghz is not None) else 4
             docs_scores = self._vs.similarity_search_with_relevance_scores(
-                query, k=n_results * 4, filter=flt,
+                query, k=n_results * overfetch, filter=flt,
             )
+            # Lazy import — keep the freq_audit dependency out of the hot path
+            # when frequency filtering isn't requested.
+            _band_check = None
+            if freq_min_ghz is not None and freq_max_ghz is not None:
+                try:
+                    from services.freq_audit import (
+                        extract_part_freq_range as _xt_freq,
+                        freq_band_relationship as _band_check,  # noqa: F811
+                    )
+                except Exception as _exc:
+                    logger.warning("freq filter unavailable: %s", _exc)
+                    _band_check = None
             out: List[ComponentSearchResult] = []
             for doc, score in docs_scores:
                 if score < min_similarity:
@@ -336,6 +362,26 @@ class ComponentSearchTool:
                         component.part_number, component.package,
                     )
                     continue
+                if _band_check is not None:
+                    # Build a row-shaped dict the freq parser understands —
+                    # covers part_number, description, and the key_specs
+                    # nested dict so curated PLL min/max Hz are picked up.
+                    row = {
+                        "part_number": component.part_number,
+                        "description": component.description,
+                        "key_specs": component.key_specs or {},
+                    }
+                    pr = _xt_freq(row)
+                    if pr is not None:
+                        rel = _band_check(pr[0], pr[1], freq_min_ghz, freq_max_ghz)
+                        if rel == "no_overlap":
+                            logger.debug(
+                                "component_search.skip.freq_no_overlap "
+                                "pn=%s spec=%g-%g GHz req=%g-%g GHz",
+                                component.part_number, pr[0], pr[1],
+                                freq_min_ghz, freq_max_ghz,
+                            )
+                            continue
                 out.append(ComponentSearchResult(
                     component=component,
                     relevance_score=round(float(score), 3),
@@ -344,8 +390,10 @@ class ComponentSearchTool:
                 if len(out) >= n_results:
                     break
             logger.info(
-                "Component search '%s': %d results (obsolete_filter=%s, smt_only=%s)",
+                "Component search '%s': %d results "
+                "(obsolete_filter=%s, smt_only=%s, freq=%s-%s GHz)",
                 query, len(out), exclude_obsolete, exclude_through_hole,
+                freq_min_ghz, freq_max_ghz,
             )
             return out
         except Exception as exc:
