@@ -4166,20 +4166,29 @@ class RequirementsAgent(BaseAgent):
         req_file.write_text(req_content, encoding="utf-8")
         outputs["requirements.md"] = req_content
 
-        # 2. block_diagram.md — Mermaid `block-beta` rendered deterministically
-        # from the BOM (DesignManifest SSoT pattern). Replaces the LLM-emitted
-        # `flowchart` mermaid that historically embedded MPN strings in node
-        # labels — those strings drifted from `component_recommendations`
-        # whenever the audit stripped a banned/EOL part, which is the bug
-        # class the manifest validator gates against.
+        # 2. block_diagram.md — proper RF schematic-block symbols rendered
+        # deterministically from the BOM (DesignManifest SSoT pattern).
+        # Each stage is drawn with the standard RF symbol vocabulary:
+        # LNA/amp triangles, mixer circles with X, filter rectangles with
+        # internal sine, LO circles with sine, ADC/DAC labelled rectangles,
+        # antenna Y, switch SPDT, etc. SVG inline-embedded into the markdown
+        # AND written to block_diagram.svg as a downloadable standalone file.
         #
-        # Falls back to the legacy LLM-rendered mermaid only when the BOM is
-        # empty (initial render before generate_requirements has fired) or
-        # the deterministic renderer raises.
+        # Mermaid `block-beta` is kept as a secondary representation because
+        # some preview surfaces render mermaid better than inline SVG; both
+        # views are leak-proof by construction (PURE function of manifest.bom).
+        #
+        # Falls back to the LLM-rendered flowchart only when the BOM is empty
+        # (initial render before generate_requirements has fired) or both
+        # renderers raise.
+        block_svg: str = ""
         block_mermaid: str = ""
         try:
             from services.design_manifest import DesignManifest as _DM
-            from services.p1_renderers import render_block_diagram_mermaid as _render_blk
+            from services.p1_renderers import (
+                render_block_diagram_mermaid as _render_blk,
+                render_block_diagram_svg as _render_svg,
+            )
             _bom = tool_input.get("component_recommendations") or tool_input.get("bom") or []
             if _bom:
                 _transient_manifest = _DM(
@@ -4190,10 +4199,18 @@ class RequirementsAgent(BaseAgent):
                     project_type=str(tool_input.get("project_type") or "receiver"),
                     bom=list(_bom),
                 )
-                block_mermaid = _render_blk(_transient_manifest)
+                try:
+                    block_svg = _render_svg(_transient_manifest)
+                except Exception as _svg_exc:
+                    self.log(f"block_diagram SVG render failed: {_svg_exc}", "warning")
+                    block_svg = ""
+                try:
+                    block_mermaid = _render_blk(_transient_manifest)
+                except Exception as _mer_exc:
+                    self.log(f"block_diagram mermaid render failed: {_mer_exc}", "warning")
+                    block_mermaid = ""
         except Exception as _exc:
-            self.log(f"deterministic block-beta render failed, falling back: {_exc}", "warning")
-            block_mermaid = ""
+            self.log(f"deterministic block diagram renderers unavailable, falling back: {_exc}", "warning")
         if not block_mermaid:
             # Legacy path — LLM-emitted flowchart. Salvaged + reflowed.
             block_mermaid = self._render_diagram_field(
@@ -4203,10 +4220,31 @@ class RequirementsAgent(BaseAgent):
                 default_direction="LR",
             )
             block_mermaid = self._reflow_long_mermaid(block_mermaid)
-        block_content = _scrub(f"# System Block Diagram\n## {project_name}\n\n```mermaid\n{block_mermaid}\n```\n")
+        # Compose block_diagram.md: SVG first when available, mermaid second
+        # under a "Flowchart view" subhead so both renderings are accessible.
+        block_md_lines: list[str] = [
+            f"# System Block Diagram",
+            f"## {project_name}",
+            "",
+        ]
+        if block_svg:
+            block_md_lines.append(block_svg)
+            block_md_lines.append("")
+            block_md_lines.append("### Flowchart view (Mermaid)")
+            block_md_lines.append("")
+        if block_mermaid:
+            block_md_lines.append("```mermaid")
+            block_md_lines.append(block_mermaid.rstrip())
+            block_md_lines.append("```")
+        block_content = _scrub("\n".join(block_md_lines) + "\n")
         block_file = output_path / "block_diagram.md"
         block_file.write_text(block_content, encoding="utf-8")
         outputs["block_diagram.md"] = block_content
+        # Standalone SVG file for direct download / external embed.
+        if block_svg:
+            svg_file = output_path / "block_diagram.svg"
+            svg_file.write_text(block_svg, encoding="utf-8")
+            outputs["block_diagram.svg"] = block_svg
 
         # 3. architecture.md — same pipeline as block_diagram (structured → salvage)
         arch_mermaid = self._render_diagram_field(

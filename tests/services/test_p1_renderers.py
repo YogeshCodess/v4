@@ -128,7 +128,10 @@ class TestNoLeakByConstruction:
 
 
 class TestMarkdownWrapper:
-    def test_wraps_in_mermaid_fence(self):
+    def test_wraps_with_svg_first_then_heading(self):
+        """As of the SVG renderer landing, render_block_diagram_md prefers
+        SVG over mermaid. The mermaid fence path is exercised by the
+        fallback test below."""
         m = DesignManifest(
             project_id="1",
             bom=[_row("HMC8410", "lna")],
@@ -136,8 +139,21 @@ class TestMarkdownWrapper:
         md = render_block_diagram_md(m, project_name="Demo")
         assert "# System Block Diagram" in md
         assert "## Demo" in md
+        assert "<svg" in md  # primary output is now inline SVG
+
+    def test_falls_back_to_mermaid_when_svg_render_fails(self, monkeypatch):
+        """If the SVG renderer raises, render_block_diagram_md should
+        gracefully degrade to the mermaid fence (proven leak-proof too)."""
+        import services.p1_renderers as p1r
+        m = DesignManifest(
+            project_id="1",
+            bom=[_row("HMC8410", "lna")],
+        )
+        def _boom(*_a, **_kw):
+            raise RuntimeError("simulated SVG failure")
+        monkeypatch.setattr(p1r, "render_block_diagram_svg", _boom)
+        md = render_block_diagram_md(m, project_name="Demo")
         assert "```mermaid" in md
-        assert "```\n" in md
         assert "block-beta" in md
 
 
@@ -271,3 +287,147 @@ class TestGlbRenderer:
         rendered = extract_mpns(md)
         leaks = rendered - m.allowed_mpns()
         assert leaks == set(), f"GLB renderer leaked: {leaks}"
+
+
+# ---------------------------------------------------------------------------
+# SVG renderer (Option 2 — proper RF schematic symbols)
+# ---------------------------------------------------------------------------
+
+class TestSvgRenderer:
+    def test_emits_well_formed_svg(self):
+        from services.p1_renderers import render_block_diagram_svg
+        m = DesignManifest(
+            project_id="1",
+            architecture="superhet",
+            bom=[_row("HMC8410", "lna"), _row("LT5560", "mixer")],
+        )
+        svg = render_block_diagram_svg(m)
+        # Smoke: starts with <svg, ends with </svg>, has xmlns
+        assert svg.startswith("<svg")
+        assert svg.rstrip().endswith("</svg>")
+        assert 'xmlns="http://www.w3.org/2000/svg"' in svg
+        # XML well-formed — parse it
+        import xml.etree.ElementTree as ET
+        ET.fromstring(svg)  # raises if malformed
+
+    def test_uses_amp_triangle_for_lna(self):
+        from services.p1_renderers import render_block_diagram_svg
+        m = DesignManifest(project_id="1", bom=[_row("LNA1", "lna")])
+        svg = render_block_diagram_svg(m)
+        # The amp triangle uses the polygon "0,5 80,30 0,55"
+        assert "polygon points=\"0,5 80,30 0,55\"" in svg
+
+    def test_uses_circle_with_x_for_mixer(self):
+        from services.p1_renderers import render_block_diagram_svg
+        m = DesignManifest(project_id="1", bom=[_row("MIX1", "mixer")])
+        svg = render_block_diagram_svg(m)
+        # Mixer = circle + two crossing lines
+        assert "<circle" in svg
+        # two diagonal lines for the X
+        assert 'x1="25" y1="15" x2="55" y2="45"' in svg
+        assert 'x1="55" y1="15" x2="25" y2="45"' in svg
+
+    def test_uses_filter_rect_with_sine(self):
+        from services.p1_renderers import render_block_diagram_svg
+        m = DesignManifest(project_id="1", bom=[_row("FL1", "bpf")])
+        svg = render_block_diagram_svg(m)
+        # Filter has a rectangle + path with Q (quadratic bezier) for sine
+        assert "<rect" in svg
+        assert 'd="M 12 35 Q' in svg
+
+    def test_uses_box_for_adc(self):
+        from services.p1_renderers import render_block_diagram_svg
+        m = DesignManifest(project_id="1", bom=[_row("AD9082", "adc")])
+        svg = render_block_diagram_svg(m)
+        assert "ADC" in svg
+
+    def test_lo_placed_below_chain(self):
+        """LO/synth components should appear in a second row below the
+        main chain, with a vertical line up to the mixer."""
+        from services.p1_renderers import render_block_diagram_svg
+        m = DesignManifest(
+            project_id="1",
+            bom=[
+                _row("LNA1", "lna"),
+                _row("MIX1", "mixer"),
+                _row("ADF4351", "lo"),
+                _row("AD9082", "adc"),
+            ],
+        )
+        svg = render_block_diagram_svg(m)
+        # Both the main-chain part numbers and the LO part number appear.
+        for pn in ("LNA1", "MIX1", "AD9082", "ADF4351"):
+            assert pn in svg
+
+    def test_arrow_marker_defined_once(self):
+        from services.p1_renderers import render_block_diagram_svg
+        m = DesignManifest(
+            project_id="1",
+            bom=[_row("A", "lna"), _row("B", "mixer"), _row("C", "filter")],
+        )
+        svg = render_block_diagram_svg(m)
+        # Arrow marker defined once, referenced multiple times
+        assert svg.count('id="arrow"') == 1
+        assert svg.count("marker-end=\"url(#arrow)\"") >= 2
+
+    def test_empty_bom_emits_placeholder_svg(self):
+        from services.p1_renderers import render_block_diagram_svg
+        m = DesignManifest(project_id="1", bom=[])
+        svg = render_block_diagram_svg(m)
+        assert svg.startswith("<svg")
+        assert "Approve P1" in svg or "No components" in svg
+
+    def test_no_leak_by_construction_svg(self):
+        """Same guarantee as the mermaid renderer: every MPN in the SVG
+        text labels is in `manifest.bom`."""
+        from services.p1_renderers import render_block_diagram_svg
+        from services.manifest_validator import extract_mpns
+        m = DesignManifest(
+            project_id="1",
+            bom=[
+                _row("HMC8410", "lna"),
+                _row("LT5560", "mixer"),
+                _row("ADF4351", "lo"),
+                _row("AD9082", "adc"),
+            ],
+        )
+        svg = render_block_diagram_svg(m)
+        rendered = extract_mpns(svg)
+        leaks = rendered - m.allowed_mpns()
+        assert leaks == set(), f"SVG renderer leaked MPNs: {leaks}"
+
+    def test_render_block_diagram_md_inlines_svg(self):
+        """The combined render_block_diagram_md should embed the SVG
+        inline (not just emit a <img src=...> reference)."""
+        from services.p1_renderers import render_block_diagram_md
+        m = DesignManifest(
+            project_id="1",
+            bom=[_row("HMC8410", "lna"), _row("LT5560", "mixer")],
+        )
+        md = render_block_diagram_md(m, project_name="Demo")
+        # SVG embed
+        assert "<svg" in md
+        assert "</svg>" in md
+        # Heading + project name
+        assert "# System Block Diagram" in md
+        assert "## Demo" in md
+
+    def test_xml_label_escaping(self):
+        """Part numbers / role text containing < > & " must be escaped
+        so the SVG remains well-formed XML."""
+        from services.p1_renderers import render_block_diagram_svg
+        m = DesignManifest(
+            project_id="1",
+            bom=[{
+                "part_number": "AB<C>D",
+                "role": "lna",
+                "manufacturer": "ACME",
+            }],
+        )
+        svg = render_block_diagram_svg(m)
+        # Raw < > should not appear inside the label position
+        assert "AB<C>D" not in svg
+        assert "AB&lt;C&gt;D" in svg
+        # Still parses as XML
+        import xml.etree.ElementTree as ET
+        ET.fromstring(svg)
