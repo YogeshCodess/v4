@@ -1789,6 +1789,31 @@ async def get_project_status(project_id: int):
         if design_scope in scopes
     )
 
+    # ── DesignManifest summary (migration 008) ──────────────────────────
+    # Frontend uses `manifest_hash` for stale-detection (cache-bust the
+    # documents view when the hash changes). `manifest_summary` carries
+    # the small numbers the UI surfaces in the topbar — full BOM access
+    # goes through GET /projects/{id}/documents/design_manifest.json.
+    manifest_summary: dict[str, object] = {}
+    manifest_hash = proj.get("manifest_hash")
+    if manifest_hash:
+        try:
+            _m = svc.get_design_manifest(project_id)
+            if _m is not None:
+                manifest_summary = {
+                    "manifest_hash": _m.manifest_hash,
+                    "bom_hash": _m.bom_hash,
+                    "bom_size": len(_m.bom or []),
+                    "architecture": _m.architecture,
+                    "domain": _m.domain,
+                    "frozen_at": _m.frozen_at,
+                    "audit_pass": bool(_m.audit_pass),
+                    "audit_blocker_count": int(_m.audit_blocker_count or 0),
+                }
+        except Exception as _exc:  # noqa: BLE001
+            log.debug("manifest summary load failed for project %s: %s",
+                      project_id, _exc)
+
     return {
         "project_id": project_id,
         "current_phase": proj.get("current_phase"),
@@ -1797,6 +1822,8 @@ async def get_project_status(project_id: int):
         "phase_statuses": proj.get("phase_statuses", {}),
         "requirements_hash": proj.get("requirements_hash"),
         "requirements_frozen_at": proj.get("requirements_frozen_at"),
+        "manifest_hash": manifest_hash,
+        "manifest_summary": manifest_summary,
         "stale_phase_ids": stale,
         "audit_summary": audit_summary,
         "cascade_summary": cascade_summary,
