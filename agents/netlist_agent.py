@@ -746,20 +746,69 @@ Do NOT generate a minimal 2-component skeleton. The netlist must be COMPLETE.
             except Exception as _drc_exc:
                 self.log(f"drc_failed: {_drc_exc}", "warning")
 
-            # Schematic data — if the LLM produced one, persist it. Otherwise synthesize a
-            # minimal single-sheet schematic from the node/edge list so the UI always has
-            # something to render. Tag `source` so the UI can show whether the layout came
-            # from the model directly or from our deterministic synthesizer, and so downstream
-            # tooling can treat the two cases differently (auto-synth layouts are conservative
-            # and may need review for specialised topologies).
+            # Schematic data — ALWAYS synthesised deterministically from the
+            # node/edge list (SSoT pattern). The LLM-emitted `schematic_data`
+            # field used to be trusted directly here, which was the root cause
+            # of the recurring "schematic not correct" reports — same wrong
+            # layout every time because the LLM emits the same wrong shape
+            # and we rendered it verbatim. The deterministic synthesiser
+            # (`_synthesize_schematic`, ~600 lines) classifies every node by
+            # role, lays out a proper RF signal chain with decoupling caps,
+            # ground/VCC nets, and zero floating pins. It's been the fallback
+            # path the whole time — now it's the ONLY path.
+            #
+            # Any LLM-emitted schematic is preserved in the diagnostics
+            # bundle (see schematic_llm_hint below) for debugging only —
+            # never rendered.
+            schematic_data = self._synthesize_schematic(netlist_data)
+            schematic_data["source"] = "auto_synthesized"
+            schematic_data["auto_synthesized"] = True
+
+            # Manifest leak check — synthesised IC-class components should
+            # all be in `manifest.bom`. Decoupling caps / ground / VCC
+            # symbols are auto-added by the synthesiser and not in the BOM,
+            # so we only check IC-class refs (start with U / D / J / Y for
+            # ICs / connectors / crystals — not R / C). Out-of-BOM IC
+            # components are surfaced as audit issues but don't block the
+            # phase (the schematic is still valid; it's a flag for review).
+            if manifest and manifest.bom:
+                try:
+                    from services.manifest_validator import extract_mpns
+                    allowed = manifest.allowed_mpns()
+                    leaks: list[str] = []
+                    for sheet in schematic_data.get("sheets", []):
+                        for comp in sheet.get("components", []):
+                            ref = comp.get("ref", "") or ""
+                            pn = (comp.get("part_number") or "").strip()
+                            if not pn:
+                                continue
+                            # Skip auto-synthesised passives + decoupling
+                            if ref.startswith(("R", "C", "L")) and ref[1:2].isdigit():
+                                continue
+                            if comp.get("type") in ("ground", "vcc", "net_label"):
+                                continue
+                            tokens = extract_mpns(pn)
+                            for tok in tokens:
+                                if tok.upper() not in allowed:
+                                    leaks.append(f"{ref}={pn}")
+                                    break
+                    if leaks:
+                        logger.warning(
+                            "P4 schematic leak: %d IC-class component(s) not in "
+                            "manifest BOM: %s",
+                            len(leaks), ", ".join(leaks[:8]),
+                        )
+                except Exception as _leak_exc:
+                    logger.debug("schematic leak check skipped: %s", _leak_exc)
+
+            # Preserve the LLM-emitted schematic (if any) in a separate file
+            # for debugging — never used for rendering.
             llm_schematic = netlist_data.get("schematic_data")
             if llm_schematic and llm_schematic.get("sheets"):
-                schematic_data = llm_schematic
-                schematic_data["source"] = "llm_emitted"
-            else:
-                schematic_data = self._synthesize_schematic(netlist_data)
-                schematic_data["source"] = "auto_synthesized"
-                schematic_data["auto_synthesized"] = True
+                outputs["schematic_llm_hint.json"] = json.dumps(
+                    llm_schematic, indent=2,
+                )
+
             outputs["schematic.json"] = json.dumps(schematic_data, indent=2)
 
             # P1 — post-synthesis schematic DRC. The pre-synthesis
