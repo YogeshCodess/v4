@@ -678,17 +678,247 @@ def _draw_symbol(row: dict[str, Any]) -> tuple[str, str]:
     return fn(fill), fill_key
 
 
+def _render_switch_matrix_svg(manifest: DesignManifest) -> Optional[str]:
+    """SVG layout for switch_matrix architecture: three columns
+    (inputs | switch fabric | outputs) with explicit interconnect lines.
+
+    Returns None when the BOM has fewer than 2 switches — caller falls
+    back to the linear-cascade layout in that case.
+
+    Geometry:
+      - Inputs column at x=80, outputs column at x=width-80
+      - Switch fabric column centred between them, vertical stack
+      - Each row is `_SVG_SM_ROW_H` tall; total height adapts to
+        max(n_inputs, n_switches, n_outputs)
+      - Aux components (control / supply / clock that aren't switches)
+        rendered in a strip below the fabric
+    """
+    sw_rows = [
+        r for r in manifest.bom
+        if "switch" in _normalise_role(r) or _normalise_role(r) == "sw"
+    ]
+    if len(sw_rows) < 2:
+        return None
+
+    dp = manifest.design_parameters or {}
+    n_in = int(dp.get("matrix_inputs") or dp.get("n_inputs") or len(sw_rows) // 2 or 2)
+    n_out = int(dp.get("matrix_outputs") or dp.get("n_outputs") or n_in)
+    n_in = max(1, min(n_in, 16))
+    n_out = max(1, min(n_out, 16))
+
+    other_rows = [r for r in manifest.bom if r not in sw_rows]
+
+    # Geometry constants — local to this layout, not the linear-cascade
+    # constants above (those assume a horizontal stage pitch).
+    SM_ROW_H = 80
+    SM_PORT_W = 88           # IN/OUT label box width
+    SM_SW_W = 80             # switch symbol box width
+    SM_SW_H = 60
+    SM_PORT_H = 36
+    SM_TOP_PAD = 70          # space for header text
+    SM_BOTTOM_PAD = 40
+    SM_AUX_PAD = 110         # space below fabric for aux strip
+    SM_INPUT_X = 60
+    SM_SW_X = 280            # switch column left edge
+    SM_OUTPUT_X = 540        # output column left edge
+    width = 700
+
+    n_rows = max(n_in, len(sw_rows), n_out)
+    height = SM_TOP_PAD + n_rows * SM_ROW_H + SM_BOTTOM_PAD
+    if other_rows:
+        height += SM_AUX_PAD + ((len(other_rows) + 3) // 4) * 70
+
+    counter: dict[str, int] = {}
+    sw_with_refdes = [(r, _refdes_for(r, counter)) for r in sw_rows]
+    aux_with_refdes = [(r, _refdes_for(r, counter)) for r in other_rows]
+
+    parts: list[str] = []
+    parts.append(
+        f'<svg xmlns="http://www.w3.org/2000/svg" '
+        f'viewBox="0 0 {width} {height}" width="{width}" height="{height}" '
+        f'style="background:#f8fafc;border-radius:6px;'
+        f'font-family:system-ui,-apple-system,sans-serif">'
+    )
+    parts.append(
+        '<defs>'
+        f'<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" '
+        f'markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
+        f'<path d="M 0 1 L 10 5 L 0 9 z" fill="{_SVG_STROKE}"/>'
+        '</marker>'
+        '</defs>'
+    )
+
+    # ── Column headers ─────────────────────────────────────────────────
+    header_y = 32
+    for x_centre, label in (
+        (SM_INPUT_X + SM_PORT_W // 2, "RF Inputs"),
+        (SM_SW_X + SM_SW_W // 2, "Switch Fabric"),
+        (SM_OUTPUT_X + SM_PORT_W // 2, "RF Outputs"),
+    ):
+        parts.append(
+            f'<text x="{x_centre}" y="{header_y}" text-anchor="middle" '
+            f'font-size="12" font-weight="700" letter-spacing="0.05em" '
+            f'fill="{_SVG_STROKE}">{label}</text>'
+        )
+
+    # ── Inputs column ──────────────────────────────────────────────────
+    input_centres: list[tuple[int, int]] = []
+    for i in range(n_in):
+        cy = SM_TOP_PAD + i * SM_ROW_H + SM_ROW_H // 2
+        ty = cy - SM_PORT_H // 2
+        parts.append(
+            f'<rect x="{SM_INPUT_X}" y="{ty}" '
+            f'width="{SM_PORT_W}" height="{SM_PORT_H}" rx="4" '
+            f'fill="{_SVG_FILL["rf"]}" stroke="{_SVG_STROKE}" '
+            f'stroke-width="{_SVG_STROKE_W}"/>'
+        )
+        parts.append(
+            f'<text x="{SM_INPUT_X + SM_PORT_W // 2}" y="{cy + 4}" '
+            f'text-anchor="middle" font-size="11" font-weight="600" '
+            f'fill="{_SVG_STROKE}">RF IN {i + 1}</text>'
+        )
+        # Right-edge midpoint — anchor for connection lines
+        input_centres.append((SM_INPUT_X + SM_PORT_W, cy))
+
+    # ── Switch fabric column ───────────────────────────────────────────
+    sw_centres: list[tuple[int, int, int]] = []  # (left_x, right_x, cy)
+    for i, (row, rd) in enumerate(sw_with_refdes):
+        cy = SM_TOP_PAD + i * SM_ROW_H + SM_ROW_H // 2
+        ty = cy - SM_SW_H // 2
+        sym, _fk = _draw_symbol(row)
+        parts.append(
+            f'<g transform="translate({SM_SW_X},{ty})">{sym}</g>'
+        )
+        # Refdes label above
+        parts.append(
+            f'<text x="{SM_SW_X + SM_SW_W // 2}" y="{ty - 4}" '
+            f'text-anchor="middle" font-size="11" font-weight="600" '
+            f'fill="#0f172a">{_xml_escape(rd)}</text>'
+        )
+        # MPN label below
+        pn = (
+            row.get("part_number") or row.get("primary_part")
+            or row.get("mpn") or ""
+        )
+        if pn:
+            parts.append(
+                f'<text x="{SM_SW_X + SM_SW_W // 2}" y="{ty + SM_SW_H + 12}" '
+                f'text-anchor="middle" font-size="9" font-weight="600" '
+                f'fill="#1e293b" font-family="\'JetBrains Mono\', monospace">'
+                f'{_xml_escape(pn)}</text>'
+            )
+        sw_centres.append((SM_SW_X, SM_SW_X + SM_SW_W, cy))
+
+    # ── Outputs column ─────────────────────────────────────────────────
+    output_centres: list[tuple[int, int]] = []
+    for i in range(n_out):
+        cy = SM_TOP_PAD + i * SM_ROW_H + SM_ROW_H // 2
+        ty = cy - SM_PORT_H // 2
+        parts.append(
+            f'<rect x="{SM_OUTPUT_X}" y="{ty}" '
+            f'width="{SM_PORT_W}" height="{SM_PORT_H}" rx="4" '
+            f'fill="{_SVG_FILL["rf"]}" stroke="{_SVG_STROKE}" '
+            f'stroke-width="{_SVG_STROKE_W}"/>'
+        )
+        parts.append(
+            f'<text x="{SM_OUTPUT_X + SM_PORT_W // 2}" y="{cy + 4}" '
+            f'text-anchor="middle" font-size="11" font-weight="600" '
+            f'fill="{_SVG_STROKE}">RF OUT {i + 1}</text>'
+        )
+        output_centres.append((SM_OUTPUT_X, cy))
+
+    # ── Interconnect ───────────────────────────────────────────────────
+    # Inputs feed the first n_in switches (round-robin if more inputs
+    # than switches). Outputs come from the last n_out switches.
+    first_tier = sw_centres[: max(1, min(n_in, len(sw_centres)))]
+    last_tier = sw_centres[-max(1, min(n_out, len(sw_centres))):]
+
+    for i, (ix, iy) in enumerate(input_centres):
+        target = first_tier[i % len(first_tier)]
+        parts.append(
+            f'<line x1="{ix}" y1="{iy}" '
+            f'x2="{target[0]}" y2="{target[2]}" '
+            f'stroke="{_SVG_STROKE}" stroke-width="{_SVG_STROKE_W}" '
+            f'marker-end="url(#arrow)"/>'
+        )
+    for i, (ox, oy) in enumerate(output_centres):
+        source = last_tier[i % len(last_tier)]
+        parts.append(
+            f'<line x1="{source[1]}" y1="{source[2]}" '
+            f'x2="{ox}" y2="{oy}" '
+            f'stroke="{_SVG_STROKE}" stroke-width="{_SVG_STROKE_W}" '
+            f'marker-end="url(#arrow)"/>'
+        )
+    # Inter-switch arrows when the fabric has middle-tier switches that
+    # aren't directly fed by inputs or feeding outputs.
+    if len(sw_centres) > max(n_in, n_out):
+        for a, b in zip(sw_centres, sw_centres[1:]):
+            if a in first_tier and b not in last_tier:
+                parts.append(
+                    f'<line x1="{a[1]}" y1="{a[2]}" '
+                    f'x2="{b[0]}" y2="{b[2]}" '
+                    f'stroke="{_SVG_STROKE}" stroke-width="{_SVG_STROKE_W}" '
+                    f'stroke-dasharray="3,3" opacity="0.6"/>'
+                )
+
+    # ── Aux components strip (control / clock / supply / non-switch) ───
+    if aux_with_refdes:
+        aux_y_start = SM_TOP_PAD + n_rows * SM_ROW_H + SM_AUX_PAD // 2
+        # Title
+        parts.append(
+            f'<text x="{width // 2}" y="{aux_y_start - 12}" '
+            f'text-anchor="middle" font-size="11" font-weight="700" '
+            f'letter-spacing="0.05em" fill="{_SVG_STROKE}">'
+            f'Auxiliary (control · clock · supply)</text>'
+        )
+        cols = 4
+        col_w = (width - 80) // cols
+        for k, (row, rd) in enumerate(aux_with_refdes):
+            cx = 40 + (k % cols) * col_w + col_w // 2 - 40
+            cy = aux_y_start + (k // cols) * 70
+            sym, _fk = _draw_symbol(row)
+            parts.append(f'<g transform="translate({cx},{cy})">{sym}</g>')
+            pn = (
+                row.get("part_number") or row.get("primary_part")
+                or row.get("mpn") or ""
+            )
+            parts.append(
+                f'<text x="{cx + 40}" y="{cy - 4}" text-anchor="middle" '
+                f'font-size="10" font-weight="600" fill="#0f172a">'
+                f'{_xml_escape(rd)}</text>'
+            )
+            if pn:
+                parts.append(
+                    f'<text x="{cx + 40}" y="{cy + 72}" text-anchor="middle" '
+                    f'font-size="9" font-weight="600" fill="#1e293b" '
+                    f'font-family="\'JetBrains Mono\', monospace">'
+                    f'{_xml_escape(pn)}</text>'
+                )
+
+    parts.append('</svg>')
+    return "".join(parts)
+
+
 def render_block_diagram_svg(manifest: DesignManifest) -> str:
     """Build a complete SVG block diagram from the locked manifest BOM.
 
-    Layout: linear cascade left-to-right, with LO / synthesizer rows
-    placed below the main chain (visually expressing that they side-feed
-    the mixer they drive). For empty BOM, returns a minimal placeholder
-    SVG so the markdown viewer has something to render.
+    Dispatch by architecture:
+      - switch_matrix : 3-column layout (RF inputs | switch fabric |
+                        RF outputs), with each switch drawn as an SPDT
+                        icon and explicit input-to-switch and
+                        switch-to-output lines.
+      - default       : linear cascade left-to-right, with LO /
+                        synthesizer rows placed below the main chain
+                        (visually expressing that they side-feed the
+                        mixer they drive).
 
-    Pure function of `manifest.bom + manifest.architecture`. Every text
-    label that mentions an MPN comes from `manifest.bom`, so the leak
-    detector still treats this output as in-scope.
+    For empty BOM, returns a minimal placeholder SVG so the markdown
+    viewer has something to render.
+
+    Pure function of `manifest.bom + manifest.architecture +
+    manifest.design_parameters`. Every text label that mentions an MPN
+    comes from `manifest.bom`, so the leak detector still treats this
+    output as in-scope.
     """
     if not manifest or not manifest.bom:
         return (
@@ -699,6 +929,15 @@ def render_block_diagram_svg(manifest: DesignManifest) -> str:
             'fill="#64748b">No components yet — Approve P1 to populate.</text>'
             '</svg>'
         )
+
+    # Switch-matrix architecture gets a bespoke 3-column SVG layout that
+    # matches the existing block-beta switch_matrix renderer. Falls back
+    # to the linear cascade when the BOM doesn't have enough switches
+    # to make a fabric out of.
+    if _is_switch_matrix(manifest):
+        sm = _render_switch_matrix_svg(manifest)
+        if sm is not None:
+            return sm
 
     rows = sorted(list(manifest.bom), key=_role_order_key)
 

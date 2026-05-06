@@ -431,3 +431,103 @@ class TestSvgRenderer:
         # Still parses as XML
         import xml.etree.ElementTree as ET
         ET.fromstring(svg)
+
+
+# ---------------------------------------------------------------------------
+# Switch-matrix SVG layout
+# ---------------------------------------------------------------------------
+
+class TestSvgSwitchMatrix:
+    def _make(self) -> DesignManifest:
+        return DesignManifest(
+            project_id="1",
+            project_type="switch_matrix",
+            architecture="switch_matrix",
+            design_parameters={"matrix_inputs": 4, "matrix_outputs": 4},
+            bom=[
+                _row("ADRF5040", "switch"),
+                _row("ADRF5040", "switch"),
+                _row("ADRF5040", "switch"),
+                _row("ADRF5040", "switch"),
+            ],
+        )
+
+    def test_switch_matrix_arch_uses_3_column_layout(self):
+        from services.p1_renderers import render_block_diagram_svg
+        svg = render_block_diagram_svg(self._make())
+        assert "RF Inputs" in svg
+        assert "Switch Fabric" in svg
+        assert "RF Outputs" in svg
+
+    def test_n_inputs_outputs_from_design_parameters(self):
+        from services.p1_renderers import render_block_diagram_svg
+        m = self._make()
+        m.design_parameters = {"matrix_inputs": 6, "matrix_outputs": 2}
+        svg = render_block_diagram_svg(m)
+        for i in range(1, 7):
+            assert f"RF IN {i}" in svg
+        for i in range(1, 3):
+            assert f"RF OUT {i}" in svg
+        # Should NOT have RF OUT 3 (only 2 outputs requested)
+        assert "RF OUT 3" not in svg
+
+    def test_switch_matrix_well_formed_xml(self):
+        from services.p1_renderers import render_block_diagram_svg
+        svg = render_block_diagram_svg(self._make())
+        import xml.etree.ElementTree as ET
+        ET.fromstring(svg)  # raises on malformed
+
+    def test_switch_matrix_no_leak_by_construction(self):
+        from services.p1_renderers import render_block_diagram_svg
+        from services.manifest_validator import extract_mpns
+        m = self._make()
+        svg = render_block_diagram_svg(m)
+        rendered = extract_mpns(svg)
+        leaks = rendered - m.allowed_mpns()
+        assert leaks == set(), f"Switch-matrix SVG leaked MPNs: {leaks}"
+
+    def test_aux_components_rendered_below_fabric(self):
+        """Non-switch components (clock, control MCU, regulator) appear
+        in the auxiliary strip below the matrix."""
+        from services.p1_renderers import render_block_diagram_svg
+        m = DesignManifest(
+            project_id="1",
+            project_type="switch_matrix",
+            architecture="switch_matrix",
+            design_parameters={"matrix_inputs": 2, "matrix_outputs": 2},
+            bom=[
+                _row("ADRF5040", "switch"),
+                _row("ADRF5040", "switch"),
+                _row("STM32F4", "mcu"),       # control aux
+                _row("LMK04828", "clock"),    # clock aux
+            ],
+        )
+        svg = render_block_diagram_svg(m)
+        assert "Auxiliary" in svg
+        assert "STM32F4" in svg
+        assert "LMK04828" in svg
+
+    def test_falls_back_to_linear_when_too_few_switches(self):
+        """A 'switch_matrix' project_type with only one switch in the
+        BOM falls through to the linear-cascade layout — three columns
+        with one switch is degenerate."""
+        from services.p1_renderers import render_block_diagram_svg
+        m = DesignManifest(
+            project_id="1",
+            project_type="switch_matrix",
+            architecture="switch_matrix",
+            bom=[_row("ADRF5040", "switch"), _row("HMC8410", "lna")],
+        )
+        svg = render_block_diagram_svg(m)
+        # No 3-column header
+        assert "RF Inputs" not in svg
+        # Linear cascade markers (arrow marker, MPN labels) still present
+        assert "ADRF5040" in svg
+        assert "HMC8410" in svg
+
+    def test_arrow_marker_in_switch_matrix(self):
+        from services.p1_renderers import render_block_diagram_svg
+        svg = render_block_diagram_svg(self._make())
+        assert 'id="arrow"' in svg
+        # Should have at least n_in + n_out arrowed edges
+        assert svg.count("marker-end=\"url(#arrow)\"") >= 8
