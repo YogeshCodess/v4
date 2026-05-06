@@ -1013,4 +1013,33 @@ def run_all(
     # between the BOM and the generated schematic.
     issues.extend(run_bom_linkage_audit(enriched, netlist_nodes))
 
+    # 12. RF-spec discipline gate (added 2026-05-06). Three checks under
+    # the freq_audit module:
+    #   12a. Frequency band — every BOM part's spec'd RF range must
+    #        overlap the project's frequency_range_ghz. Disjoint =>
+    #        `frequency_no_overlap` (critical). Partial coverage on a
+    #        full-coverage role (LNA / mixer / filter) =>
+    #        `frequency_partial_coverage` (high). Partial coverage on an
+    #        overlap-tolerant role (LO / synth / IF / ADC) =>
+    #        `frequency_partial_coverage_advisory` (medium).
+    #   12b. NF budget — front-end (LNA / preselector / limiter) NF must
+    #        be < ~70% of the project's claimed system NF target (Friis
+    #        bound). LNA NF >= system NF => `lna_nf_exceeds_system`
+    #        (critical, arithmetically impossible). LNA NF > 0.7 * target
+    #        => `lna_nf_too_high` (high).
+    #   12c. Supply voltage — every part's required supply must be one of
+    #        the project's available rails. Mismatch =>
+    #        `supply_voltage_mismatch` (high).
+    try:
+        from services.freq_audit import (
+            run_frequency_audit as _run_freq_audit,
+            run_nf_budget_audit as _run_nf_audit,
+            run_supply_voltage_audit as _run_supply_audit,
+        )
+        issues.extend(_run_freq_audit(enriched, dp))
+        issues.extend(_run_nf_audit(enriched, dp))
+        issues.extend(_run_supply_audit(enriched, dp))
+    except Exception as _exc:  # noqa: BLE001 — audit is advisory; don't block
+        log.warning("rf-spec audit failed: %s", _exc)
+
     return tool_input, issues
