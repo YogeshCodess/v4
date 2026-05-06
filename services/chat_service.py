@@ -121,6 +121,22 @@ class ChatService:
                     extra={"project_id": project_id},
                 )
 
+        # Persist the DesignManifest (migration 008 — single source of truth
+        # for the post-audit BOM). Saved AFTER the lock so the two snapshots
+        # are always coherent. Downstream phases read this via
+        # ProjectService.get_design_manifest(project_id) instead of
+        # regex-parsing markdown files — that's how cross-file MPN leaks
+        # become structurally impossible going forward.
+        manifest_row = result.get("manifest_row")
+        if manifest_row:
+            try:
+                self._proj_svc.save_design_manifest(project_id, manifest_row)
+            except Exception:
+                log.exception(
+                    "chat.design_manifest_save_failed",
+                    extra={"project_id": project_id},
+                )
+
         # Update phase status atomically in DB (async)
         if phase_complete:
             # Pass reset_downstream=True when P1 was already complete — this means the user

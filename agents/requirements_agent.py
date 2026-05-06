@@ -2899,6 +2899,7 @@ class RequirementsAgent(BaseAgent):
                         design_type=project_context.get("design_type"),
                         llm_model=getattr(self, "model", None),
                         architecture=generate_req_input.get("architecture"),
+                        project_type=project_context.get("project_type"),
                         # Set of MPNs surfaced by find_candidate_parts this turn —
                         # the audit flags any BOM entry that bypassed the shortlist.
                         offered_candidate_mpns=set(self._offered_candidate_mpns),
@@ -3077,6 +3078,52 @@ class RequirementsAgent(BaseAgent):
                     "info",
                 )
 
+            # ── Manifest leak gate (Step 2) ─────────────────────────────
+            # Scans every output file for MPN-shaped tokens that are NOT in
+            # the locked DesignManifest BOM. This is the structural fix for
+            # the hackathon-final HMC bug — the audit only mutates
+            # `component_recommendations`, but the LLM had also embedded the
+            # banned MPN in the requirements prose / GLB stages, and HRS
+            # then read the cleaned recommendations file while the prose
+            # still mentioned the dropped part. After this gate runs, ANY
+            # such drift is surfaced as an audit issue.
+            try:
+                from services.design_manifest import DesignManifest as _DM_cls
+                from services.manifest_validator import (
+                    check_no_mpn_leak as _check_leaks,
+                    leaks_to_audit_issues as _leaks_to_issues,
+                )
+                _manifest_dict = finalize_bundle.get("manifest")
+                if _manifest_dict:
+                    _manifest_obj = _DM_cls.from_dict(_manifest_dict)
+                    _leaks = _check_leaks(
+                        project_context.get("output_dir", "output"),
+                        _manifest_obj,
+                    )
+                    if _leaks:
+                        self.log(
+                            f"[manifest-leak] {len(_leaks)} MPN(s) appear in P1 "
+                            f"outputs but are NOT in the locked BOM — merging "
+                            f"as audit issues.",
+                            "warning",
+                        )
+                        _leak_issues = _leaks_to_issues(_leaks)
+                        _rep = finalize_bundle.get("audit_report") or {}
+                        _existing = _rep.get("issues") or []
+                        _rep["issues"] = list(_existing) + _leak_issues
+                        # Recompute overall_pass — leaks are 'high' so they
+                        # downgrade the report.
+                        _rep["overall_pass"] = not any(
+                            (i.get("severity") if isinstance(i, dict) else getattr(i, "severity", None))
+                            in ("critical", "high")
+                            for i in _rep["issues"]
+                        )
+                        finalize_bundle["audit_report"] = _rep
+                    else:
+                        self.log("[manifest-leak] no MPN leaks detected — P1 outputs are coherent", "info")
+            except Exception as _leak_exc:
+                self.log(f"[manifest-leak] gate skipped (non-fatal): {_leak_exc}", "warning")
+
             # Always build the rich requirements summary from the tool data.
             # This lets the user review key design parameters, requirements table,
             # component selections, and the block diagram BEFORE clicking Approve.
@@ -3097,6 +3144,8 @@ class RequirementsAgent(BaseAgent):
                 "parameters": generate_req_input.get("design_parameters", {}),
                 "lock": finalize_bundle.get("lock"),
                 "lock_row": finalize_bundle.get("lock_row"),
+                "manifest": finalize_bundle.get("manifest"),
+                "manifest_row": finalize_bundle.get("manifest_row"),
                 "audit_report": finalize_bundle.get("audit_report"),
             }
 
@@ -4009,14 +4058,43 @@ class RequirementsAgent(BaseAgent):
         req_file.write_text(req_content, encoding="utf-8")
         outputs["requirements.md"] = req_content
 
-        # 2. block_diagram.md — prefer structured spec; fall back to salvaged raw text
-        block_mermaid = self._render_diagram_field(
-            tool_input,
-            structured_key="block_diagram",
-            raw_key="block_diagram_mermaid",
-            default_direction="LR",
-        )
-        block_mermaid = self._reflow_long_mermaid(block_mermaid)
+        # 2. block_diagram.md — Mermaid `block-beta` rendered deterministically
+        # from the BOM (DesignManifest SSoT pattern). Replaces the LLM-emitted
+        # `flowchart` mermaid that historically embedded MPN strings in node
+        # labels — those strings drifted from `component_recommendations`
+        # whenever the audit stripped a banned/EOL part, which is the bug
+        # class the manifest validator gates against.
+        #
+        # Falls back to the legacy LLM-rendered mermaid only when the BOM is
+        # empty (initial render before generate_requirements has fired) or
+        # the deterministic renderer raises.
+        block_mermaid: str = ""
+        try:
+            from services.design_manifest import DesignManifest as _DM
+            from services.p1_renderers import render_block_diagram_mermaid as _render_blk
+            _bom = tool_input.get("component_recommendations") or tool_input.get("bom") or []
+            if _bom:
+                _transient_manifest = _DM(
+                    project_id="",
+                    requirements=tool_input.get("requirements") or {},
+                    architecture=tool_input.get("architecture"),
+                    design_parameters=tool_input.get("design_parameters") or {},
+                    project_type=str(tool_input.get("project_type") or "receiver"),
+                    bom=list(_bom),
+                )
+                block_mermaid = _render_blk(_transient_manifest)
+        except Exception as _exc:
+            self.log(f"deterministic block-beta render failed, falling back: {_exc}", "warning")
+            block_mermaid = ""
+        if not block_mermaid:
+            # Legacy path — LLM-emitted flowchart. Salvaged + reflowed.
+            block_mermaid = self._render_diagram_field(
+                tool_input,
+                structured_key="block_diagram",
+                raw_key="block_diagram_mermaid",
+                default_direction="LR",
+            )
+            block_mermaid = self._reflow_long_mermaid(block_mermaid)
         block_content = _scrub(f"# System Block Diagram\n## {project_name}\n\n```mermaid\n{block_mermaid}\n```\n")
         block_file = output_path / "block_diagram.md"
         block_file.write_text(block_content, encoding="utf-8")

@@ -29,6 +29,11 @@ from typing import Any, Optional
 
 from agents.red_team_audit import audit as _run_audit
 from domains._schema import AuditIssue, AuditReport
+from services.design_manifest import (
+    DesignManifest,
+    freeze as _freeze_manifest,
+    save_to_row as _manifest_save_to_row,
+)
 from services.requirements_lock import RequirementsLock, freeze, save_to_row
 from services.rf_audit import run_all as _run_rf_audit
 
@@ -204,21 +209,31 @@ def finalize_p1(
     llm_model_version: Optional[str] = None,
     architecture: Optional[str] = None,
     offered_candidate_mpns: Optional[set[str]] = None,
+    project_type: Optional[str] = None,
 ) -> dict[str, Any]:
     """
-    Freeze the lock and run the red-team audit. Returns a bundle:
+    Freeze the lock + manifest and run the red-team audit. Returns a bundle:
 
         {
-            "lock": <RequirementsLock.to_dict()>,
-            "lock_row": {requirements_hash, requirements_frozen_at,
-                         requirements_locked_json},
-            "audit_report": <AuditReport.model_dump()>,
+            "lock":          <RequirementsLock.to_dict()>,
+            "lock_row":      {requirements_hash, requirements_frozen_at,
+                              requirements_locked_json},
+            "manifest":      <DesignManifest.to_dict()>,
+            "manifest_row":  {design_manifest_json, manifest_hash},
+            "audit_report":  <AuditReport.model_dump()>,
             "outputs": {
                 "requirements_lock.json": "...",
+                "design_manifest.json":   "...",
                 "audit_report.md":        "...",
             },
             "summary_md": "short markdown summary for the chat reply",
         }
+
+    The DesignManifest (added 2026-05-06) is a single source of truth for the
+    post-audit BOM. Downstream phases must read it via
+    `services.project_service.get_design_manifest(project_id)` instead of
+    regex-parsing markdown files — that's how we eliminate the cross-file MPN
+    leak that drove the hackathon-final HMC bug.
 
     Never raises for bad input — returns `{"error": "..."}` in `summary_md`
     if freeze() fails (e.g. caller forgot to set round confirmations).
@@ -309,13 +324,48 @@ def finalize_p1(
     if rf_issues:
         rep = _merge_rf_issues(rep, rf_issues)
 
+    blockers = [i for i in rep.issues if i.severity in ("critical", "high")]
+    mediums = [i for i in rep.issues if i.severity == "medium"]
+
+    # ── DesignManifest (Step 1 — SSoT for the post-audit BOM) ──────────────
+    # Built AFTER the RF audit so manifest.bom holds the cleaned + enriched
+    # BOM, not the raw LLM output. Downstream phases read this manifest as
+    # their cross-phase context — no more regex-parsing markdown.
+    cleaned_bom = (
+        tool_input.get("component_recommendations")
+        or tool_input.get("bom")
+        or []
+    )
+    manifest = DesignManifest(
+        project_id=str(project_id),
+        requirements=requirements,
+        architecture=architecture,
+        design_parameters=tool_input.get("design_parameters") or {},
+        domain=domain,
+        project_type=str(project_type or "receiver"),
+        bom=list(cleaned_bom),
+        cascade_summary=tool_input.get("cascade_summary") or {},
+        audit_pass=rep.overall_pass,
+        audit_blocker_count=len(blockers),
+        audit_issue_count=len(rep.issues),
+    )
+    try:
+        _freeze_manifest(
+            manifest,
+            llm_model=llm_model,
+            llm_model_version=llm_model_version,
+        )
+        manifest_row = _manifest_save_to_row(manifest)
+    except Exception as exc:
+        logger.warning("p1_finalize.manifest_freeze_failed: %s", exc)
+        manifest = None
+        manifest_row = None
+
     # Serialize artifacts
     lock_json = json.dumps(lock.to_dict(), indent=2, sort_keys=True)
     audit_md = audit_report_to_md(rep)
     audit_json = json.dumps(rep.model_dump(), indent=2, default=str)
-
-    blockers = [i for i in rep.issues if i.severity in ("critical", "high")]
-    mediums = [i for i in rep.issues if i.severity == "medium"]
+    manifest_json = manifest.to_json() if manifest else "{}"
     # P26 #21 (2026-04-26): friendlier timestamp format. Pre-fix the
     # frozen line read `_(frozen 2026-04-26T08:01:05.354398+00:00)_`
     # — verbose ISO with microseconds + tz offset that took up half
@@ -342,6 +392,11 @@ def finalize_p1(
         f"· {len(blockers)} blocker(s) · {len(mediums)} medium · "
         f"confidence {rep.confidence_score:.2f}",
     ]
+    if manifest and manifest.manifest_hash:
+        summary_lines.append(
+            f"**Design manifest:** `{manifest.manifest_hash[:12]}…`  "
+            f"_(BOM `{(manifest.bom_hash or '')[:8]}…`, {len(manifest.bom)} parts)_"
+        )
     if blockers:
         summary_lines.append("")
         summary_lines.append("**Blockers detected:**")
@@ -349,14 +404,20 @@ def finalize_p1(
             summary_lines.append(f"- _{b.severity}_ `{b.category}` — {b.detail}")
     summary_md = "\n".join(summary_lines)
 
+    outputs: dict[str, str] = {
+        "requirements_lock.json": lock_json,
+        "audit_report.md": audit_md,
+        "audit_report.json": audit_json,
+    }
+    if manifest:
+        outputs["design_manifest.json"] = manifest_json
+
     return {
         "lock": lock.to_dict(),
         "lock_row": lock_row,
+        "manifest": manifest.to_dict() if manifest else None,
+        "manifest_row": manifest_row,
         "audit_report": rep.model_dump(),
-        "outputs": {
-            "requirements_lock.json": lock_json,
-            "audit_report.md": audit_md,
-            "audit_report.json": audit_json,
-        },
+        "outputs": outputs,
         "summary_md": summary_md,
     }
