@@ -455,7 +455,7 @@ def _step_close_brackets(text: str) -> tuple[str, Optional[str]]:
 
 
 def _step_flatten_brace_hell(text: str) -> tuple[str, Optional[str]]:
-    """Step I-pre-pre — some LLM emissions have nested quotes + braces
+    r"""Step I-pre-pre — some LLM emissions have nested quotes + braces
     inside rhombus node labels, e.g.:
 
         BT1{"{BiasT}" / MBT-283+"}
