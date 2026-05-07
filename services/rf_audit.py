@@ -1035,10 +1035,22 @@ def run_all(
             run_frequency_audit as _run_freq_audit,
             run_nf_budget_audit as _run_nf_audit,
             run_supply_voltage_audit as _run_supply_audit,
+            run_cascade_claims_audit as _run_cascade_claims_audit,
+            run_topology_constraint_audit as _run_topology_audit,
+            run_role_semantic_audit as _run_role_audit,
         )
         issues.extend(_run_freq_audit(enriched, dp))
         issues.extend(_run_nf_audit(enriched, dp))
         issues.extend(_run_supply_audit(enriched, dp))
+        # 12d. Cascade-vs-claim (rx-output-audit B1.6 + B1.16).
+        issues.extend(_run_cascade_claims_audit(enriched, dp))
+        # 12e. Architecture topology constraint (rx-output-audit B1.9).
+        # Catches "switch_matrix gain block placed before the matrix".
+        issues.extend(_run_topology_audit(enriched, dp))
+        # 12f. Role-vs-description semantic match (rx-output-audit B1.7).
+        # Catches "ASWD-S2-0009-Q-T listed as SMA connector but its
+        # description says 'switch IC'" — the LLM-hallucination signature.
+        issues.extend(_run_role_audit(enriched, dp))
     except Exception as _exc:  # noqa: BLE001 — audit is advisory; don't block
         log.warning("rf-spec audit failed: %s", _exc)
 

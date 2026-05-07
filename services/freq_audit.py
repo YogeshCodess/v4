@@ -677,6 +677,80 @@ def _extract_part_supply_v(row: dict[str, Any]) -> Optional[float]:
     return None
 
 
+def _extract_part_input_v_range(row: dict[str, Any]) -> Optional[tuple[float, float]]:
+    """Pull a regulator's input-voltage range from a BOM row. Returns
+    `(min_v, max_v)` or None when the row has no input-range info.
+    Used by `run_supply_voltage_audit` to catch "12 V supply driving an
+    LDO with 2.5-5.5 V input range" scenarios (rx-output-audit B1.8).
+
+    Tries structured numeric fields first, then `key_specs`, then
+    free-text parsing of the description (e.g.
+    "input_voltage: 2.5 - 5.5 V").
+    """
+    # Structured min/max fields
+    for min_key, max_key in (
+        ("min_input_v", "max_input_v"),
+        ("input_min_v", "input_max_v"),
+        ("vin_min_v", "vin_max_v"),
+        ("vin_min", "vin_max"),
+    ):
+        v_min = row.get(min_key)
+        v_max = row.get(max_key)
+        if v_min is not None and v_max is not None:
+            try:
+                return (float(v_min), float(v_max))
+            except (TypeError, ValueError):
+                pass
+    # Free-text input_voltage / vin_range field — parse a "2.5 - 5.5 V" range
+    for key in ("input_voltage", "vin_range", "input_voltage_v",
+                "input_voltage_range"):
+        v = row.get(key)
+        if v is not None:
+            text = str(v)
+            # Match ranges like "2.5 - 5.5 V", "2.5V to 5.5V"
+            import re as _re
+            m = _re.search(
+                r"(\d+(?:\.\d+)?)\s*[-–—]\s*(\d+(?:\.\d+)?)",
+                text,
+            )
+            if m:
+                try:
+                    a, b = float(m.group(1)), float(m.group(2))
+                    return (min(a, b), max(a, b))
+                except ValueError:
+                    pass
+    # Nested key_specs
+    for nested_key in ("primary_key_specs", "key_specs", "specs"):
+        nested = row.get(nested_key)
+        if isinstance(nested, dict):
+            r = _extract_part_input_v_range(nested)
+            if r is not None:
+                return r
+    return None
+
+
+def _is_regulator_role(row: dict[str, Any]) -> bool:
+    """True if the part is a regulator / LDO / DC-DC. The input-voltage
+    range check only fires for these — non-regulator parts have no
+    'input range' concept (they have a supply pin)."""
+    role = (
+        row.get("role")
+        or row.get("kind")
+        or row.get("function")
+        or ""
+    ).lower()
+    desc = (
+        row.get("description")
+        or row.get("primary_description")
+        or row.get("name")
+        or ""
+    ).lower()
+    keywords = ("ldo", "regulator", "dcdc", "dc-dc", "buck", "boost",
+                "buck-boost", "smps", "switching converter",
+                "linear regulator", "voltage regulator")
+    return any(k in role for k in keywords) or any(k in desc for k in keywords)
+
+
 def run_supply_voltage_audit(
     component_recommendations: list[dict[str, Any]],
     design_parameters: Optional[dict[str, Any]],
@@ -687,6 +761,12 @@ def run_supply_voltage_audit(
     available rails (within +/- tolerance_v). Catches the "5 V LNA in a
     3.3 V-only design" picks.
 
+    Also (rx-output-audit B1.8): for regulators / LDOs / DC-DCs, verify
+    the project's PRIMARY supply voltage falls within the part's
+    input-voltage RANGE. The MAX25301 case: project supplies 12 V but
+    MAX25301 input range is 2.5-5.5 V — the LDO would fry. Pre-fix the
+    audit didn't check this.
+
     `tolerance_v` (default 150 mV) absorbs minor rail drift — a 3.3 V part
     works fine on a 3.27 V rail.
     """
@@ -696,35 +776,634 @@ def run_supply_voltage_audit(
     if not rails:
         return []  # no rail list — can't audit, silent
 
+    # Project's primary input voltage — used to check regulator input
+    # ranges. Defaults to the highest rail when explicit primary isn't set.
+    primary_v: Optional[float] = None
+    if design_parameters:
+        for key in ("primary_input_v", "input_voltage_v",
+                    "supply_voltage_v", "supply_voltage", "vin_v", "vin"):
+            v = design_parameters.get(key)
+            if v is not None:
+                try:
+                    primary_v = float(v)
+                    break
+                except (TypeError, ValueError):
+                    pass
+    if primary_v is None and rails:
+        primary_v = max(rails)
+
     issues: list[AuditIssue] = []
     for row in component_recommendations:
-        v = _extract_part_supply_v(row)
-        if v is None:
-            continue
         pn = (
             row.get("part_number")
             or row.get("primary_part")
             or row.get("mpn")
             or "?"
         )
-        # Compatible if within tolerance of any rail
-        compatible = any(abs(v - r) <= tolerance_v for r in rails)
-        if compatible:
+
+        # Rule A: required supply voltage matches an available rail.
+        v = _extract_part_supply_v(row)
+        if v is not None:
+            compatible = any(abs(v - r) <= tolerance_v for r in rails)
+            if not compatible:
+                issues.append(AuditIssue(
+                    severity="high",
+                    category="supply_voltage_mismatch",
+                    location=f"component_recommendations/{pn}",
+                    detail=(
+                        f"Part `{pn}` requires {v:g} V but the project's "
+                        f"available rails are {rails}. No matching rail "
+                        f"within +/-{tolerance_v} V — the part cannot be "
+                        f"powered as the design currently stands."
+                    ),
+                    suggested_fix=(
+                        f"Either add a {v:g} V rail (LDO / DC-DC) to the "
+                        f"power design, or pick a part variant operating "
+                        f"from one of {rails}. Some parts have multi-rail "
+                        f"variants — check the datasheet."
+                    ),
+                ))
+
+        # Rule B (rx-output-audit B1.8): regulator input-voltage range
+        # check. Only fires for regulator-role parts. Catches the
+        # "MAX25301 LDO with 2.5-5.5 V input fed from 12 V" case.
+        if primary_v is not None and _is_regulator_role(row):
+            in_range = _extract_part_input_v_range(row)
+            if in_range is not None:
+                lo, hi = in_range
+                if primary_v > hi + tolerance_v or primary_v < lo - tolerance_v:
+                    issues.append(AuditIssue(
+                        severity="critical",
+                        category="regulator_input_range_violation",
+                        location=f"component_recommendations/{pn}",
+                        detail=(
+                            f"Regulator `{pn}` has datasheet input range "
+                            f"{lo:g}-{hi:g} V but the project's primary "
+                            f"supply is {primary_v:g} V. The part cannot "
+                            f"safely accept the supply voltage and will "
+                            f"fail (over-voltage destruction or thermal "
+                            f"runaway)."
+                        ),
+                        suggested_fix=(
+                            f"Pick a regulator whose input range includes "
+                            f"{primary_v:g} V (e.g. for 12 V→5 V/3.3 V "
+                            f"step-down, use a wide-input buck like "
+                            f"TPS54620 or LMR16006), OR add a pre-regulator "
+                            f"that drops {primary_v:g} V to within "
+                            f"{lo:g}-{hi:g} V before this stage."
+                        ),
+                    ))
+    return issues
+
+
+# ---------------------------------------------------------------------------
+# Architecture topology constraint audit (rx-output-audit B1.9)
+# ---------------------------------------------------------------------------
+# Switch_matrix designs have a fixed topology constraint: the gain block
+# (when present) MUST come AFTER the matrix, not before. The GLB
+# optimizer's generic "promote LNA toward the front" heuristic violates
+# this for switch_matrix and produces a topology that can't actually be
+# built (you can't put 8 gain blocks before a 4×8 matrix; you have 4
+# input ports). Pre-fix this went undetected because no audit checks
+# topology vs project_type.
+
+# Per project_type, the canonical signal-chain ordering — used to detect
+# when the GLB has stages out of position. Each entry maps a role to its
+# canonical position index in the chain (lower = closer to RF input).
+_ARCH_TOPOLOGY: dict[str, dict[str, tuple[int, str]]] = {
+    "switch_matrix": {
+        # input port → limiter → switch fabric → gain block → output port
+        "antenna":     (0,  "input"),
+        "connector":   (0,  "input"),
+        "input":       (0,  "input"),
+        "limiter":     (10, "before_fabric"),
+        "preselector": (10, "before_fabric"),
+        "preselect":   (10, "before_fabric"),
+        "filter":      (10, "before_fabric"),
+        "bpf":         (10, "before_fabric"),
+        "switch":      (20, "fabric"),
+        "sw":          (20, "fabric"),
+        "rf_amp":      (30, "after_fabric"),  # gain block AFTER matrix
+        "lna":         (30, "after_fabric"),
+        "amp":         (30, "after_fabric"),
+        "gain_block":  (30, "after_fabric"),
+        "output":      (40, "output"),
+    },
+    "receiver": {
+        # antenna → limiter/filter → LNA → mixer → IF amp → ADC
+        "antenna":      (0,  "front"),
+        "connector":    (0,  "front"),
+        "input":        (0,  "front"),
+        "limiter":      (5,  "front"),
+        "preselector":  (8,  "front"),
+        "preselect":    (8,  "front"),
+        "filter":       (10, "front"),
+        "bpf":          (10, "front"),
+        "lna":          (15, "front"),
+        "rf_amp":       (15, "front"),
+        "mixer":        (20, "freq_conv"),
+        "if_amp":       (25, "if"),
+        "if":           (25, "if"),
+        "if_filter":    (28, "if"),
+        "adc":          (40, "back"),
+        "output":       (50, "back"),
+    },
+}
+
+
+def _normalise_role_for_topology(row: dict[str, Any]) -> str:
+    """Pull a normalised role from a BOM row for topology classification."""
+    role = (row.get("role") or row.get("kind") or "").strip().lower()
+    if role:
+        return role
+    # Fallback to name / function / description heuristics
+    text = " ".join([
+        str(row.get("name") or ""),
+        str(row.get("function") or ""),
+        str(row.get("primary_description") or ""),
+        str(row.get("description") or ""),
+    ]).lower()
+    keywords = {
+        "limiter": "limiter",
+        "preselector": "preselector",
+        "filter": "filter",
+        "switch": "switch",
+        "amplifier": "rf_amp",
+        "amp ": "rf_amp",
+        "gain block": "rf_amp",
+        "lna": "lna",
+        "mixer": "mixer",
+        "antenna": "antenna",
+        "connector": "connector",
+        "adc": "adc",
+    }
+    for kw, mapped in keywords.items():
+        if kw in text:
+            return mapped
+    return ""
+
+
+def run_topology_constraint_audit(
+    component_recommendations: list[dict[str, Any]],
+    design_parameters: Optional[dict[str, Any]],
+) -> list[AuditIssue]:
+    """For architectures with a fixed signal-chain topology
+    (switch_matrix, super-heterodyne receiver), verify the GLB / BOM
+    role ordering matches the canonical layout. Catches the rx-output
+    `optimizer promoted gain block to before the matrix` failure mode.
+
+    Returns issues at severity=high — topology violations are real bugs
+    that ship a non-functional system, but the rendering still completes
+    so the operator can review.
+    """
+    if not component_recommendations or not design_parameters:
+        return []
+
+    project_type = str(
+        design_parameters.get("project_type")
+        or design_parameters.get("architecture")
+        or ""
+    ).strip().lower()
+    if project_type not in _ARCH_TOPOLOGY:
+        return []  # no canonical topology defined for this arch
+
+    role_map = _ARCH_TOPOLOGY[project_type]
+    issues: list[AuditIssue] = []
+
+    if project_type == "switch_matrix":
+        # The dominant constraint: gain block must come AFTER any switch.
+        # Find the position of the FIRST switch and the FIRST gain block.
+        first_switch_idx: Optional[int] = None
+        first_gain_idx: Optional[int] = None
+        first_gain_pn = ""
+        for i, row in enumerate(component_recommendations):
+            role = _normalise_role_for_topology(row)
+            if role in ("switch", "sw") and first_switch_idx is None:
+                first_switch_idx = i
+            if role in ("rf_amp", "lna", "amp", "gain_block") and first_gain_idx is None:
+                first_gain_idx = i
+                first_gain_pn = (
+                    row.get("part_number")
+                    or row.get("primary_part") or "?"
+                )
+        if (
+            first_switch_idx is not None and first_gain_idx is not None
+            and first_gain_idx < first_switch_idx
+        ):
+            issues.append(AuditIssue(
+                severity="high",
+                category="architecture_topology_violation",
+                location=f"component_recommendations/{first_gain_pn}",
+                detail=(
+                    f"Switch matrix architecture requires the gain block to "
+                    f"appear AFTER the switch fabric (it compensates the "
+                    f"matrix insertion loss on the OUTPUT side). The BOM "
+                    f"places `{first_gain_pn}` (gain block, position "
+                    f"{first_gain_idx + 1}) before the first switch "
+                    f"(position {first_switch_idx + 1}). The GLB optimizer "
+                    f"may have applied the generic 'promote LNA toward "
+                    f"the front' heuristic which is invalid for switch "
+                    f"matrices."
+                ),
+                suggested_fix=(
+                    f"Reorder the BOM / GLB so the switch fabric stages "
+                    f"come first, then the gain block on each output path. "
+                    f"For an N×M matrix, expect N input ports + N "
+                    f"limiters + the switch fabric + M gain blocks + M "
+                    f"output ports."
+                ),
+            ))
+
+    if project_type == "receiver":
+        # Constraint 1: LNA before mixer.
+        lna_idx: Optional[int] = None
+        mixer_idx: Optional[int] = None
+        for i, row in enumerate(component_recommendations):
+            role = _normalise_role_for_topology(row)
+            if role == "lna" and lna_idx is None:
+                lna_idx = i
+            if role == "mixer" and mixer_idx is None:
+                mixer_idx = i
+        if (
+            lna_idx is not None and mixer_idx is not None
+            and lna_idx > mixer_idx
+        ):
+            issues.append(AuditIssue(
+                severity="high",
+                category="architecture_topology_violation",
+                location="component_recommendations",
+                detail=(
+                    f"Receiver architecture requires the LNA before the "
+                    f"mixer (Friis: LNA NF dominates only when it's the "
+                    f"first amplifying stage). The BOM places mixer at "
+                    f"position {mixer_idx + 1} ahead of LNA at position "
+                    f"{lna_idx + 1}."
+                ),
+                suggested_fix=(
+                    "Reorder so the LNA precedes the mixer. Placing the "
+                    "mixer first means the mixer's conversion-loss + NF "
+                    "directly add to the system NF instead of being divided "
+                    "down by the LNA gain — typically 8-12 dB worse system NF."
+                ),
+            ))
+
+    return issues
+
+
+# ---------------------------------------------------------------------------
+# Role-vs-description semantic match audit (rx-output-audit B1.7)
+# ---------------------------------------------------------------------------
+# The ASWD-S2-0009-Q-T case: declared `role: "connector"` but the
+# description is "RF Switch ICs Automotive Wideband GaAs SPDT RF Switch"
+# — a switch IC labelled as a connector. The fact that the description's
+# semantic class disagrees with the declared role is a hallmark of an
+# LLM hallucination.
+
+# Keywords that strongly signal a part class, used for cross-checking
+# `role` vs `description`. Order matters — more-specific classes first
+# so a "diode limiter" classifies as limiter not diode.
+_ROLE_KEYWORDS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("limiter",     ("limiter", "pin diode limiter")),
+    ("preselector", ("preselector", "preselect filter")),
+    ("filter",      ("bandpass filter", "lowpass filter", "highpass filter",
+                     "saw filter", "ceramic filter", " bpf ", " lpf ", " hpf ")),
+    ("mixer",       ("mixer", "downconverter", "upconverter", "double-balanced")),
+    ("lna",         ("low-noise amp", "low noise amp", "lna ", "lna,", "lna.")),
+    ("rf_amp",      ("gain block", "rf amplifier", " amp ", "driver amp",
+                     "power amp", " pa ", "vga", "variable gain")),
+    ("switch",      ("rf switch", "spdt", "spnt", "switch ic", "absorptive switch",
+                     "reflective switch")),
+    ("synth",       ("synthesizer", "synthesiser", "pll", "vco")),
+    ("oscillator",  ("oscillator", "tcxo", "ocxo", " xo ", "crystal osc")),
+    ("adc",         ("analog-to-digital", "adc", "a/d converter")),
+    ("dac",         ("digital-to-analog", "dac", "d/a converter")),
+    ("attenuator",  ("attenuator", "fixed pad", "dsa")),
+    ("connector",   ("sma connector", "n-type connector", "smb connector",
+                     "panel-mount connector", "panel mount connector",
+                     "rf connector", "coaxial connector", "bnc connector",
+                     "sma female", "sma male", "panel mount sma",
+                     "smt connector", "edge-launch")),
+    ("ldo",         ("ldo", "low-dropout", "linear regulator")),
+    ("dcdc",        ("buck converter", "boost converter", "dc-dc",
+                     "switching regulator", "buck regulator",
+                     "buck-boost", "smps")),
+    ("fpga",        ("fpga", "field-programmable")),
+    ("mcu",         ("microcontroller", " mcu ", "stm32", "atmega")),
+    ("antenna",     ("antenna",)),
+    ("balun",       ("balun",)),
+    ("isolator",    ("isolator", "circulator")),
+)
+
+
+def _detect_role_from_description(text: str) -> set[str]:
+    """Return the set of role classes implied by free-text description.
+    Multiple matches possible (e.g. "RF gain block amplifier" hits both
+    rf_amp keywords)."""
+    if not text:
+        return set()
+    low = " " + text.lower() + " "
+    detected: set[str] = set()
+    for role, keywords in _ROLE_KEYWORDS:
+        for kw in keywords:
+            if kw in low:
+                detected.add(role)
+                break
+    return detected
+
+
+def _is_role_compatible(declared: str, detected: set[str]) -> bool:
+    """True if the declared role and the detected description-roles agree.
+    A "rf_amp" declared as "amp" / "amplifier" is compatible. A "connector"
+    declared part with a "switch" detected role is NOT compatible."""
+    if not detected:
+        return True  # no detection = no contradiction
+    declared_low = declared.lower()
+    # Direct match
+    if declared_low in detected:
+        return True
+    # Family match (e.g. "rf_amp" inside "amp" family)
+    family_aliases = {
+        "rf_amp":   ("rf_amp", "lna", "amp"),
+        "lna":      ("rf_amp", "lna"),
+        "amp":      ("rf_amp", "lna"),
+        "gain_block": ("rf_amp",),
+        "limiter":  ("limiter",),
+        "filter":   ("filter",),
+        "bpf":      ("filter",),
+        "lpf":      ("filter",),
+        "hpf":      ("filter",),
+        "switch":   ("switch",),
+        "sw":       ("switch",),
+        "mixer":    ("mixer",),
+        "synth":    ("synth",),
+        "pll":      ("synth",),
+        "vco":      ("synth",),
+        "tcxo":     ("oscillator",),
+        "ocxo":     ("oscillator",),
+        "xo":       ("oscillator",),
+        "clock":    ("oscillator", "synth"),
+        "adc":      ("adc",),
+        "dac":      ("dac",),
+        "ldo":      ("ldo",),
+        "regulator": ("ldo", "dcdc"),
+        "dcdc":     ("dcdc",),
+        "buck":     ("dcdc",),
+        "boost":    ("dcdc",),
+        "connector": ("connector",),
+        "fpga":     ("fpga",),
+        "mcu":      ("mcu",),
+        "antenna":  ("antenna",),
+    }
+    aliases = family_aliases.get(declared_low, ())
+    return any(a in detected for a in aliases)
+
+
+def run_role_semantic_audit(
+    component_recommendations: list[dict[str, Any]],
+    design_parameters: Optional[dict[str, Any]] = None,
+) -> list[AuditIssue]:
+    """Detect parts whose declared `role` (or implicit role from BOM
+    position) disagrees with the part-class implied by the description.
+
+    The canonical case (rx-output-audit B1.7): ASWD-S2-0009-Q-T listed
+    as the SMA panel-mount connector with description *"RF Switch ICs
+    Automotive Wideband GaAs SPDT RF Switch (referenced for RF
+    connector-grade system component)"* — clearly a switch IC, not a
+    connector.
+
+    Returns issues at severity=critical when the mismatch is unambiguous
+    (e.g. role=connector but description says "switch IC").
+    """
+    if not component_recommendations:
+        return []
+    issues: list[AuditIssue] = []
+    for row in component_recommendations:
+        declared_role = (
+            row.get("role") or row.get("kind") or row.get("function") or ""
+        ).strip().lower()
+        if not declared_role:
             continue
-        issues.append(AuditIssue(
-            severity="high",
-            category="supply_voltage_mismatch",
-            location=f"component_recommendations/{pn}",
-            detail=(
-                f"Part `{pn}` requires {v:g} V but the project's available "
-                f"rails are {rails}. No matching rail within +/-{tolerance_v} V "
-                f"— the part cannot be powered as the design currently stands."
-            ),
-            suggested_fix=(
-                f"Either add a {v:g} V rail (LDO / DC-DC) to the power "
-                f"design, or pick a part variant operating from one of "
-                f"{rails}. Some parts have multi-rail variants — check the "
-                f"datasheet."
-            ),
-        ))
+        # Pull description from any of the standard fields
+        desc = " ".join(filter(None, [
+            str(row.get("name") or ""),
+            str(row.get("function") or ""),
+            str(row.get("description") or ""),
+            str(row.get("primary_description") or ""),
+        ])).strip()
+        if not desc:
+            continue
+        detected = _detect_role_from_description(desc)
+        if _is_role_compatible(declared_role, detected):
+            continue
+        # Mismatch — but only flag the critical / unambiguous cases.
+        # If the declared role is "connector" but description matches
+        # "switch", that's a critical flag. Other mismatches (e.g.
+        # role=lna but desc mentions both LNA and amp) are usually fine.
+        unambiguous_pairs = {
+            ("connector", "switch"), ("connector", "rf_amp"),
+            ("connector", "lna"), ("connector", "mixer"),
+            ("connector", "filter"), ("connector", "synth"),
+            ("connector", "ldo"), ("connector", "dcdc"),
+            ("connector", "fpga"), ("connector", "mcu"),
+            ("ldo", "switch"), ("ldo", "rf_amp"),
+            ("rf_amp", "connector"),
+            ("filter", "switch"), ("filter", "connector"),
+            ("switch", "connector"), ("switch", "rf_amp"),
+            ("antenna", "switch"), ("antenna", "rf_amp"),
+        }
+        critical_flag = any(
+            (declared_role, d) in unambiguous_pairs for d in detected
+        )
+        pn = (
+            row.get("part_number") or row.get("primary_part")
+            or row.get("mpn") or "?"
+        )
+        if critical_flag:
+            issues.append(AuditIssue(
+                severity="critical",
+                category="role_description_mismatch",
+                location=f"component_recommendations/{pn}",
+                detail=(
+                    f"Part `{pn}` is declared with role=`{declared_role}` "
+                    f"but the description implies role(s) "
+                    f"{sorted(detected)}. This is the canonical signature "
+                    f"of an LLM hallucination — the part-class doesn't "
+                    f"match the slot it was placed in."
+                ),
+                suggested_fix=(
+                    f"Replace `{pn}` with a part whose datasheet matches "
+                    f"role=`{declared_role}`. For SMA connectors, use "
+                    f"Amphenol 132xxx / 901 series, Cinch SMA-50, Molex "
+                    f"73251 or similar — NOT a switch IC. For switches, "
+                    f"use proper RF switch MPNs like ADRF5040, PE42522, "
+                    f"HMC1118."
+                ),
+            ))
+    return issues
+
+
+# ---------------------------------------------------------------------------
+# Cascade-vs-claim audit — RX/switch_matrix/transceiver IIP3 + gain
+# ---------------------------------------------------------------------------
+# Pre-fix the existing `run_tx_cascade_audit` only fired for TX projects.
+# RX / switch_matrix / receiver projects had NO check for IIP3 or gain
+# claim vs computed cascade. The rx-output-audit found the "+65 dBm IIP3
+# claimed but ZVA-183WA-S+ gives ~+14 dBm IIP3" bug (B1.6) and the
+# "near-0 dB net gain claimed but cascade computes +10.8 dB" bug (B1.16)
+# both went silent.
+
+def _normalise_direction(dp: dict[str, Any]) -> str:
+    """Map design_parameters.direction / project_type to cascade direction.
+    Same alias map as `tools.rf_cascade.compute_cascade`."""
+    if not dp:
+        return "rx"
+    raw = str(
+        dp.get("direction")
+        or dp.get("project_type")
+        or ""
+    ).strip().lower()
+    aliases = {
+        "receiver": "rx", "rx": "rx",
+        "transmitter": "tx", "tx": "tx",
+        "transceiver": "tx",
+        "switch_matrix": "rx",
+        "power_supply": "none",
+    }
+    return aliases.get(raw, "rx")
+
+
+def run_cascade_claims_audit(
+    component_recommendations: list[dict[str, Any]],
+    design_parameters: Optional[dict[str, Any]],
+    *,
+    iip3_shortfall_db: float = 2.0,
+    gain_overshoot_db: float = 3.0,
+    nf_overshoot_db: float = 1.0,
+) -> list[AuditIssue]:
+    """Compare claimed cascade specs (IIP3, total gain, NF) against the
+    Friis-computed cascade values. Direction-agnostic — fires for RX,
+    TX, switch_matrix, transceiver. Catches:
+
+      - rx-output-audit B1.6: "+65 dBm IIP3 claimed" vs computed ~+14
+      - rx-output-audit B1.16: "near-0 dB net gain claimed" vs computed +10.8
+
+    Tolerances are deliberately generous (default ±2 dB IIP3, ±3 dB gain,
+    ±1 dB NF) — flag only the obvious arithmetic-impossibility cases.
+    """
+    if not component_recommendations or not design_parameters:
+        return []
+    direction = _normalise_direction(design_parameters)
+    if direction == "none":
+        return []  # power-supply project, no RF cascade
+
+    try:
+        from tools.rf_cascade import compute_cascade
+    except Exception:
+        return []
+
+    # Resolve each claim with explicit None checks — `or` chains break
+    # when a legitimate claim is 0 (e.g. switch_matrix with claimed
+    # total_gain_db = 0 means "near-0 dB net path loss").
+    def _first_set(*keys: str) -> Any:
+        for k in keys:
+            v = design_parameters.get(k)
+            if v is not None:
+                return v
+        return None
+
+    cascade = compute_cascade(
+        list(component_recommendations),
+        direction=direction,
+        claimed_iip3_dbm=_first_set("iip3_dbm", "iip3_dbm_input"),
+        claimed_total_gain_db=_first_set("total_gain_db", "system_gain_db"),
+        claimed_nf_db=_first_set("noise_figure_db", "nf_db"),
+        claimed_pout_dbm=_first_set("pout_dbm", "output_power_dbm"),
+        claimed_oip3_dbm=_first_set("oip3_dbm"),
+    )
+    totals = cascade.get("totals") or {}
+    claims = cascade.get("claims") or {}
+    verdict = cascade.get("verdict") or {}
+
+    issues: list[AuditIssue] = []
+
+    # IIP3 shortfall (rx-output-audit B1.6) — fires when the claimed IIP3
+    # is meaningfully higher than what the cascade can deliver.
+    if (
+        direction in ("rx",)  # tx is covered by run_tx_cascade_audit
+        and claims.get("iip3_dbm") is not None
+        and totals.get("iip3_dbm") is not None
+    ):
+        shortfall = float(claims["iip3_dbm"]) - float(totals["iip3_dbm"])
+        if shortfall > iip3_shortfall_db:
+            issues.append(AuditIssue(
+                severity="critical",
+                category="iip3_cascade_shortfall",
+                location="design_parameters/iip3_dbm",
+                detail=(
+                    f"Claimed system IIP3 {claims['iip3_dbm']:.1f} dBm but "
+                    f"the Friis cascade computes {totals['iip3_dbm']:.1f} dBm "
+                    f"(shortfall {shortfall:.1f} dB). The claim is "
+                    f"arithmetically unreachable with the current BOM — "
+                    f"the dominant linearity stage caps system IIP3."
+                ),
+                suggested_fix=(
+                    f"Pick a higher-IIP3 amplifier / mixer in the dominant "
+                    f"stage (cascade IIP3 is set by the LAST stage in RX, "
+                    f"divided down by the cumulative gain ahead of it), OR "
+                    f"relax the claimed IIP3 below {totals['iip3_dbm']:.1f} dBm."
+                ),
+            ))
+
+    # Gain target overshoot (rx-output-audit B1.16) — fires when computed
+    # gain is well over the claimed target. Switch matrices are the
+    # canonical case (claim "near-0 dB" but pick a 18 dB amp to compensate
+    # 2 dB matrix loss → 16 dB overshoot).
+    claimed_gain = claims.get("total_gain_db")
+    computed_gain = totals.get("gain_db")
+    if claimed_gain is not None and computed_gain is not None:
+        overshoot = float(computed_gain) - float(claimed_gain)
+        if abs(overshoot) > gain_overshoot_db:
+            severity = "high" if abs(overshoot) > 2 * gain_overshoot_db else "medium"
+            direction_word = "exceeds" if overshoot > 0 else "falls short of"
+            issues.append(AuditIssue(
+                severity=severity,
+                category="gain_target_mismatch",
+                location="design_parameters/total_gain_db",
+                detail=(
+                    f"Computed cascade gain {computed_gain:.1f} dB "
+                    f"{direction_word} the claimed target {claimed_gain:.1f} dB "
+                    f"by {abs(overshoot):.1f} dB. For a switch matrix this "
+                    f"often means the gain block is over-spec'd "
+                    f"(amplifying signal beyond the loss it's compensating)."
+                ),
+                suggested_fix=(
+                    f"For an overshoot, swap to a lower-gain amp (target "
+                    f"+gain ≈ matrix loss + ~2 dB margin) or remove the "
+                    f"gain stage entirely. For a shortfall, add an "
+                    f"additional gain stage or pick a higher-gain part."
+                ),
+            ))
+
+    # NF overshoot (defensive — rare in practice, but cheap to check)
+    claimed_nf = claims.get("nf_db")
+    computed_nf = totals.get("nf_db")
+    if claimed_nf is not None and computed_nf is not None:
+        excess = float(computed_nf) - float(claimed_nf)
+        if excess > nf_overshoot_db:
+            issues.append(AuditIssue(
+                severity="high",
+                category="nf_cascade_overshoot",
+                location="design_parameters/noise_figure_db",
+                detail=(
+                    f"Cascaded NF {computed_nf:.2f} dB exceeds the claimed "
+                    f"target {claimed_nf:.2f} dB by {excess:.2f} dB. The "
+                    f"design cannot meet the system NF spec with this BOM."
+                ),
+                suggested_fix=(
+                    f"Reduce the front-end NF (lower-NF LNA), reduce "
+                    f"pre-LNA passive losses, or relax the system NF "
+                    f"target above {computed_nf:.2f} dB."
+                ),
+            ))
+
     return issues

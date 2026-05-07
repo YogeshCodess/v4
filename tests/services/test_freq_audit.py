@@ -408,3 +408,260 @@ class TestSupplyVoltageAudit:
         bom = [{"part_number": "X"}]  # no supply_voltage
         dp = {"supply_rails_v": [3.3]}
         assert run_supply_voltage_audit(bom, dp) == []
+
+
+# ---------------------------------------------------------------------------
+# Regulator input-voltage range audit (rx-output-audit B1.8)
+# ---------------------------------------------------------------------------
+
+class TestRegulatorInputRangeAudit:
+    def test_max25301_with_12v_input_flagged(self):
+        """The exact rx-output-audit B1.8 scenario: project supplies 12 V
+        but the chosen LDO has 2.5-5.5 V input range."""
+        from services.freq_audit import run_supply_voltage_audit
+        bom = [{
+            "part_number": "MAX25301BATB/V+",
+            "role": "ldo",
+            "primary_key_specs": {
+                "input_voltage": "2.5 - 5.5 V",
+            },
+        }]
+        dp = {"supply_voltage_v": 12, "supply_rails_v": [12, 5, 3.3]}
+        issues = run_supply_voltage_audit(bom, dp)
+        regulator_issues = [
+            i for i in issues
+            if i.category == "regulator_input_range_violation"
+        ]
+        assert len(regulator_issues) == 1
+        assert regulator_issues[0].severity == "critical"
+        assert "MAX25301BATB/V+" in regulator_issues[0].detail
+        assert "12" in regulator_issues[0].detail
+
+    def test_buck_with_compatible_input_passes(self):
+        """TS30012 has 4.5-18 V input range — fed from 12 V → silent."""
+        from services.freq_audit import run_supply_voltage_audit
+        bom = [{
+            "part_number": "TS30012-M033QFNR",
+            "role": "buck",
+            "primary_key_specs": {"input_voltage": "4.5 - 18 V"},
+        }]
+        dp = {"supply_voltage_v": 12, "supply_rails_v": [12, 3.3]}
+        issues = run_supply_voltage_audit(bom, dp)
+        regulator_issues = [
+            i for i in issues
+            if i.category == "regulator_input_range_violation"
+        ]
+        assert regulator_issues == []
+
+    def test_non_regulator_skipped(self):
+        """An LNA with `input_voltage` field doesn't trigger this rule —
+        only regulator-role parts do."""
+        from services.freq_audit import run_supply_voltage_audit
+        bom = [{
+            "part_number": "HMC8410",
+            "role": "lna",
+            "primary_key_specs": {"input_voltage": "3.0 - 5.5 V"},
+            "supply_voltage": 5.0,
+        }]
+        dp = {"supply_voltage_v": 12, "supply_rails_v": [12, 5, 3.3]}
+        issues = run_supply_voltage_audit(bom, dp)
+        regulator_issues = [
+            i for i in issues
+            if i.category == "regulator_input_range_violation"
+        ]
+        assert regulator_issues == []
+
+
+# ---------------------------------------------------------------------------
+# Cascade-vs-claim audit (rx-output-audit B1.6 + B1.16)
+# ---------------------------------------------------------------------------
+
+class TestCascadeClaimsAudit:
+    def test_iip3_shortfall_flagged_for_rx(self):
+        """The exact rx scenario: claim +65 dBm IIP3 with a BOM that
+        cannot deliver more than ~+14 dBm. Pre-fix the audit was TX-only
+        and never fired for switch_matrix / receiver projects."""
+        from services.freq_audit import run_cascade_claims_audit
+        bom = [
+            {
+                "primary_part": "ZVA-183WA-S+",
+                "role": "rf_amp",
+                "primary_key_specs": {
+                    "gain": "+18 dB",
+                    "noise_figure": "5 dB",
+                    "iip3_dbm": "+14",
+                    "oip3_dbm": "+32",
+                },
+            },
+        ]
+        dp = {
+            "iip3_dbm": "+65",   # impossible claim
+            "project_type": "switch_matrix",
+        }
+        issues = run_cascade_claims_audit(bom, dp)
+        cats = {i.category for i in issues}
+        assert "iip3_cascade_shortfall" in cats, (
+            f"Expected IIP3 shortfall audit issue. Got: {cats}"
+        )
+        iip3_issue = [i for i in issues
+                      if i.category == "iip3_cascade_shortfall"][0]
+        assert iip3_issue.severity == "critical"
+        assert "+65" in iip3_issue.detail or "65.0" in iip3_issue.detail or "65" in iip3_issue.detail
+
+    def test_gain_overshoot_flagged_for_switch_matrix(self):
+        """The other rx scenario: claim near-0 dB net but the gain block
+        delivers +18 dB → +14+ dB overshoot."""
+        from services.freq_audit import run_cascade_claims_audit
+        bom = [
+            {
+                "primary_part": "ZVA-183WA-S+",
+                "role": "rf_amp",
+                "primary_key_specs": {"gain": "+18 dB", "noise_figure": "5 dB"},
+            },
+            {
+                "primary_part": "PE42522B-X",
+                "role": "switch",
+                "primary_key_specs": {"insertion_loss": "1.2 dB"},
+            },
+        ]
+        dp = {
+            "total_gain_db": 0,    # claim near-0 dB net
+            "project_type": "switch_matrix",
+        }
+        issues = run_cascade_claims_audit(bom, dp)
+        cats = {i.category for i in issues}
+        assert "gain_target_mismatch" in cats
+
+    def test_silent_when_no_claims(self):
+        from services.freq_audit import run_cascade_claims_audit
+        bom = [{"primary_part": "X", "role": "lna",
+                "primary_key_specs": {"gain": "+18 dB", "noise_figure": "2 dB"}}]
+        dp = {"project_type": "switch_matrix"}  # no IIP3/gain claim
+        assert run_cascade_claims_audit(bom, dp) == []
+
+    def test_silent_for_power_supply_project(self):
+        """Power-supply projects have no RF cascade — no audit needed."""
+        from services.freq_audit import run_cascade_claims_audit
+        bom = [{"primary_part": "X", "role": "ldo"}]
+        dp = {"project_type": "power_supply", "iip3_dbm": "+65"}
+        assert run_cascade_claims_audit(bom, dp) == []
+
+    def test_gain_within_3db_passes(self):
+        from services.freq_audit import run_cascade_claims_audit
+        bom = [{"primary_part": "X", "role": "lna",
+                "primary_key_specs": {"gain": "+18 dB", "noise_figure": "2 dB"}}]
+        dp = {"total_gain_db": 16, "project_type": "rx"}  # 2 dB delta
+        issues = run_cascade_claims_audit(bom, dp)
+        gain_issues = [i for i in issues if i.category == "gain_target_mismatch"]
+        assert gain_issues == []
+
+
+# ---------------------------------------------------------------------------
+# Topology constraint audit (rx-output-audit B1.9)
+# ---------------------------------------------------------------------------
+
+class TestTopologyConstraintAudit:
+    def test_switch_matrix_gain_before_matrix_flagged(self):
+        """The exact rx-output-audit B1.9 scenario: GLB optimizer
+        promoted gain block to position 4, before the switch fabric at
+        position 6. Switch matrix architecture requires gain AFTER matrix."""
+        from services.freq_audit import run_topology_constraint_audit
+        bom = [
+            {"role": "connector", "part_number": "SMA1"},
+            {"role": "limiter", "part_number": "CLA4610"},
+            {"role": "rf_amp", "part_number": "ZVA-183WA-S+"},  # ← position 3
+            {"role": "switch", "part_number": "PE42522B-X"},     # ← position 4
+            {"role": "connector", "part_number": "SMA2"},
+        ]
+        dp = {"project_type": "switch_matrix"}
+        issues = run_topology_constraint_audit(bom, dp)
+        cats = {i.category for i in issues}
+        assert "architecture_topology_violation" in cats
+        violation = [i for i in issues
+                     if i.category == "architecture_topology_violation"][0]
+        assert "ZVA-183WA-S+" in violation.detail
+
+    def test_switch_matrix_correct_topology_silent(self):
+        """Gain block AFTER matrix → silent."""
+        from services.freq_audit import run_topology_constraint_audit
+        bom = [
+            {"role": "connector", "part_number": "SMA1"},
+            {"role": "limiter", "part_number": "CLA4610"},
+            {"role": "switch", "part_number": "PE42522B-X"},
+            {"role": "rf_amp", "part_number": "ZVA-183WA-S+"},
+            {"role": "connector", "part_number": "SMA2"},
+        ]
+        dp = {"project_type": "switch_matrix"}
+        assert run_topology_constraint_audit(bom, dp) == []
+
+    def test_receiver_mixer_before_lna_flagged(self):
+        from services.freq_audit import run_topology_constraint_audit
+        bom = [
+            {"role": "connector", "part_number": "SMA1"},
+            {"role": "mixer", "part_number": "LT5560"},
+            {"role": "lna", "part_number": "HMC8410"},
+        ]
+        dp = {"project_type": "receiver"}
+        issues = run_topology_constraint_audit(bom, dp)
+        cats = {i.category for i in issues}
+        assert "architecture_topology_violation" in cats
+
+    def test_silent_when_no_project_type(self):
+        from services.freq_audit import run_topology_constraint_audit
+        bom = [{"role": "rf_amp"}, {"role": "switch"}]
+        dp = {}  # no project_type
+        assert run_topology_constraint_audit(bom, dp) == []
+
+
+# ---------------------------------------------------------------------------
+# Role-vs-description semantic audit (rx-output-audit B1.7)
+# ---------------------------------------------------------------------------
+
+class TestRoleSemanticAudit:
+    def test_aswd_connector_with_switch_description_flagged(self):
+        """The exact rx case: ASWD-S2-0009-Q-T declared role=connector
+        but its description says 'RF Switch ICs Automotive Wideband
+        GaAs SPDT RF Switch'."""
+        from services.freq_audit import run_role_semantic_audit
+        bom = [{
+            "part_number": "ASWD-S2-0009-Q-T",
+            "role": "connector",
+            "primary_description":
+                "RF Switch ICs Automotive Wideband GaAs SPDT RF Switch",
+        }]
+        issues = run_role_semantic_audit(bom)
+        cats = {i.category for i in issues}
+        assert "role_description_mismatch" in cats
+        violation = [i for i in issues
+                     if i.category == "role_description_mismatch"][0]
+        assert violation.severity == "critical"
+        assert "ASWD-S2-0009-Q-T" in violation.detail
+        # Suggested fix recommends a real connector vendor
+        assert "Amphenol" in violation.suggested_fix or "connector" in violation.suggested_fix.lower()
+
+    def test_consistent_role_silent(self):
+        from services.freq_audit import run_role_semantic_audit
+        bom = [
+            {"part_number": "HMC8410", "role": "lna",
+             "primary_description": "Wideband Low-Noise Amplifier 2-18 GHz"},
+            {"part_number": "ADRF5040", "role": "switch",
+             "primary_description": "RF Switch IC SPDT 9 kHz - 12 GHz"},
+            {"part_number": "MAX25301", "role": "ldo",
+             "primary_description": "1A Low Noise LDO Voltage Regulator"},
+        ]
+        assert run_role_semantic_audit(bom) == []
+
+    def test_silent_on_no_description(self):
+        from services.freq_audit import run_role_semantic_audit
+        bom = [{"part_number": "X", "role": "connector"}]  # no desc
+        assert run_role_semantic_audit(bom) == []
+
+    def test_silent_on_compatible_alias(self):
+        """role='lna' with desc='Low-Noise Amplifier' is compatible."""
+        from services.freq_audit import run_role_semantic_audit
+        bom = [{
+            "part_number": "X",
+            "role": "lna",
+            "primary_description": "Low-Noise Amplifier 5-18 GHz NF 1.5 dB",
+        }]
+        assert run_role_semantic_audit(bom) == []
