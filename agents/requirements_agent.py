@@ -292,6 +292,80 @@ _FORBIDDEN_ROUND1_PATTERNS = [
 ]
 _FORBIDDEN_ROUND1_RE = None  # compiled lazily below
 
+def _extract_component_qty(comp: dict) -> int:
+    """Pull a quantity from a BOM row, defaulting to 1.
+
+    Order of precedence:
+      1. `qty` / `quantity` direct field (LLM-emitted or distributor)
+      2. `primary_key_specs.qty` / `key_specs.qty` (nested)
+      3. Free-text parsing of name / function / description for
+         "N required" / "qty: N" / "(N cells)" patterns. This is the
+         common LLM emission shape — descriptions like "32 cells
+         required" or "(8 required, 0.5–18 GHz)".
+
+    Pre-fix (rx-output-audit B1.17 / B1.18) the power calculation hard-
+    coded qty=1 in three places, which undercounted matrix designs by
+    4-32x. A 4×8 switch matrix with 32 SPDT cells × 8 gain blocks was
+    showing total power of 1.8 W instead of the actual ~5+ W.
+    """
+    if not isinstance(comp, dict):
+        return 1
+    # 1. Direct numeric fields.
+    for key in ("qty", "quantity", "count"):
+        v = comp.get(key)
+        if v is not None:
+            try:
+                n = int(float(v))
+                if n >= 1:
+                    return n
+            except (TypeError, ValueError):
+                pass
+    # 2. Nested key_specs (LLM tool schema uses primary_key_specs).
+    for nested_key in ("primary_key_specs", "key_specs", "specs"):
+        nested = comp.get(nested_key)
+        if isinstance(nested, dict):
+            for k in ("qty", "quantity", "count"):
+                v = nested.get(k)
+                if v is None:
+                    continue
+                try:
+                    n = int(float(v))
+                    if n >= 1:
+                        return n
+                except (TypeError, ValueError):
+                    pass
+    # 3. Free-text parsing — descriptions like "32 cells required",
+    # "8 required", "Qty: 4". Conservative: only match these specific
+    # shapes to avoid false positives from random numbers in
+    # descriptions ("up to 18 GHz" should NOT match qty=18).
+    import re as _re_qty
+    text = " ".join([
+        str(comp.get("name") or ""),
+        str(comp.get("function") or ""),
+        str(comp.get("description") or ""),
+        str(comp.get("primary_description") or ""),
+    ])
+    if not text:
+        return 1
+    text_lower = text.lower()
+    patterns = [
+        r"(\d+)\s+cells?\s+required",     # "32 cells required"
+        r"(\d+)\s+required",               # "8 required"
+        r"(?:qty|quantity)[:\s]+(\d+)",    # "qty: 4" / "Quantity 12"
+        r"\((\d+)\s+(?:cells?|required|units?)",  # "(8 required" / "(32 cells"
+    ]
+    for pat in patterns:
+        m = _re_qty.search(pat, text_lower)
+        if m:
+            try:
+                n = int(m.group(1))
+                if 1 <= n <= 1024:  # sanity bound
+                    return n
+            except (TypeError, ValueError):
+                continue
+    return 1
+
+
 def _filter_forbidden_round1(cards: dict) -> dict:
     """Strip questions that ask about Round 1-forbidden topics.
 
@@ -4743,13 +4817,14 @@ class RequirementsAgent(BaseAgent):
             # ── Passive / mechanical components: listed in the table but
             #    contribute zero power (no fabricated currents). They still
             #    appear so the reader sees the full BOM like the old template.
+            qty = _extract_component_qty(comp)
             if is_passive(comp):
                 row = {
                     "si": len(rows) + 1,
                     "desc": func,
                     "pkg": pkg,
                     "part": part,
-                    "qty": 1,
+                    "qty": qty,
                     "current_ma": None,
                     "voltage_v": None,
                     "cells": ["", "", "", ""] * len(RAILS),
@@ -4773,7 +4848,7 @@ class RequirementsAgent(BaseAgent):
                     "desc": func,
                     "pkg": pkg,
                     "part": part,
-                    "qty": 1,
+                    "qty": qty,
                     "cells": ["", "", "", ""] * len(RAILS),
                     "tot_typ": 0.0,
                     "tot_max": 0.0,
@@ -4781,14 +4856,22 @@ class RequirementsAgent(BaseAgent):
                 rows.append(row)
                 continue
 
+            # Per-instance current / power, then multiplied by qty into the
+            # rail accumulators (rx-output-audit B1.17 / B1.18 — the original
+            # implementation hard-coded qty=1 and undercounted matrix designs
+            # by 4-32x).
             i_max = i_typ * 1.30  # 30% margin for max
-            p_typ = round(rail_v * i_typ, 3)
-            p_max = round(rail_v * i_max, 3)
+            p_typ_each = round(rail_v * i_typ, 3)
+            p_max_each = round(rail_v * i_max, 3)
+            p_typ = round(p_typ_each * qty, 3)
+            p_max = round(p_max_each * qty, 3)
 
             # Find closest rail index
             closest = min(range(len(RAILS)), key=lambda idx: abs(RAILS[idx] - rail_v))
 
-            # Build per-rail cells; only the matching rail gets values
+            # Build per-rail cells; only the matching rail gets values.
+            # Cells show TOTAL power for the row (per-instance × qty) so
+            # the reader sees the contribution, not the per-unit number.
             cells = []
             for idx in range(len(RAILS)):
                 if idx == closest:
@@ -4803,8 +4886,8 @@ class RequirementsAgent(BaseAgent):
                 "desc": func,
                 "pkg": pkg,
                 "part": part,
-                "qty": 1,
-                "current_ma": round(i_typ * 1000, 1),
+                "qty": qty,
+                "current_ma": round(i_typ * 1000 * qty, 1),
                 "voltage_v": rail_v,
                 "cells": cells,
                 "tot_typ": p_typ,
