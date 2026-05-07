@@ -1271,11 +1271,16 @@ export default function DocumentsView({ project, phase, status, pipelineRunning,
         </div>
       </div>
 
-      {/* P1: RF cascade analysis chart — renders when cascade_analysis.json exists.
-          Hidden for non-RF designs where the JSON is absent / empty. */}
-      {phase.id === 'P1' && project && (
-        <CascadeChart projectId={project.id} color={phase.color} />
-      )}
+      {/* P1: RF cascade analysis chart — TEMPORARILY HIDDEN (2026-05-07).
+          Currently renders "no spec" / "no data" rows because the cascade
+          tool's BOM extraction had bugs (committed-fixed in 941800b but
+          server hasn't been restarted with the fix yet). Re-enable once
+          the next regenerated project shows real values.
+          Original render (preserved for revert):
+            {phase.id === 'P1' && project && (
+              <CascadeChart projectId={project.id} color={phase.color} />
+            )}
+      */}
 
       {/* File list */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
