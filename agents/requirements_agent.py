@@ -6716,6 +6716,16 @@ updated in this table.</p>
         # -----------------------------------------------------------------
         # C4 — passive NF equals |insertion loss| (Friis identity)
         # -----------------------------------------------------------------
+        # Pre-fix (rx-output-audit B1.12 regression): the tolerance was a
+        # flat 0.15 dB. That hid the case where every passive stage in a
+        # 7-stage chain had NF=0.5×|IL| — each individual delta was 0.10 dB,
+        # under the 0.15 dB threshold, but the cumulative effect on the
+        # cascaded NF was ~1 dB of fabricated noise-figure margin.
+        #
+        # New rule: passive NF MUST equal |IL| within max(0.05 dB, 10 % of
+        # |IL|). For stages with |IL| < 0.05 dB the floor (0.05 dB) governs;
+        # for larger losses the relative term (10 % of |IL|) takes over so
+        # a 3 dB pad with NF=2.5 dB (16 % off) still triggers.
         friis_errors = []
         for i, st in enumerate(stages_raw, 1):
             if _is_active(st):
@@ -6724,9 +6734,14 @@ updated in this table.</p>
                 continue
             g = st.get("gain_db"); nf = st.get("noise_figure_db")
             if isinstance(g, (int, float)) and isinstance(nf, (int, float)) and g <= 0:
-                if abs(nf - abs(g)) > 0.15:
+                il = abs(g)
+                tol = max(0.05, 0.10 * il)
+                delta = abs(nf - il)
+                if delta > tol:
                     friis_errors.append(
-                        f"Stage {i} ({st.get('stage_name','?')}): loss={abs(g):.2f} dB but NF={nf:.2f} dB"
+                        f"Stage {i} ({st.get('stage_name','?')}): "
+                        f"loss={il:.2f} dB but NF={nf:.2f} dB "
+                        f"(off by {delta:.2f} dB; tolerance {tol:.2f} dB)"
                     )
         if friis_errors:
             rules.append((

@@ -69,6 +69,41 @@ class TestExtractStages:
         assert len(s) == 1
         assert s[0]["gain_db"] == pytest.approx(-1.8)
 
+    def test_reads_primary_key_specs_per_llm_schema(self):
+        """LLM tool schema uses `primary_key_specs` (not `key_specs`).
+        Pre-fix: cascade silently returned empty stages because the spec
+        dict was at an unfamiliar key. (rx-output-audit B1.4 regression)
+        """
+        comps = [
+            {
+                "primary_part": "ZVA-183WA-S+",
+                "function": "Output Gain Block Amplifier",
+                "primary_manufacturer": "Mini-Circuits",
+                "primary_key_specs": {
+                    "gain": "+18 dB typ",
+                    "noise_figure": "5 dB typ",
+                    "oip3": "+32 dBm",
+                },
+            },
+            {
+                "primary_part": "PE42522B-X",
+                "function": "SPDT RF Switch",
+                "primary_manufacturer": "pSemi",
+                "primary_key_specs": {
+                    "insertion_loss": "1.2 dB typ @ 18 GHz",
+                    "isolation": "55 dB",
+                },
+            },
+        ]
+        stages = extract_stages(comps)
+        assert len(stages) == 2, (
+            "Cascade silently dropped components with primary_key_specs "
+            "schema — this is the rx-output-audit B1.4 bug."
+        )
+        # Both stages got their gain/loss extracted from string specs.
+        assert stages[0]["gain_db"] == 18.0  # ZVA gain
+        assert stages[1]["gain_db"] == -1.2  # PE42522B-X loss → -loss
+
     def test_reads_strings_with_units(self):
         p = {"part_number": "X", "category": "RF-LNA",
              "key_specs": {"nf_db": "1.4 dB", "gain_db": "+15 dB"}}
@@ -143,6 +178,33 @@ class TestFriisMath:
 # ---------------------------------------------------------------------------
 
 class TestVerdict:
+
+    def test_string_iip3_claim_coerced_to_number(self):
+        """Pre-fix: when the LLM emitted iip3_dbm as a string `+65`, it
+        landed in the JSON output as `"+65"` (string). Numeric comparison
+        downstream broke. Post-fix: _coerce_claim casts to float.
+        (rx-output-audit B1.5 regression)
+        """
+        result = compute_cascade(
+            [_stage("U1", "LNA", nf=2, gain=20, iip3=10)],
+            direction="rx",
+            claimed_iip3_dbm="+65",  # string with leading + sign
+        )
+        # The echoed claim must be a number, not a string.
+        assert isinstance(result["claims"]["iip3_dbm"], (int, float))
+        assert result["claims"]["iip3_dbm"] == 65.0
+        # The verdict comparison should work numerically.
+        assert result["verdict"]["iip3_pass"] is False  # 10 dBm < 65 dBm
+
+    def test_string_nf_claim_with_units_coerced(self):
+        """`'2 dB typ'` etc. should also be coerced to a number."""
+        result = compute_cascade(
+            [_stage("U1", "LNA", nf=2, gain=20)],
+            direction="rx",
+            claimed_nf_db="2 dB typ",
+        )
+        assert isinstance(result["claims"]["nf_db"], (int, float))
+        assert result["claims"]["nf_db"] == 2.0
 
     def test_nf_claim_pass(self):
         r = compute_cascade(

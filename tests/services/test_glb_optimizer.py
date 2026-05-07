@@ -151,6 +151,52 @@ def test_diagnose_catches_friis_mismatch():
     assert len(friis) == 2, "expected 2 Friis mismatches (SAW + channel BPF)"
 
 
+def test_friis_mismatch_catches_50pct_off_passive_nf():
+    """rx-output-audit B1.12 regression: previous tolerance (0.15 dB flat)
+    let every passive stage in a 7-stage chain ship with NF = 0.5 × |IL|
+    because each individual delta was 0.10 dB. New rule is
+    max(0.05 dB, 10 % × |IL|) — relative for larger losses, absolute
+    floor for tiny ones — so 0.5× NF/IL ratio always trips."""
+    from services.glb_optimizer import _diagnose, Targets, _compute_cascade
+    stages = [
+        {"stage_name": "Input SMA Connector",
+         "component": "SMA Panel-Mount", "kind": "connector",
+         "gain_db": -0.20, "noise_figure_db": 0.10},   # ← 50 % off
+        {"stage_name": "PCB Trace",
+         "component": "50Ω Microstrip", "kind": "trace",
+         "gain_db": -0.40, "noise_figure_db": 0.30},   # ← 25 % off
+        {"stage_name": "RF Limiter",
+         "component": "CLA4610", "kind": "limiter",
+         "gain_db": -0.30, "noise_figure_db": 0.20},   # ← 33 % off
+    ]
+    summary = _compute_cascade(stages, 0)
+    issues = _diagnose(stages, summary, Targets())
+    friis = [i for i in issues if i.code == "FRIIS_MISMATCH"]
+    assert len(friis) == 3, (
+        f"All 3 passive stages should fire FRIIS_MISMATCH (each NF is "
+        f"50 % off |IL|). Got {len(friis)} (under the new tolerance). "
+        f"This is the rx-output-audit B1.12 regression."
+    )
+
+
+def test_friis_mismatch_silent_on_genuine_rounding():
+    """Don't false-positive on legitimate 0.05 dB rounding errors."""
+    from services.glb_optimizer import _diagnose, Targets, _compute_cascade
+    stages = [
+        {"stage_name": "Pad", "component": "3 dB pad", "kind": "attenuator",
+         "gain_db": -3.00, "noise_figure_db": 3.04},  # 1.3 % off — fine
+        {"stage_name": "SMA", "component": "Connector", "kind": "connector",
+         "gain_db": -0.20, "noise_figure_db": 0.18},  # 0.02 dB delta — under floor
+    ]
+    summary = _compute_cascade(stages, 0)
+    issues = _diagnose(stages, summary, Targets())
+    friis = [i for i in issues if i.code == "FRIIS_MISMATCH"]
+    assert friis == [], (
+        f"Genuine rounding (≤ 0.05 dB OR ≤ 10 % of |IL|) must not fire. "
+        f"Got: {[i.message for i in friis]}"
+    )
+
+
 def test_diagnose_catches_bias_missing():
     glb = _clean_glb()
     # Strip the LNA's bias to trigger the rule

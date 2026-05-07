@@ -64,26 +64,59 @@ _PDC_KEYS = ("pdc_w", "pdc", "power_dissipation_w", "dc_power_w",
 
 def _first_number(d: dict[str, Any], keys: tuple[str, ...]) -> Optional[float]:
     """Return the first numeric value found under any of `keys`, walking
-    both the top-level dict and its `key_specs` / `specs` sub-dict."""
-    specs = d.get("key_specs") or d.get("specs") or {}
+    the top-level dict AND every common nested-spec sub-dict.
+
+    The LLM tool schema names the spec dict `primary_key_specs` (per
+    requirements_agent.GENERATE_REQUIREMENTS_TOOL), but historic code paths
+    use `key_specs` or `specs`. Distributor lookups produce yet another
+    shape. Check all of them — anything else and the cascade silently
+    drops every RF stage (see the rx-output-audit B1.4 regression).
+    """
+    sources: list[dict[str, Any]] = [d]
+    for nested_key in ("primary_key_specs", "key_specs", "specs", "datasheet_specs"):
+        nested = d.get(nested_key)
+        if isinstance(nested, dict):
+            sources.append(nested)
     for k in keys:
-        for source in (d, specs):
-            if not isinstance(source, dict):
-                continue
+        for source in sources:
             v = source.get(k)
             if v is None:
                 continue
             try:
                 return float(v)
             except (TypeError, ValueError):
-                # Distributor strings like "+15 dB" / "-1.5 dB"
+                # Distributor / LLM strings like "+15 dB", "-1.5 dB",
+                # "+18 dB typ", "1.2 dB typ @ 18 GHz".
                 import re as _re
-                m = _re.search(r"-?\d+(?:\.\d+)?", str(v))
+                m = _re.search(r"[+-]?\d+(?:\.\d+)?", str(v))
                 if m:
                     try:
                         return float(m.group(0))
                     except ValueError:
                         continue
+    return None
+
+
+def _coerce_claim(value: Any) -> Optional[float]:
+    """Coerce a claimed-spec value (often a string with leading '+' or
+    units like '+65 dBm') into a float. Returns None when the value is
+    None or unparseable. Used by compute_cascade so `claims.iip3_dbm`
+    in the output JSON is always a number, never a string like '+65'
+    (the rx-output-audit B1.5 regression)."""
+    if value is None:
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    try:
+        return float(str(value).strip().lstrip("+"))
+    except ValueError:
+        import re as _re
+        m = _re.search(r"[+-]?\d+(?:\.\d+)?", str(value))
+        if m:
+            try:
+                return float(m.group(0))
+            except ValueError:
+                return None
     return None
 
 
@@ -211,6 +244,16 @@ def compute_cascade(
     passive coupling cap has no spec — you just assume 0 dB.
     """
     direction = (direction or "rx").lower()
+    # Coerce all claimed-spec inputs to floats — the LLM frequently emits
+    # them as strings ("+65", "65 dBm", "+65 dBm typ"). Without this the
+    # `claims` block lands in the JSON as a string and any numeric
+    # comparison fails. (rx-output-audit B1.5 regression).
+    claimed_nf_db = _coerce_claim(claimed_nf_db)
+    claimed_iip3_dbm = _coerce_claim(claimed_iip3_dbm)
+    claimed_total_gain_db = _coerce_claim(claimed_total_gain_db)
+    claimed_pout_dbm = _coerce_claim(claimed_pout_dbm)
+    claimed_oip3_dbm = _coerce_claim(claimed_oip3_dbm)
+    claimed_pae_pct = _coerce_claim(claimed_pae_pct)
     # P26 #13: project_type aliases mapped to cascade direction.
     # Receiver / Tx are explicit; transceiver runs as Tx (the louder side
     # of the budget — Rx already passes if Tx headroom holds); switch

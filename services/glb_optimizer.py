@@ -333,6 +333,12 @@ def _diagnose(stages: list[dict], summary: dict, tgt: Targets) -> list[Issue]:
                                 f"but lacks Vdd/Idq."))
 
     # FRIIS_MISMATCH — passive NF must equal |gain_db|
+    # Pre-fix the tolerance was a flat 0.15 dB; the rx-output-audit B1.12
+    # showed every passive stage with NF=0.5×|IL| sneaking through because
+    # each individual delta was 0.10 dB (under the threshold) but the
+    # cumulative effect on the cascade NF was ~1 dB of fabricated margin.
+    # New rule: max(0.05 dB, 10 % of |IL|) — relative tolerance scales
+    # with the loss so a 3 dB pad with NF=2.5 dB still triggers.
     for i, st in enumerate(stages):
         if _is_active(st):
             continue
@@ -340,10 +346,13 @@ def _diagnose(stages: list[dict], summary: dict, tgt: Targets) -> list[Issue]:
             continue
         g = st.get("gain_db"); nf = st.get("noise_figure_db")
         if isinstance(g, (int, float)) and isinstance(nf, (int, float)) and g <= 0:
-            if abs(nf - abs(g)) > 0.15:
+            il = abs(g)
+            tol = max(0.05, 0.10 * il)
+            if abs(nf - il) > tol:
                 issues.append(Issue("FRIIS_MISMATCH", "hard", i,
-                                    f"Stage {i+1} passive NF {nf:.2f} dB ≠ |loss| {abs(g):.2f} dB.",
-                                    delta=abs(g) - nf))
+                                    f"Stage {i+1} passive NF {nf:.2f} dB ≠ |loss| {il:.2f} dB "
+                                    f"(off by {abs(nf - il):.2f} dB; tolerance {tol:.2f} dB).",
+                                    delta=il - nf))
 
     # COMPRESSION — any active stage with BO < 10 dB is a risk
     for i, st in enumerate(stages):
