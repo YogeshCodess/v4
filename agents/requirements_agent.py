@@ -6384,6 +6384,9 @@ updated in this table.</p>
                     "preselector", "saw", "baw", "cavity")
         _ACT_KW  = ("lna", "amplifier", "driver",
                     "mixer", "modulator", "demodulator", "vga", "vca")
+        _AMP_KW  = ("lna", "amplifier", "amp", "driver", "vga", "vca",
+                    "gain block")
+        _MIXER_KW = ("mixer", "modulator", "demodulator")
 
         per_stage = []
         for st in stages:
@@ -6398,8 +6401,22 @@ updated in this table.</p>
             if is_filter:   flat = 1.0
             elif is_active: flat = 0.5
             else:           flat = 0.1
+            # Most RF amplifiers / mixers don't operate below ~100 MHz —
+            # they're cap-coupled. Below the lower spec edge the gain is
+            # "extrapolation" not real. Mark sub-100 MHz cells as None so
+            # the renderer shows them as `—` instead of the fabricated
+            # +18 dB at 0 GHz that section 7 used to report
+            # (rx-output-audit B1.14).
+            is_amp_or_mixer = any(kw in lbl for kw in _AMP_KW + _MIXER_KW)
+            min_op_freq_mhz = 100.0 if is_amp_or_mixer else 0.0
             gains_f = []
             for fm in freqs:
+                if fm < min_op_freq_mhz:
+                    # Below the device's cap-coupled lower edge — value is
+                    # not physically meaningful. Signal the renderer to
+                    # display `—` rather than extrapolate.
+                    gains_f.append(None)
+                    continue
                 norm = (fm - center) / (bw / 2.0) if bw > 0 else 0.0
                 if   norm >  1.0: norm =  1.0
                 elif norm < -1.0: norm = -1.0
@@ -6408,7 +6425,15 @@ updated in this table.</p>
                 elif is_active:
                     delta = -norm * flat           # high-end roll-off
                 else:
-                    delta = -abs(norm) * flat * 0.5  # passives: tiny symmetric variation
+                    # Passives (connectors, traces, attenuator pads):
+                    # MONOTONIC loss-with-frequency, matches skin-effect
+                    # physics. Pre-fix this used `-abs(norm) * flat * 0.5`
+                    # which produced a SMILE shape (more loss at edges,
+                    # less in the middle) — not how RF passives behave.
+                    # New rule: loss tilts +30 % of `flat` at fhi, -30 %
+                    # at flo, so a -0.20 dB SMA reads -0.23 dB at 18 GHz
+                    # and -0.17 dB at DC.
+                    delta = -norm * flat * 0.3
                 gains_f.append(round(g_nom + delta, 2))
             per_stage.append(gains_f)
 
@@ -6418,9 +6443,21 @@ updated in this table.</p>
             F_num = 0.0
             G_prod = 1.0
             first_real = True
+            # Track whether any active stage was missing at this frequency.
+            # If any active stage is below its lower operating edge, the
+            # cascade isn't physically realisable at that frequency — the
+            # whole row should be None rather than a misleading partial
+            # roll-up that pretends the missing stage contributes 0 dB
+            # (rx-output-audit B1.14).
+            any_active_missing = False
             for si, st in enumerate(stages):
                 g = per_stage[si][fi]
                 if not isinstance(g, (int, float)):
+                    # Active stage out-of-band → invalidate the row
+                    lbl = (str(st.get("stage_name", "") or "") + " " +
+                           str(st.get("component", "") or "")).lower()
+                    if any(kw in lbl for kw in _AMP_KW + _MIXER_KW):
+                        any_active_missing = True
                     continue
                 nf = st.get("noise_figure_db")
                 if not isinstance(nf, (int, float)):
@@ -6434,6 +6471,16 @@ updated in this table.</p>
                 else:
                     F_num += (F_stage - 1.0) / G_prod if G_prod > 0 else 0.0
                 G_prod *= G_stage
+            if any_active_missing:
+                system.append({
+                    "freq_mhz":       fm,
+                    "total_gain_db":  None,
+                    "cascaded_nf_db": None,
+                    "p_out_dbm":      None,
+                    "mds_dbm":        None,
+                    "out_of_band":    True,
+                })
+                continue
             nf_db = 10.0 * _math.log10(F_num) if F_num > 0 else 0.0
             p_out_f = (p_in + cum_g) if isinstance(p_in, (int, float)) else None
             noise_in = -174.0 + 10.0 * _math.log10(bw * 1e6) + nf_db
@@ -7348,13 +7395,25 @@ updated in this table.</p>
             ]
             for row in _sweep["system"]:
                 _pout = row["p_out_dbm"]
+                # Out-of-band rows (any active stage missing at this freq)
+                # render every numeric cell as `—` so the table doesn't
+                # show a misleading partial-roll-up. This is the
+                # rx-output-audit B1.14 fix — pre-fix the table reported
+                # +11.75 dB total gain at 0 GHz when the gain block
+                # doesn't operate below 100 MHz.
+                _g = row["total_gain_db"]
+                _nf = row["cascaded_nf_db"]
+                _mds = row["mds_dbm"]
+                _g_s = f"{_g:+.2f}" if isinstance(_g, (int, float)) else "—"
+                _nf_s = f"{_nf:.2f}" if isinstance(_nf, (int, float)) else "—"
                 _pout_s = f"{_pout:+.2f}" if isinstance(_pout, (int, float)) else "—"
+                _mds_s = f"{_mds:+.2f}" if isinstance(_mds, (int, float)) else "—"
                 lines.append(
                     f"| {row['freq_mhz']/1000:.1f}"
-                    f" | {row['total_gain_db']:+.2f}"
-                    f" | {row['cascaded_nf_db']:.2f}"
+                    f" | {_g_s}"
+                    f" | {_nf_s}"
                     f" | {_pout_s}"
-                    f" | {row['mds_dbm']:+.2f} |"
+                    f" | {_mds_s} |"
                 )
             lines += [
                 "",
@@ -7819,17 +7878,24 @@ spec), add an equaliser or gain-slope compensator after the LNA.</p>
                     f"<td>{esc(st.get('component', '—'))}</td>"
                     f"<td>{nom}</td>{cells}</tr>"
                 )
-            # System rollup rows
+            # System rollup rows. Out-of-band rows render as `—` for every
+            # numeric cell (rx-output-audit B1.14 fix).
             _sys_rows = []
             for row in _sweep["system"]:
+                _g = row["total_gain_db"]
+                _nf = row["cascaded_nf_db"]
                 _pout = row["p_out_dbm"]
+                _mds = row["mds_dbm"]
+                _g_s = f"{_g:+.2f}" if isinstance(_g, (int, float)) else "—"
+                _nf_s = f"{_nf:.2f}" if isinstance(_nf, (int, float)) else "—"
                 _pout_s = f"{_pout:+.2f}" if isinstance(_pout, (int, float)) else "—"
+                _mds_s = f"{_mds:+.2f}" if isinstance(_mds, (int, float)) else "—"
                 _sys_rows.append(
                     f"<tr><td>{row['freq_mhz']/1000:.1f}</td>"
-                    f"<td>{row['total_gain_db']:+.2f}</td>"
-                    f"<td>{row['cascaded_nf_db']:.2f}</td>"
+                    f"<td>{_g_s}</td>"
+                    f"<td>{_nf_s}</td>"
                     f"<td>{_pout_s}</td>"
-                    f"<td>{row['mds_dbm']:+.2f}</td></tr>"
+                    f"<td>{_mds_s}</td></tr>"
                 )
             sweep_html = f"""
 <h2>Stage Gain vs Frequency — {_step_note}</h2>
